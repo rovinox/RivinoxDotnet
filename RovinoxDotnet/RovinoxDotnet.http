@@ -1,0 +1,6 @@
+@RovinoxDotnet_HostAddress = http://localhost:5122
+
+GET {{RovinoxDotnet_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
