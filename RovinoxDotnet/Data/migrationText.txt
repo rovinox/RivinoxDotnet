@@ -1,0 +1,2 @@
+1. dotnet ef migrations add nameOfWhatYouWantToAdd
+2. dotnet ef database update 
