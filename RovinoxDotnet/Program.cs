@@ -17,6 +17,7 @@ builder.Services.AddControllers();
 builder.Services.AddDbContext<ApplicationDBContext>(options => options.UseNpgsql(builder.Configuration.GetConnectionString("WebApiDatabase")));
 AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
 builder.Services.AddScoped< IBatchRepository, BatchRepository>();
+builder.Services.AddScoped<ICurriculumRepository, CurriculumRepository>();
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

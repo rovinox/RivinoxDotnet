@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace RovinoxDotnet.Models
 {
-    [Table("batches")]
+    [Table("Batches")]
     public class Batch
     {
         public int Id { get; set; }
