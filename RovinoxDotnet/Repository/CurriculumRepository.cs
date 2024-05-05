@@ -27,10 +27,10 @@ namespace RovinoxDotnet.Repository
            return formattedCurriculum;
         }
 
-        public async Task<List<Curriculum>> CreateFromExcelByBatchIdAsync(int batchId, IFormFile excelFile)
-        {
-            return null;
-        }
+        // public async Task<List<Curriculum>> CreateFromExcelByBatchIdAsync(int batchId, IFormFile excelFile)
+        // {
+        //     return null;
+        // }
 
         public async Task<List<Curriculum>> GetAllByBatchIdAsync(int BatchId)
         {

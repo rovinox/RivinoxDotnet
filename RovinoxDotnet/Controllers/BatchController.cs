@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using RovinoxDotnet.DTOs.Batch;
 using RovinoxDotnet.Interfaces;
@@ -12,6 +13,7 @@ namespace RovinoxDotnet.Controllers
 {
     [Route("api/batch")]
     [ApiController]
+   
     public class BatchController : ControllerBase
 
     {
@@ -28,7 +30,8 @@ namespace RovinoxDotnet.Controllers
              var batches = await _batchRepository.GetAllAsync();
               return Ok(batches);
         }
-          [HttpPost]       
+          [HttpPost]    
+           [Authorize]   
            public async Task<IActionResult> Create([FromBody] CreateBatchDto batchDto){
              if (!ModelState.IsValid) {
                 return BadRequest(ModelState);

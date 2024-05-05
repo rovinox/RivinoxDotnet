@@ -2,29 +2,36 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using RovinoxDotnet.Models;
 
 namespace RovinoxDotnet.Data
 {
-    public class ApplicationDBContext : IdentityDbContext
+    public class ApplicationDBContext : IdentityDbContext<AppUser>
     {
-        public ApplicationDBContext(DbContextOptions options) :base(options)
+        public ApplicationDBContext(DbContextOptions options) : base(options)
         {
-            
+
         }
-        public DbSet<Batch>  Batches { get; set; }
-        public DbSet<Curriculum>  Curriculums { get; set; }
-        // protected override void OnModelCreating(ModelBuilder builder){
-            //builder.Entity<Curriculum>(x => x.HasKey(p => p.BatchId));
+        public DbSet<Batch> Batches { get; set; }
+        public DbSet<Curriculum> Curriculums { get; set; }
+        protected override void OnModelCreating(ModelBuilder builder)
+        {
+             base.OnModelCreating(builder);
+            List<IdentityRole> roles = [
+                new() {
+                    Name = "Admin",
+                    NormalizedName = "ADMIN"
+                },
+                new() {
+                    Name = "User",
+                    NormalizedName = "USER"
+                },
+            ];
+            builder.Entity<IdentityRole>().HasData(roles);
+        }
 
-            // builder.Entity<Curriculum>().HasOne(b => b.Batch);
-
-            // builder.Entity<Curriculum>(entity=>{
-            //      entity.HasKey(a=>a.Id);
-            //     entity.HasOne( c => c.BatchId);
-            // });
-        // }
     }
 }
