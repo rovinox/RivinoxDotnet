@@ -1,2 +1,11 @@
 1. dotnet ef migrations add nameOfWhatYouWantToAdd
 2. dotnet ef database update 
+
+
+// "email": "user@example.com",
+// "password": "striHHHng55kk!55hh",
+// "firstName": "string1",
+// "lastName": "string2",
+// "userName": "string75",
+// "phoneNumber": "string",
+// "batchId": 1

@@ -13,6 +13,7 @@ namespace RovinoxDotnet.Interfaces
 
         //  Task<Comment?> GetByIdAsync(int id);
         Task<Batch> CreateAsync(CreateBatchDto batchModel);
+        Task<List<Batch>> AssassinOrNewBatchAsync(string userId, int batchId);
         // Task<Comment?> UpdateAsync(int id, Comment commentDto); 
         // Task<Comment?> DeleteAsync(int id); 
     }
