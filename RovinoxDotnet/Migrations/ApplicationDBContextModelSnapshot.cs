@@ -50,13 +50,13 @@ namespace RovinoxDotnet.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "6a121ed1-9e41-428b-99fc-9f32b4c2414b",
+                            Id = "a5bd66d8-e97d-4ddf-b063-e0b352e71340",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         },
                         new
                         {
-                            Id = "e1fb97b8-e3b5-4af3-996d-c01f68a9b13d",
+                            Id = "62ca8c3a-3ed2-49eb-8b94-757d83119b73",
                             Name = "User",
                             NormalizedName = "USER"
                         });
@@ -176,6 +176,9 @@ namespace RovinoxDotnet.Migrations
                     b.Property<int>("AccessFailedCount")
                         .HasColumnType("integer");
 
+                    b.Property<int[]>("Batches")
+                        .HasColumnType("integer[]");
+
                     b.Property<string>("ConcurrencyStamp")
                         .IsConcurrencyToken()
                         .HasColumnType("text");
@@ -186,6 +189,14 @@ namespace RovinoxDotnet.Migrations
 
                     b.Property<bool>("EmailConfirmed")
                         .HasColumnType("boolean");
+
+                    b.Property<string>("FirstName")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("LastName")
+                        .IsRequired()
+                        .HasColumnType("text");
 
                     b.Property<bool>("LockoutEnabled")
                         .HasColumnType("boolean");

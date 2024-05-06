@@ -65,11 +65,14 @@ namespace RovinoxDotnet.Controllers
 
                     return BadRequest(ModelState);
                 }
-
+                    int[] batchIds = [registerDto.BatchId];
                 var appUser = new AppUser
                 {
-                    UserName = registerDto.FirstName + registerDto.LastName,
-                    Email = registerDto.Email
+                    UserName = registerDto.UserName,
+                    Email = registerDto.Email,
+                    FirstName = registerDto.FirstName,
+                    LastName= registerDto.LastName,
+                    Batches = batchIds
                 };
 
                 var createdUser = await _userManager.CreateAsync(appUser, registerDto.Password);

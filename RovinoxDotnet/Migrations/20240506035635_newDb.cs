@@ -4,10 +4,12 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 #nullable disable
 
+#pragma warning disable CA1814 // Prefer jagged arrays over multidimensional
+
 namespace RovinoxDotnet.Migrations
 {
     /// <inheritdoc />
-    public partial class batchTable : Migration
+    public partial class newDb : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -31,6 +33,9 @@ namespace RovinoxDotnet.Migrations
                 columns: table => new
                 {
                     Id = table.Column<string>(type: "text", nullable: false),
+                    FirstName = table.Column<string>(type: "text", nullable: false),
+                    LastName = table.Column<string>(type: "text", nullable: false),
+                    Batches = table.Column<int[]>(type: "integer[]", nullable: true),
                     UserName = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: true),
                     NormalizedUserName = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: true),
                     Email = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: true),
@@ -52,7 +57,7 @@ namespace RovinoxDotnet.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "batches",
+                name: "Batches",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "integer", nullable: false)
@@ -66,7 +71,7 @@ namespace RovinoxDotnet.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_batches", x => x.Id);
+                    table.PrimaryKey("PK_Batches", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -175,6 +180,36 @@ namespace RovinoxDotnet.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
+            migrationBuilder.CreateTable(
+                name: "Curriculums",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    Order = table.Column<int>(type: "integer", nullable: false),
+                    Title = table.Column<string>(type: "text", nullable: false),
+                    BatchId = table.Column<int>(type: "integer", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Curriculums", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Curriculums_Batches_BatchId",
+                        column: x => x.BatchId,
+                        principalTable: "Batches",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.InsertData(
+                table: "AspNetRoles",
+                columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
+                values: new object[,]
+                {
+                    { "62ca8c3a-3ed2-49eb-8b94-757d83119b73", null, "User", "USER" },
+                    { "a5bd66d8-e97d-4ddf-b063-e0b352e71340", null, "Admin", "ADMIN" }
+                });
+
             migrationBuilder.CreateIndex(
                 name: "IX_AspNetRoleClaims_RoleId",
                 table: "AspNetRoleClaims",
@@ -211,6 +246,11 @@ namespace RovinoxDotnet.Migrations
                 table: "AspNetUsers",
                 column: "NormalizedUserName",
                 unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Curriculums_BatchId",
+                table: "Curriculums",
+                column: "BatchId");
         }
 
         /// <inheritdoc />
@@ -232,13 +272,16 @@ namespace RovinoxDotnet.Migrations
                 name: "AspNetUserTokens");
 
             migrationBuilder.DropTable(
-                name: "batches");
+                name: "Curriculums");
 
             migrationBuilder.DropTable(
                 name: "AspNetRoles");
 
             migrationBuilder.DropTable(
                 name: "AspNetUsers");
+
+            migrationBuilder.DropTable(
+                name: "Batches");
         }
     }
 }
