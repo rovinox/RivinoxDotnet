@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using RovinoxDotnet.DTOs.Account;
+using RovinoxDotnet.DTOs.Enrollment;
 using RovinoxDotnet.Interfaces;
 using RovinoxDotnet.Models;
 
@@ -13,18 +14,13 @@ namespace RovinoxDotnet.Controllers
 {
     [Route("api/account")]
     [ApiController]
-    public class AccountController : ControllerBase
+    public class AccountController(UserManager<AppUser> userManager, ITokenService tokenService, SignInManager<AppUser> signInManager, IBatchRepository batchRepository, IEnrollmentRepository enrollmentRepository) : ControllerBase
     {
-        private readonly UserManager<AppUser> _userManager;
-        private readonly ITokenService _tokenService;
-        private readonly SignInManager<AppUser> _signInManager;
-
-        public AccountController(UserManager<AppUser> userManager, ITokenService tokenService, SignInManager<AppUser> signInManager)
-        {
-            _userManager = userManager;
-            _tokenService = tokenService;
-            _signInManager = signInManager;
-        }
+        private readonly UserManager<AppUser> _userManager = userManager;
+        private readonly ITokenService _tokenService = tokenService;
+        private readonly SignInManager<AppUser> _signInManager = signInManager;
+        private readonly IBatchRepository _batchRepository = batchRepository;
+        private readonly IEnrollmentRepository _enrollmentRepository = enrollmentRepository;
 
         [HttpPost("login")]
         public async Task<IActionResult> Login(LoginDto loginDto)
@@ -39,7 +35,7 @@ namespace RovinoxDotnet.Controllers
 
             if (user == null) return Unauthorized("Invalid Email!");
 
-           // var userData = await _userManager.FindByIdAsync(user.Id);
+            // var userData = await _userManager.FindByIdAsync(user.Id);
             var roles = await _userManager.GetRolesAsync(user);
 
             var result = await _signInManager.CheckPasswordSignInAsync(user, loginDto.Password, false);
@@ -48,7 +44,7 @@ namespace RovinoxDotnet.Controllers
             return Ok(
                 new NewUserDto
                 {
-                    Roles = Convert.ToString(roles[0]),   
+                    Roles = Convert.ToString(roles[0]),
                     Email = user.Email,
                     Token = _tokenService.CreateToken(user)
                 }
@@ -65,28 +61,41 @@ namespace RovinoxDotnet.Controllers
 
                     return BadRequest(ModelState);
                 }
-                    int[] batchIds = [registerDto.BatchId];
+                Batch batch = await _batchRepository.GetByIdAsync(registerDto.BatchId);
                 var appUser = new AppUser
                 {
                     UserName = registerDto.UserName,
                     Email = registerDto.Email,
                     FirstName = registerDto.FirstName,
-                    LastName= registerDto.LastName,
-                    Batches = batchIds
+                    LastName = registerDto.LastName,
+                    PhoneNumber = registerDto.PhoneNumber,
+                    Balance = batch.Cost
                 };
 
                 var createdUser = await _userManager.CreateAsync(appUser, registerDto.Password);
 
                 if (createdUser.Succeeded)
                 {
+                    var user = await _userManager.FindByEmailAsync(registerDto.Email);
                     var defaultRole = "User";
+
+
+                    var enrollmentDto = new CreateEnrollmentDto
+                    {
+                        FirstName = registerDto.FirstName,
+                        LastName = registerDto.LastName,
+                        Course = batch.Course,
+                        UserId = user.Id,
+                        BatchId = batch.Id
+                    };
+                    var enrollment = await _enrollmentRepository.CreateAsync(enrollmentDto);
                     var roleResult = await _userManager.AddToRoleAsync(appUser, defaultRole);
                     if (roleResult.Succeeded)
                     {
                         return Ok(
                             new NewUserDto
                             {
-                                Roles = defaultRole, 
+                                Roles = defaultRole,
                                 Email = appUser.Email,
                                 Token = _tokenService.CreateToken(appUser)
                             }

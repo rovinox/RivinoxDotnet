@@ -1,2 +1,3 @@
-/RovinoxDotnet/appsettings.json
+.RovinoxDotnet/appsettings.json
 .fake
+.vscode

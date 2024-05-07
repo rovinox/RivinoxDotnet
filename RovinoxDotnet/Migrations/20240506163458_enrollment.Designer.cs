@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using RovinoxDotnet.Data;
@@ -11,9 +12,11 @@ using RovinoxDotnet.Data;
 namespace RovinoxDotnet.Migrations
 {
     [DbContext(typeof(ApplicationDBContext))]
-    partial class ApplicationDBContextModelSnapshot : ModelSnapshot
+    [Migration("20240506163458_enrollment")]
+    partial class enrollment
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -21,6 +24,21 @@ namespace RovinoxDotnet.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
+
+            modelBuilder.Entity("BatchEnrollment", b =>
+                {
+                    b.Property<int>("BatchesId")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("EnrollmentId")
+                        .HasColumnType("integer");
+
+                    b.HasKey("BatchesId", "EnrollmentId");
+
+                    b.HasIndex("EnrollmentId");
+
+                    b.ToTable("BatchEnrollment");
+                });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
                 {
@@ -50,13 +68,13 @@ namespace RovinoxDotnet.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "8ea2c450-7359-42f1-aae6-5d9844749413",
+                            Id = "1b97bad1-0540-48d2-b4a8-b5998ed87c44",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         },
                         new
                         {
-                            Id = "c8b51c49-aadd-44a9-afad-c112a23b86c7",
+                            Id = "50136767-1398-479b-95d0-3f6c3ab81cba",
                             Name = "User",
                             NormalizedName = "USER"
                         });
@@ -308,18 +326,6 @@ namespace RovinoxDotnet.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
-                    b.Property<int?>("BatchId")
-                        .HasColumnType("integer");
-
-                    b.Property<string>("Course")
-                        .HasColumnType("text");
-
-                    b.Property<string>("FirstName")
-                        .HasColumnType("text");
-
-                    b.Property<string>("LastName")
-                        .HasColumnType("text");
-
                     b.Property<string>("UserId")
                         .HasColumnType("text");
 
@@ -328,11 +334,24 @@ namespace RovinoxDotnet.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("BatchId");
-
                     b.HasIndex("UsersId");
 
                     b.ToTable("Enrollments");
+                });
+
+            modelBuilder.Entity("BatchEnrollment", b =>
+                {
+                    b.HasOne("RovinoxDotnet.Models.Batch", null)
+                        .WithMany()
+                        .HasForeignKey("BatchesId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("RovinoxDotnet.Models.Enrollment", null)
+                        .WithMany()
+                        .HasForeignKey("EnrollmentId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -399,15 +418,9 @@ namespace RovinoxDotnet.Migrations
 
             modelBuilder.Entity("RovinoxDotnet.Models.Enrollment", b =>
                 {
-                    b.HasOne("RovinoxDotnet.Models.Batch", "Batches")
-                        .WithMany("Enrollment")
-                        .HasForeignKey("BatchId");
-
                     b.HasOne("RovinoxDotnet.Models.AppUser", "Users")
                         .WithMany("Enrollment")
                         .HasForeignKey("UsersId");
-
-                    b.Navigation("Batches");
 
                     b.Navigation("Users");
                 });
@@ -420,8 +433,6 @@ namespace RovinoxDotnet.Migrations
             modelBuilder.Entity("RovinoxDotnet.Models.Batch", b =>
                 {
                     b.Navigation("Curriculum");
-
-                    b.Navigation("Enrollment");
                 });
 #pragma warning restore 612, 618
         }

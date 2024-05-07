@@ -40,15 +40,5 @@ namespace RovinoxDotnet.Controllers
             return Ok(batches);
             // return CreatedAtAction(nameof(GetById), new { id = commentModel.Id }, commentModel.ToCommentDto());
         }
-          [HttpPut("userId/{userId}/batchId/{batchId:int}")]    
-          // [Authorize]   
-           public async Task<IActionResult> ReAssassinNewBatchAsync([FromRoute] string userId, int batchId){
-             if (!ModelState.IsValid) {
-                return BadRequest(ModelState);
-             }
-          var batches = await  _batchRepository.AssassinOrNewBatchAsync(userId, batchId);
-            return Ok(batches);
-            // return CreatedAtAction(nameof(GetById), new { id = commentModel.Id }, commentModel.ToCommentDto());
-        }
     }
 }

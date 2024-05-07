@@ -10,7 +10,7 @@ namespace RovinoxDotnet.Models
     {
         public string FirstName { get; set; } = string.Empty;
         public string LastName { get; set; } = string.Empty;
-        public int[]? Batches { get; set; } 
-      //  public decimal Balance { get; set; } 
+        public List<Enrollment>? Enrollment { get; set; } 
+        public decimal Balance { get; set; } 
     }
 }

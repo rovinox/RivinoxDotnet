@@ -16,6 +16,8 @@ namespace RovinoxDotnet.Models
         public DateTime EndDate { get; set; }
         public DateTime CreatedOn { get; set; } = DateTime.Now;
         public bool Enabled { get; set; } = true;
+        public List<Enrollment>? Enrollment { get; set; } 
+        public List<Curriculum>? Curriculum { get; set; } 
     }
 
 }
