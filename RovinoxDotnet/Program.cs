@@ -52,6 +52,7 @@ AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
 builder.Services.AddScoped< IBatchRepository, BatchRepository>();
 builder.Services.AddScoped<ICurriculumRepository, CurriculumRepository>();
 builder.Services.AddScoped<ITokenService, TokenService>();
+builder.Services.AddScoped<IEnrollmentRepository, EnrollmentRepository>();
 builder.Services.AddIdentity<AppUser, IdentityRole>(options =>
 {
     options.Password.RequireDigit = true;
@@ -87,7 +88,11 @@ builder.Services.AddAuthentication(options =>
     };
 });
 var app = builder.Build();
-
+app.UseCors(corsPolicyBuilder =>
+   corsPolicyBuilder.WithOrigins("http://localhost:3000")
+  .AllowAnyMethod()
+  .AllowAnyHeader()
+);
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {

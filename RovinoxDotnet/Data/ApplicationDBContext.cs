@@ -17,6 +17,7 @@ namespace RovinoxDotnet.Data
         }
         public DbSet<Batch> Batches { get; set; }
         public DbSet<Curriculum> Curriculums { get; set; }
+        public DbSet<Enrollment> Enrollments { get; set; }
         protected override void OnModelCreating(ModelBuilder builder)
         {
              base.OnModelCreating(builder);

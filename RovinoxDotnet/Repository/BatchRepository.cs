@@ -24,20 +24,6 @@ namespace RovinoxDotnet.Repository
 
         }
 
-        public async Task<List<Batch>> AssassinOrNewBatchAsync(string userId, int batchId)
-        {
-            var user = await _userManager.Users.FirstOrDefaultAsync(x => x.Id == userId);
-            int[] batchIds = [batchId];
-            for (int i = 0; i < user.Batches.Length; i++)
-            {
-                _ = batchIds.Append(user.Batches[i]);
-            }
-            user.Batches = batchIds;
-            await _userManager.UpdateAsync(user);
-
-
-            return await _dbContext.Batches.Select(x => x).ToListAsync();
-        }
         public async Task<Batch> CreateAsync(CreateBatchDto batchModel)
         {
 
@@ -52,6 +38,11 @@ namespace RovinoxDotnet.Repository
         {
             return await _dbContext.Batches.Select(x => x).ToListAsync();
             // return await _dbContext.Batches.ToListAsync();
+        }
+
+        public Task<Batch?> GetByIdAsync(int id)
+        {
+          return _dbContext.Batches.FirstOrDefaultAsync(x=>x.Id == id);
         }
     }
 }
