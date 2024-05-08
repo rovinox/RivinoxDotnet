@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity;
@@ -50,7 +51,8 @@ namespace RovinoxDotnet.Repository
         {
         var result = await _dbContext.Enrollments.Include(x => x.UserId == userId && x.BatchId == batchId).ToListAsync();;
 
-           System.Diagnostics.Debug.WriteLine("This is a log");
+           Debug.WriteLine("This is a log");
+           Debug.Write("This is a log2");
             if(result.Count != 0 ){
                  return result;
             } else {

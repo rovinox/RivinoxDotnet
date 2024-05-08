@@ -15,6 +15,7 @@ namespace RovinoxDotnet.Models
         [ForeignKey("Batches")]
         public int BatchId { get; set; }
         public Batch? Batch { get; set; }
+       public  HomeWork? HomeWorks { get; set;}      
 
     }
 }

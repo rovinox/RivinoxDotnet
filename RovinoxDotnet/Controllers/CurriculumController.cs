@@ -33,7 +33,7 @@ namespace RovinoxDotnet.Controllers
             return Ok(curriculums);
         }
         [HttpPost]
-         [Authorize]
+        // [Authorize]
         public async Task<IActionResult> Create([FromBody] CreateCurriculumDto curriculumDto)
         {
             if (!ModelState.IsValid)

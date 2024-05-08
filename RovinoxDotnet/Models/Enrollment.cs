@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 
 namespace RovinoxDotnet.Models
 {
+        [Table("Enrollments")]
     public class Enrollment
     {
         public int Id { get; set; }

@@ -28,20 +28,20 @@ namespace RovinoxDotnet.Controllers
             }
             string userId = enrollmentDto.UserId;
             int batchId = enrollmentDto.BatchId;
-            var existingEnrollment = _enrollmentRepository.CheckIfAlreadyEnrolled(userId, batchId);
-            if (existingEnrollment == null)
-            {
-                var enrollment = await _enrollmentRepository.CreateAsync(enrollmentDto);
-
-
+                 var enrollment = await _enrollmentRepository.CreateAsync(enrollmentDto);
                 await _enrollmentRepository.UpdateBalance(userId, batchId);
-
                 return Ok(enrollment);
-            }
-            else
-            {
-                return BadRequest("Enrollment already exists for user to this Batch");
-            }
+           // var existingEnrollment = _enrollmentRepository.CheckIfAlreadyEnrolled(userId, batchId);
+            // if (existingEnrollment == null)
+            // {
+            //     var enrollment = await _enrollmentRepository.CreateAsync(enrollmentDto);
+            //     await _enrollmentRepository.UpdateBalance(userId, batchId);
+            //     return Ok(enrollment);
+            // }
+            // else
+            // {
+            //     return BadRequest("Enrollment already exists for user to this Batch");
+            // }
         }
     }
 }

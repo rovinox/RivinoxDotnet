@@ -50,13 +50,13 @@ namespace RovinoxDotnet.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "8ea2c450-7359-42f1-aae6-5d9844749413",
+                            Id = "f3da54b7-996c-45a9-9502-4712c59c781b",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         },
                         new
                         {
-                            Id = "c8b51c49-aadd-44a9-afad-c112a23b86c7",
+                            Id = "59f69e7e-ee8b-439d-b6fa-dab25d38b2ed",
                             Name = "User",
                             NormalizedName = "USER"
                         });
@@ -275,6 +275,45 @@ namespace RovinoxDotnet.Migrations
                     b.ToTable("Batches");
                 });
 
+            modelBuilder.Entity("RovinoxDotnet.Models.Comment", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Content")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("CreatedBy")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<DateTime>("CreatedOn")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<int>("HomeWorkId")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("UsersId")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("HomeWorkId");
+
+                    b.HasIndex("UsersId");
+
+                    b.ToTable("Comments");
+                });
+
             modelBuilder.Entity("RovinoxDotnet.Models.Curriculum", b =>
                 {
                     b.Property<int>("Id")
@@ -335,6 +374,33 @@ namespace RovinoxDotnet.Migrations
                     b.ToTable("Enrollments");
                 });
 
+            modelBuilder.Entity("RovinoxDotnet.Models.HomeWork", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("CurriculumId")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("UserId")
+                        .HasColumnType("text");
+
+                    b.Property<string>("UsersId")
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CurriculumId")
+                        .IsUnique();
+
+                    b.HasIndex("UsersId");
+
+                    b.ToTable("HomeWorks");
+                });
+
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
                 {
                     b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole", null)
@@ -386,6 +452,25 @@ namespace RovinoxDotnet.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("RovinoxDotnet.Models.Comment", b =>
+                {
+                    b.HasOne("RovinoxDotnet.Models.HomeWork", "HomeWork")
+                        .WithMany("Comments")
+                        .HasForeignKey("HomeWorkId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("RovinoxDotnet.Models.AppUser", "Users")
+                        .WithMany()
+                        .HasForeignKey("UsersId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("HomeWork");
+
+                    b.Navigation("Users");
+                });
+
             modelBuilder.Entity("RovinoxDotnet.Models.Curriculum", b =>
                 {
                     b.HasOne("RovinoxDotnet.Models.Batch", "Batch")
@@ -412,6 +497,23 @@ namespace RovinoxDotnet.Migrations
                     b.Navigation("Users");
                 });
 
+            modelBuilder.Entity("RovinoxDotnet.Models.HomeWork", b =>
+                {
+                    b.HasOne("RovinoxDotnet.Models.Curriculum", "Curriculum")
+                        .WithOne("HomeWorks")
+                        .HasForeignKey("RovinoxDotnet.Models.HomeWork", "CurriculumId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("RovinoxDotnet.Models.AppUser", "Users")
+                        .WithMany()
+                        .HasForeignKey("UsersId");
+
+                    b.Navigation("Curriculum");
+
+                    b.Navigation("Users");
+                });
+
             modelBuilder.Entity("RovinoxDotnet.Models.AppUser", b =>
                 {
                     b.Navigation("Enrollment");
@@ -422,6 +524,16 @@ namespace RovinoxDotnet.Migrations
                     b.Navigation("Curriculum");
 
                     b.Navigation("Enrollment");
+                });
+
+            modelBuilder.Entity("RovinoxDotnet.Models.Curriculum", b =>
+                {
+                    b.Navigation("HomeWorks");
+                });
+
+            modelBuilder.Entity("RovinoxDotnet.Models.HomeWork", b =>
+                {
+                    b.Navigation("Comments");
                 });
 #pragma warning restore 612, 618
         }

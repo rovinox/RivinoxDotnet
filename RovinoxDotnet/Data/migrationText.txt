@@ -2,10 +2,12 @@
 2. dotnet ef database update 
 
 
-// "email": "user@example.com",
-// "password": "striHHHng55kk!55hh",
-// "firstName": "string1",
-// "lastName": "string2",
-// "userName": "string75",
-// "phoneNumber": "string",
-// "batchId": 1
+{
+  "email": "neaj@example.com",
+  "password": "neaj1234!!HH786587",
+  "firstName": "neaj",
+  "lastName": "mahmud",
+  "userName": "neaj1234HH786587",
+  "phoneNumber": "231654",
+  "batchId": 1
+}

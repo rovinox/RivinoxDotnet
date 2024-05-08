@@ -12,8 +12,8 @@ using RovinoxDotnet.Data;
 namespace RovinoxDotnet.Migrations
 {
     [DbContext(typeof(ApplicationDBContext))]
-    [Migration("20240507151559_newtable")]
-    partial class newtable
+    [Migration("20240508201533_HemeworkRelationfrf")]
+    partial class HemeworkRelationfrf
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -24,36 +24,6 @@ namespace RovinoxDotnet.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
-
-            modelBuilder.Entity("AppUserEnrollment", b =>
-                {
-                    b.Property<int>("EnrollmentId")
-                        .HasColumnType("integer");
-
-                    b.Property<string>("UsersId")
-                        .HasColumnType("text");
-
-                    b.HasKey("EnrollmentId", "UsersId");
-
-                    b.HasIndex("UsersId");
-
-                    b.ToTable("AppUserEnrollment");
-                });
-
-            modelBuilder.Entity("BatchEnrollment", b =>
-                {
-                    b.Property<int>("BatchesId")
-                        .HasColumnType("integer");
-
-                    b.Property<int>("EnrollmentId")
-                        .HasColumnType("integer");
-
-                    b.HasKey("BatchesId", "EnrollmentId");
-
-                    b.HasIndex("EnrollmentId");
-
-                    b.ToTable("BatchEnrollment");
-                });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
                 {
@@ -83,13 +53,13 @@ namespace RovinoxDotnet.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "6231511f-bdd0-4ac2-afc9-ca84a93ba0e8",
+                            Id = "f3da54b7-996c-45a9-9502-4712c59c781b",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         },
                         new
                         {
-                            Id = "cbc52aef-cc16-4356-b280-8ea04e0dc76f",
+                            Id = "59f69e7e-ee8b-439d-b6fa-dab25d38b2ed",
                             Name = "User",
                             NormalizedName = "USER"
                         });
@@ -308,6 +278,45 @@ namespace RovinoxDotnet.Migrations
                     b.ToTable("Batches");
                 });
 
+            modelBuilder.Entity("RovinoxDotnet.Models.Comment", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Content")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("CreatedBy")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<DateTime>("CreatedOn")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<int>("HomeWorkId")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("UsersId")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("HomeWorkId");
+
+                    b.HasIndex("UsersId");
+
+                    b.ToTable("Comments");
+                });
+
             modelBuilder.Entity("RovinoxDotnet.Models.Curriculum", b =>
                 {
                     b.Property<int>("Id")
@@ -356,39 +365,43 @@ namespace RovinoxDotnet.Migrations
                     b.Property<string>("UserId")
                         .HasColumnType("text");
 
+                    b.Property<string>("UsersId")
+                        .HasColumnType("text");
+
                     b.HasKey("Id");
+
+                    b.HasIndex("BatchId");
+
+                    b.HasIndex("UsersId");
 
                     b.ToTable("Enrollments");
                 });
 
-            modelBuilder.Entity("AppUserEnrollment", b =>
+            modelBuilder.Entity("RovinoxDotnet.Models.HomeWork", b =>
                 {
-                    b.HasOne("RovinoxDotnet.Models.Enrollment", null)
-                        .WithMany()
-                        .HasForeignKey("EnrollmentId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
 
-                    b.HasOne("RovinoxDotnet.Models.AppUser", null)
-                        .WithMany()
-                        .HasForeignKey("UsersId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
-            modelBuilder.Entity("BatchEnrollment", b =>
-                {
-                    b.HasOne("RovinoxDotnet.Models.Batch", null)
-                        .WithMany()
-                        .HasForeignKey("BatchesId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                    b.Property<int>("CurriculumId")
+                        .HasColumnType("integer");
 
-                    b.HasOne("RovinoxDotnet.Models.Enrollment", null)
-                        .WithMany()
-                        .HasForeignKey("EnrollmentId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                    b.Property<string>("UserId")
+                        .HasColumnType("text");
+
+                    b.Property<string>("UsersId")
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CurriculumId")
+                        .IsUnique();
+
+                    b.HasIndex("UsersId");
+
+                    b.ToTable("HomeWorks");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -442,6 +455,25 @@ namespace RovinoxDotnet.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("RovinoxDotnet.Models.Comment", b =>
+                {
+                    b.HasOne("RovinoxDotnet.Models.HomeWork", "HomeWork")
+                        .WithMany("Comments")
+                        .HasForeignKey("HomeWorkId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("RovinoxDotnet.Models.AppUser", "Users")
+                        .WithMany()
+                        .HasForeignKey("UsersId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("HomeWork");
+
+                    b.Navigation("Users");
+                });
+
             modelBuilder.Entity("RovinoxDotnet.Models.Curriculum", b =>
                 {
                     b.HasOne("RovinoxDotnet.Models.Batch", "Batch")
@@ -453,9 +485,58 @@ namespace RovinoxDotnet.Migrations
                     b.Navigation("Batch");
                 });
 
+            modelBuilder.Entity("RovinoxDotnet.Models.Enrollment", b =>
+                {
+                    b.HasOne("RovinoxDotnet.Models.Batch", "Batches")
+                        .WithMany("Enrollment")
+                        .HasForeignKey("BatchId");
+
+                    b.HasOne("RovinoxDotnet.Models.AppUser", "Users")
+                        .WithMany("Enrollment")
+                        .HasForeignKey("UsersId");
+
+                    b.Navigation("Batches");
+
+                    b.Navigation("Users");
+                });
+
+            modelBuilder.Entity("RovinoxDotnet.Models.HomeWork", b =>
+                {
+                    b.HasOne("RovinoxDotnet.Models.Curriculum", "Curriculum")
+                        .WithOne("HomeWorks")
+                        .HasForeignKey("RovinoxDotnet.Models.HomeWork", "CurriculumId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("RovinoxDotnet.Models.AppUser", "Users")
+                        .WithMany()
+                        .HasForeignKey("UsersId");
+
+                    b.Navigation("Curriculum");
+
+                    b.Navigation("Users");
+                });
+
+            modelBuilder.Entity("RovinoxDotnet.Models.AppUser", b =>
+                {
+                    b.Navigation("Enrollment");
+                });
+
             modelBuilder.Entity("RovinoxDotnet.Models.Batch", b =>
                 {
                     b.Navigation("Curriculum");
+
+                    b.Navigation("Enrollment");
+                });
+
+            modelBuilder.Entity("RovinoxDotnet.Models.Curriculum", b =>
+                {
+                    b.Navigation("HomeWorks");
+                });
+
+            modelBuilder.Entity("RovinoxDotnet.Models.HomeWork", b =>
+                {
+                    b.Navigation("Comments");
                 });
 #pragma warning restore 612, 618
         }

@@ -9,7 +9,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace RovinoxDotnet.Migrations
 {
     /// <inheritdoc />
-    public partial class newDb : Migration
+    public partial class HemeworkRelationfrf : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -35,7 +35,7 @@ namespace RovinoxDotnet.Migrations
                     Id = table.Column<string>(type: "text", nullable: false),
                     FirstName = table.Column<string>(type: "text", nullable: false),
                     LastName = table.Column<string>(type: "text", nullable: false),
-                    Batches = table.Column<int[]>(type: "integer[]", nullable: true),
+                    Balance = table.Column<decimal>(type: "numeric", nullable: false),
                     UserName = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: true),
                     NormalizedUserName = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: true),
                     Email = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: true),
@@ -201,13 +201,97 @@ namespace RovinoxDotnet.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
+            migrationBuilder.CreateTable(
+                name: "Enrollments",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    FirstName = table.Column<string>(type: "text", nullable: true),
+                    LastName = table.Column<string>(type: "text", nullable: true),
+                    Course = table.Column<string>(type: "text", nullable: true),
+                    UserId = table.Column<string>(type: "text", nullable: true),
+                    UsersId = table.Column<string>(type: "text", nullable: true),
+                    BatchId = table.Column<int>(type: "integer", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Enrollments", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Enrollments_AspNetUsers_UsersId",
+                        column: x => x.UsersId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_Enrollments_Batches_BatchId",
+                        column: x => x.BatchId,
+                        principalTable: "Batches",
+                        principalColumn: "Id");
+                });
+
+            migrationBuilder.CreateTable(
+                name: "HomeWorks",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    UserId = table.Column<string>(type: "text", nullable: true),
+                    UsersId = table.Column<string>(type: "text", nullable: true),
+                    CurriculumId = table.Column<int>(type: "integer", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_HomeWorks", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_HomeWorks_AspNetUsers_UsersId",
+                        column: x => x.UsersId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_HomeWorks_Curriculums_CurriculumId",
+                        column: x => x.CurriculumId,
+                        principalTable: "Curriculums",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Comments",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    Content = table.Column<string>(type: "text", nullable: false),
+                    CreatedOn = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
+                    HomeWorkId = table.Column<int>(type: "integer", nullable: false),
+                    UserId = table.Column<string>(type: "text", nullable: false),
+                    UsersId = table.Column<string>(type: "text", nullable: false),
+                    CreatedBy = table.Column<string>(type: "text", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Comments", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Comments_AspNetUsers_UsersId",
+                        column: x => x.UsersId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Comments_HomeWorks_HomeWorkId",
+                        column: x => x.HomeWorkId,
+                        principalTable: "HomeWorks",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
             migrationBuilder.InsertData(
                 table: "AspNetRoles",
                 columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
                 values: new object[,]
                 {
-                    { "62ca8c3a-3ed2-49eb-8b94-757d83119b73", null, "User", "USER" },
-                    { "a5bd66d8-e97d-4ddf-b063-e0b352e71340", null, "Admin", "ADMIN" }
+                    { "59f69e7e-ee8b-439d-b6fa-dab25d38b2ed", null, "User", "USER" },
+                    { "f3da54b7-996c-45a9-9502-4712c59c781b", null, "Admin", "ADMIN" }
                 });
 
             migrationBuilder.CreateIndex(
@@ -248,9 +332,40 @@ namespace RovinoxDotnet.Migrations
                 unique: true);
 
             migrationBuilder.CreateIndex(
+                name: "IX_Comments_HomeWorkId",
+                table: "Comments",
+                column: "HomeWorkId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Comments_UsersId",
+                table: "Comments",
+                column: "UsersId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Curriculums_BatchId",
                 table: "Curriculums",
                 column: "BatchId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Enrollments_BatchId",
+                table: "Enrollments",
+                column: "BatchId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Enrollments_UsersId",
+                table: "Enrollments",
+                column: "UsersId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_HomeWorks_CurriculumId",
+                table: "HomeWorks",
+                column: "CurriculumId",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_HomeWorks_UsersId",
+                table: "HomeWorks",
+                column: "UsersId");
         }
 
         /// <inheritdoc />
@@ -272,13 +387,22 @@ namespace RovinoxDotnet.Migrations
                 name: "AspNetUserTokens");
 
             migrationBuilder.DropTable(
-                name: "Curriculums");
+                name: "Comments");
+
+            migrationBuilder.DropTable(
+                name: "Enrollments");
 
             migrationBuilder.DropTable(
                 name: "AspNetRoles");
 
             migrationBuilder.DropTable(
+                name: "HomeWorks");
+
+            migrationBuilder.DropTable(
                 name: "AspNetUsers");
+
+            migrationBuilder.DropTable(
+                name: "Curriculums");
 
             migrationBuilder.DropTable(
                 name: "Batches");
