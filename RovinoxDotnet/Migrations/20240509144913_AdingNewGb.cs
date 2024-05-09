@@ -9,7 +9,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace RovinoxDotnet.Migrations
 {
     /// <inheritdoc />
-    public partial class HemeworkRelationfrf : Migration
+    public partial class AdingNewGb : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -211,15 +211,14 @@ namespace RovinoxDotnet.Migrations
                     LastName = table.Column<string>(type: "text", nullable: true),
                     Course = table.Column<string>(type: "text", nullable: true),
                     UserId = table.Column<string>(type: "text", nullable: true),
-                    UsersId = table.Column<string>(type: "text", nullable: true),
                     BatchId = table.Column<int>(type: "integer", nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Enrollments", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Enrollments_AspNetUsers_UsersId",
-                        column: x => x.UsersId,
+                        name: "FK_Enrollments_AspNetUsers_UserId",
+                        column: x => x.UserId,
                         principalTable: "AspNetUsers",
                         principalColumn: "Id");
                     table.ForeignKey(
@@ -235,16 +234,18 @@ namespace RovinoxDotnet.Migrations
                 {
                     Id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    Rating = table.Column<int>(type: "integer", nullable: false),
+                    Link = table.Column<string>(type: "text", nullable: true),
+                    IsGraded = table.Column<string>(type: "text", nullable: true),
                     UserId = table.Column<string>(type: "text", nullable: true),
-                    UsersId = table.Column<string>(type: "text", nullable: true),
                     CurriculumId = table.Column<int>(type: "integer", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_HomeWorks", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_HomeWorks_AspNetUsers_UsersId",
-                        column: x => x.UsersId,
+                        name: "FK_HomeWorks_AspNetUsers_UserId",
+                        column: x => x.UserId,
                         principalTable: "AspNetUsers",
                         principalColumn: "Id");
                     table.ForeignKey(
@@ -265,15 +266,14 @@ namespace RovinoxDotnet.Migrations
                     CreatedOn = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
                     HomeWorkId = table.Column<int>(type: "integer", nullable: false),
                     UserId = table.Column<string>(type: "text", nullable: false),
-                    UsersId = table.Column<string>(type: "text", nullable: false),
                     CreatedBy = table.Column<string>(type: "text", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Comments", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Comments_AspNetUsers_UsersId",
-                        column: x => x.UsersId,
+                        name: "FK_Comments_AspNetUsers_UserId",
+                        column: x => x.UserId,
                         principalTable: "AspNetUsers",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
@@ -290,8 +290,8 @@ namespace RovinoxDotnet.Migrations
                 columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
                 values: new object[,]
                 {
-                    { "59f69e7e-ee8b-439d-b6fa-dab25d38b2ed", null, "User", "USER" },
-                    { "f3da54b7-996c-45a9-9502-4712c59c781b", null, "Admin", "ADMIN" }
+                    { "a9fc6af3-d8e8-41ef-a95d-900d80b95ed6", null, "Admin", "ADMIN" },
+                    { "f37c8a29-9e07-4471-ab3a-f1761ea10710", null, "User", "USER" }
                 });
 
             migrationBuilder.CreateIndex(
@@ -337,9 +337,9 @@ namespace RovinoxDotnet.Migrations
                 column: "HomeWorkId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Comments_UsersId",
+                name: "IX_Comments_UserId",
                 table: "Comments",
-                column: "UsersId");
+                column: "UserId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Curriculums_BatchId",
@@ -352,9 +352,9 @@ namespace RovinoxDotnet.Migrations
                 column: "BatchId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Enrollments_UsersId",
+                name: "IX_Enrollments_UserId",
                 table: "Enrollments",
-                column: "UsersId");
+                column: "UserId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_HomeWorks_CurriculumId",
@@ -363,9 +363,9 @@ namespace RovinoxDotnet.Migrations
                 unique: true);
 
             migrationBuilder.CreateIndex(
-                name: "IX_HomeWorks_UsersId",
+                name: "IX_HomeWorks_UserId",
                 table: "HomeWorks",
-                column: "UsersId");
+                column: "UserId");
         }
 
         /// <inheritdoc />

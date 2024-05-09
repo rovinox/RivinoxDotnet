@@ -49,10 +49,7 @@ namespace RovinoxDotnet.Repository
         }
         public async Task<List<Enrollment>?> CheckIfAlreadyEnrolled(string userId, int batchId)
         {
-        var result = await _dbContext.Enrollments.Include(x => x.UserId == userId && x.BatchId == batchId).ToListAsync();;
-
-           Debug.WriteLine("This is a log");
-           Debug.Write("This is a log2");
+        var result = await _dbContext.Enrollments.Include(x => x.UserId == userId && x.BatchId == batchId).ToListAsync();
             if(result.Count != 0 ){
                  return result;
             } else {

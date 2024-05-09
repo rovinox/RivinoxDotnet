@@ -22,7 +22,7 @@ namespace RovinoxDotnet.Controllers
         {
             _curriculumRepository = curriculumRepository;
         }
-        [HttpGet("{batchId:int}")]
+        [HttpGet("batch/{batchId:int}")]
         public async Task<IActionResult> GetAll([FromRoute] int batchId)
         {
             if (!ModelState.IsValid)

@@ -1,6 +1,6 @@
 1. dotnet ef migrations add nameOfWhatYouWantToAdd
 2. dotnet ef database update 
-
+change all of the       public AppUser? Users { get; set;} to User
 
 {
   "email": "neaj@example.com",
@@ -9,5 +9,16 @@
   "lastName": "mahmud",
   "userName": "neaj1234HH786587",
   "phoneNumber": "231654",
+  "batchId": 1
+}
+
+
+{
+  "email": "user2222@example.com",
+  "password": "string5!!55HHHH1",
+  "firstName": "Firse",
+  "lastName": "lase",
+  "userName": "firstg555HHHH1",
+  "phoneNumber": "string",
   "batchId": 1
 }

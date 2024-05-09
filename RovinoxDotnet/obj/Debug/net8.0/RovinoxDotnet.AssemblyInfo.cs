@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("RovinoxDotnet")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+221f30efd2f67e483a86dd9af91e2b030cc1b5f3")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+7c227634eb8653d5152da93a66622b66f58645a8")]
 [assembly: System.Reflection.AssemblyProductAttribute("RovinoxDotnet")]
 [assembly: System.Reflection.AssemblyTitleAttribute("RovinoxDotnet")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

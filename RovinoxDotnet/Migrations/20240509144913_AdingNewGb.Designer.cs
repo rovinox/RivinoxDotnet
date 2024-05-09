@@ -12,8 +12,8 @@ using RovinoxDotnet.Data;
 namespace RovinoxDotnet.Migrations
 {
     [DbContext(typeof(ApplicationDBContext))]
-    [Migration("20240508201533_HemeworkRelationfrf")]
-    partial class HemeworkRelationfrf
+    [Migration("20240509144913_AdingNewGb")]
+    partial class AdingNewGb
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -53,13 +53,13 @@ namespace RovinoxDotnet.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "f3da54b7-996c-45a9-9502-4712c59c781b",
+                            Id = "a9fc6af3-d8e8-41ef-a95d-900d80b95ed6",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         },
                         new
                         {
-                            Id = "59f69e7e-ee8b-439d-b6fa-dab25d38b2ed",
+                            Id = "f37c8a29-9e07-4471-ab3a-f1761ea10710",
                             Name = "User",
                             NormalizedName = "USER"
                         });
@@ -304,15 +304,11 @@ namespace RovinoxDotnet.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<string>("UsersId")
-                        .IsRequired()
-                        .HasColumnType("text");
-
                     b.HasKey("Id");
 
                     b.HasIndex("HomeWorkId");
 
-                    b.HasIndex("UsersId");
+                    b.HasIndex("UserId");
 
                     b.ToTable("Comments");
                 });
@@ -365,14 +361,11 @@ namespace RovinoxDotnet.Migrations
                     b.Property<string>("UserId")
                         .HasColumnType("text");
 
-                    b.Property<string>("UsersId")
-                        .HasColumnType("text");
-
                     b.HasKey("Id");
 
                     b.HasIndex("BatchId");
 
-                    b.HasIndex("UsersId");
+                    b.HasIndex("UserId");
 
                     b.ToTable("Enrollments");
                 });
@@ -388,10 +381,16 @@ namespace RovinoxDotnet.Migrations
                     b.Property<int>("CurriculumId")
                         .HasColumnType("integer");
 
-                    b.Property<string>("UserId")
+                    b.Property<string>("IsGraded")
                         .HasColumnType("text");
 
-                    b.Property<string>("UsersId")
+                    b.Property<string>("Link")
+                        .HasColumnType("text");
+
+                    b.Property<int>("Rating")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("UserId")
                         .HasColumnType("text");
 
                     b.HasKey("Id");
@@ -399,7 +398,7 @@ namespace RovinoxDotnet.Migrations
                     b.HasIndex("CurriculumId")
                         .IsUnique();
 
-                    b.HasIndex("UsersId");
+                    b.HasIndex("UserId");
 
                     b.ToTable("HomeWorks");
                 });
@@ -463,15 +462,15 @@ namespace RovinoxDotnet.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("RovinoxDotnet.Models.AppUser", "Users")
+                    b.HasOne("RovinoxDotnet.Models.AppUser", "User")
                         .WithMany()
-                        .HasForeignKey("UsersId")
+                        .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("HomeWork");
 
-                    b.Navigation("Users");
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("RovinoxDotnet.Models.Curriculum", b =>
@@ -491,13 +490,13 @@ namespace RovinoxDotnet.Migrations
                         .WithMany("Enrollment")
                         .HasForeignKey("BatchId");
 
-                    b.HasOne("RovinoxDotnet.Models.AppUser", "Users")
+                    b.HasOne("RovinoxDotnet.Models.AppUser", "User")
                         .WithMany("Enrollment")
-                        .HasForeignKey("UsersId");
+                        .HasForeignKey("UserId");
 
                     b.Navigation("Batches");
 
-                    b.Navigation("Users");
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("RovinoxDotnet.Models.HomeWork", b =>
@@ -508,13 +507,13 @@ namespace RovinoxDotnet.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("RovinoxDotnet.Models.AppUser", "Users")
+                    b.HasOne("RovinoxDotnet.Models.AppUser", "User")
                         .WithMany()
-                        .HasForeignKey("UsersId");
+                        .HasForeignKey("UserId");
 
                     b.Navigation("Curriculum");
 
-                    b.Navigation("Users");
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("RovinoxDotnet.Models.AppUser", b =>

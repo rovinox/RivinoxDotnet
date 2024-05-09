@@ -15,7 +15,7 @@ namespace RovinoxDotnet.Models
         public string? Link { get; set;}
         public string? IsGraded { get; set;}
         public string? UserId { get; set;}
-        public AppUser? Users { get; set;} 
+        public AppUser? User { get; set;} 
         [ForeignKey("Curriculums")]   
         public int CurriculumId { get; set;}
         public  Curriculum? Curriculum { get; set;}     

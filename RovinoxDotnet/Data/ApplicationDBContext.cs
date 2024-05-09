@@ -18,9 +18,11 @@ namespace RovinoxDotnet.Data
         public DbSet<Batch> Batches { get; set; }
         public DbSet<Curriculum> Curriculums { get; set; }
         public DbSet<Enrollment> Enrollments { get; set; }
+        public DbSet<HomeWork> HomeWorks { get; set; }
+        public DbSet<Comment> Comments { get; set; }
         protected override void OnModelCreating(ModelBuilder builder)
         {
-             base.OnModelCreating(builder);
+            base.OnModelCreating(builder);
             List<IdentityRole> roles = [
                 new() {
                     Name = "Admin",
@@ -31,6 +33,7 @@ namespace RovinoxDotnet.Data
                     NormalizedName = "USER"
                 },
             ];
+           
             builder.Entity<IdentityRole>().HasData(roles);
         }
 

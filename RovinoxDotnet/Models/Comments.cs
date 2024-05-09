@@ -16,7 +16,7 @@ namespace RovinoxDotnet.Models
         public int HomeWorkId { get; set; }
         public HomeWork HomeWork { get; set; }
         public string UserId { get; set; }
-        public AppUser Users { get; set; }
+        public AppUser User { get; set; }
         public string CreatedBy { get; set; } = string.Empty; 
           
     }
