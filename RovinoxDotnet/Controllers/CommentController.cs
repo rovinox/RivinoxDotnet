@@ -31,9 +31,14 @@ namespace RovinoxDotnet.Controllers
             var appUser = await GetUserAllInfo();
             string createdBy = $"{appUser.FirstName} {appUser.LastName}";
 
-            var homework = await _commentRepository.CreateAsync(CommentDto, appUser.Id, createdBy);
-            return Ok(homework);
+            var comment = await _commentRepository.CreateAsync(CommentDto, appUser.Id, createdBy);
+            return Ok(comment);
             //return CreatedAtAction(nameof(GetById), new { id = commentModel.Id }, commentModel.ToCommentDto());
+        }
+        [HttpGet("homework/{HomeWorkId:int}")]
+        public async Task<IActionResult> GetAll([FromRoute]  int HomeWorkId){
+             var comments = await _commentRepository.GetComments(HomeWorkId);
+             return Ok(comments);
         }
         private async Task<AppUser> GetUserAllInfo()
         {
