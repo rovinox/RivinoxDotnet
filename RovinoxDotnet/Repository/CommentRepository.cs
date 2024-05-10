@@ -29,7 +29,7 @@ namespace RovinoxDotnet.Repository
             return formattedComment;
         }
 
-        public async Task<List<Comment>>? GetComments(int HomeWorkId)
+        public async Task<List<Comment>> GetComments(int HomeWorkId)
         {
               return await _dbContext.Comments.Where(c => c.HomeWorkId == HomeWorkId).ToListAsync();
         }
