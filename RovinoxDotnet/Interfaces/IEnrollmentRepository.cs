@@ -11,6 +11,6 @@ namespace RovinoxDotnet.Interfaces
     {
         public Task<Enrollment> CreateAsync(CreateEnrollmentDto enrollmentModel);     
         public Task<bool> UpdateBalance( string userId, int batchId);     
-        public Task<List<Enrollment>?> CheckIfAlreadyEnrolled( string userId, int batchId);     
+        public Task<Enrollment>? CheckIfAlreadyEnrolled( string userId, int batchId);     
     }
 }

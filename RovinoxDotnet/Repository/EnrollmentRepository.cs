@@ -47,13 +47,13 @@ namespace RovinoxDotnet.Repository
                 return false;
             }
         }
-        public async Task<List<Enrollment>?> CheckIfAlreadyEnrolled(string userId, int batchId)
+        public async Task<Enrollment> CheckIfAlreadyEnrolled(string userId, int batchId)
         {
-        var result = await _dbContext.Enrollments.Include(x => x.UserId == userId && x.BatchId == batchId).ToListAsync();
-            if(result.Count != 0 ){
-                 return result;
+        var result = await _dbContext.Enrollments.FirstOrDefaultAsync(x => x.UserId == userId && x.BatchId == batchId);
+            if(result == null ){
+                 return null;
             } else {
-                return null;
+                return result;
             }
         }
     }

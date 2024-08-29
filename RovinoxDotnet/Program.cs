@@ -1,3 +1,4 @@
+using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -66,6 +67,7 @@ builder.Services.AddIdentity<AppUser, IdentityRole>(options =>
     options.User.RequireUniqueEmail = true; 
 })
 .AddEntityFrameworkStores<ApplicationDBContext>();
+var key = Encoding.ASCII.GetBytes(builder.Configuration["JWT:SigningKey"]);
 
 builder.Services.AddAuthentication(options =>
 {
@@ -85,7 +87,8 @@ builder.Services.AddAuthentication(options =>
         ValidAudience = builder.Configuration["JWT:Audience"],
         ValidateIssuerSigningKey = true,
         IssuerSigningKey = new SymmetricSecurityKey(
-            System.Text.Encoding.UTF8.GetBytes($"{builder.Configuration["JWT:SigningKey"]}")
+             key
+            // System.Text.Encoding.UTF8.GetBytes(builder.Configuration["JWT:SigningKey"])
         )
     };
 });
