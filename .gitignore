@@ -284,7 +284,8 @@ ServiceFabricBackup/
 # Microsoft Fakes
 FakesAssemblies/
 # vscode
-
+.vscode
+.vs
 # GhostDoc plugin setting file
 *.GhostDoc.xml
 
