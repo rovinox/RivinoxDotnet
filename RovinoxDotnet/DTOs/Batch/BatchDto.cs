@@ -12,7 +12,10 @@ namespace RovinoxDotnet.DTOs.Batch
         public decimal Cost { get; set; }
         public DateTime StartDate { get; set; }
         public DateTime EndDate { get; set; }
+        public string StartTime { get; set; } = string.Empty;
+        public string EndTime { get; set; } = string.Empty;
         public DateTime CreatedOn { get; set; } = DateTime.Now;
-        public bool Enabled { get; set; } = true;
+        public string[]? DaysOfTheWeek { get; set; }
+        public bool Enabled { get; set; }
     }
 }

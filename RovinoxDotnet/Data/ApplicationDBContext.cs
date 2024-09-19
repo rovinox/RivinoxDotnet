@@ -20,6 +20,7 @@ namespace RovinoxDotnet.Data
         public DbSet<Enrollment> Enrollments { get; set; }
         public DbSet<HomeWork> HomeWorks { get; set; }
         public DbSet<Comment> Comments { get; set; }
+
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);
@@ -33,8 +34,9 @@ namespace RovinoxDotnet.Data
                     NormalizedName = "USER"
                 },
             ];
-           
+
             builder.Entity<IdentityRole>().HasData(roles);
+
         }
 
     }

@@ -18,7 +18,7 @@ namespace RovinoxDotnet.Controllers
             _enrollmentRepository = enrollmentRepository;
         }
 
-        [HttpPost]
+        [HttpPost("create")]
         //[Authorize]
         public async Task<IActionResult> Create([FromBody] CreateEnrollmentDto enrollmentDto)
         {
@@ -43,5 +43,9 @@ namespace RovinoxDotnet.Controllers
                 return BadRequest("Enrollment already exists for user to this Batch");
             }
         }
+        // public async Task<IActionResult> GetAllAsync()
+        // {
+              
+        // }
     }
 }

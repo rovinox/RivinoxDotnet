@@ -39,9 +39,6 @@ export default function NoCourse() {
               ROVINOX
             </Typography>
           </Typography>
-          <Typography variant="h4">
-            The Full-Stack Software Development
-          </Typography>
           <Typography
             sx={{
               mt: 10,
@@ -58,31 +55,6 @@ export default function NoCourse() {
             variant="h5"
           >
             We're excited to have you, please be patient
-          </Typography>
-          <Grid
-            sx={{
-              mt: 10,
-              mb: 10,
-              width: "80%",
-            }}
-            xs
-            display="flex"
-            justifyContent="center"
-            alignItems="center"
-          >
-            <img
-              src="https://upload.wikimedia.org/wikipedia/commons/thumb/9/94/MERN-logo.png/640px-MERN-logo.png"
-              alt="MERN"
-            />
-          </Grid>
-          <Typography variant="h6">
-            <a
-              href="https://www.mongodb.com/mern-stack"
-              target="_blank"
-              rel="noreferrer"
-            >
-              What is the MERN stack?
-            </a>
           </Typography>
         </Grid>
       </Grid>

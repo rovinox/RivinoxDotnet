@@ -22,3 +22,23 @@ change all of the       public AppUser? Users { get; set;} to User
   "phoneNumber": "string",
   "batchId": 1
 }
+
+
+{
+  "email": "user35@example.com",
+  "password": "neaj1234!!HH786587",
+  "firstName": "string",
+  "lastName": "string",
+  "userName": "string437434115343131",
+  "phoneNumber": "string",
+  "batchId": 1
+}
+
+{
+  "email": "user302@example.com",
+  "password": "neaj1234!!HH786587",
+  "firstName": "sfhgdfhdsfhdf",
+  "lastName": "hsdhdshshsdh",
+  "phoneNumber": "string",
+  "batchId": 1
+}

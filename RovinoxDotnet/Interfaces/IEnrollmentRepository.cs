@@ -10,6 +10,7 @@ namespace RovinoxDotnet.Interfaces
     public interface IEnrollmentRepository
     {
         public Task<Enrollment> CreateAsync(CreateEnrollmentDto enrollmentModel);     
+        public Task<List<Enrollment>> GetAllAsync();     
         public Task<bool> UpdateBalance( string userId, int batchId);     
         public Task<Enrollment>? CheckIfAlreadyEnrolled( string userId, int batchId);     
     }

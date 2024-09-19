@@ -46,7 +46,10 @@ namespace RovinoxDotnet.Controllers
                 {
                     Roles = Convert.ToString(roles[0]),
                     Email = user.Email,
-                    Token = _tokenService.CreateToken(user)
+                    Token = _tokenService.CreateToken(user),
+                    FirstName = user.FirstName,
+                    LastName = user.LastName,
+                    Enabled = user.Enabled
                 }
             );
         }
@@ -64,12 +67,13 @@ namespace RovinoxDotnet.Controllers
                 Batch batch = await _batchRepository.GetByIdAsync(registerDto.BatchId);
                 var appUser = new AppUser
                 {
-                    UserName = registerDto.UserName,
+                    UserName = registerDto.Email,
                     Email = registerDto.Email,
                     FirstName = registerDto.FirstName,
                     LastName = registerDto.LastName,
                     PhoneNumber = registerDto.PhoneNumber,
-                    Balance = batch.Cost
+                    Balance = batch.Cost,
+                    Enabled = true
                 };
 
                 var createdUser = await _userManager.CreateAsync(appUser, registerDto.Password);

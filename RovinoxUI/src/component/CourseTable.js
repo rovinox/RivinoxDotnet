@@ -46,14 +46,23 @@ export default function CourseTable() {
     let newBatch = [];
     const getBatch = async () => {
       try {
-        const result = await axios.get("/getbatch");
-        if (result.data.batch) {
-          result.data.batch.forEach((item) => {
+        const result = await axios.get("http://localhost:5122/api/batch");
+        console.log('result: ', result);
+        if (result.data) {
+          result.data.forEach((item) => {
             var startDate = moment([
               moment(moment(item.startDate) - 7 * 24 * 3600 * 1000).format(
                 "MM-DD-YY"
               ),
             ]);
+            let days = "";
+            item.daysOfTheWeek.forEach((day, index) => {
+              const isLastIndex = item.daysOfTheWeek.length -1 === index
+
+              days += isLastIndex ? day.replace('day', '') : `${day.replace('day', '')},`
+
+            })
+            item.days = days
             var now = moment([moment().format("MM-DD-YY")]);
             let dateDiff = startDate.diff(now, "days");
             if (dateDiff === 0) {
@@ -74,13 +83,18 @@ export default function CourseTable() {
     getBatch();
   }, []);
 
-  const handleApply = (id) => {
-    navigate("/apply", {
-      state: {
-        id,
-      },
-    });
+  const handleApply = (row) => {
+    const {id} = row
+    if(!row.isExpired){
+      
+      navigate("/apply", {
+        state: {
+          id,
+        },
+      });
+    }
   };
+ 
   return (
     <Paper sx={{ pb: 20 }}>
       <Grid sx={{ mt: 9, pr: 5, pl: 5 }} Grid container spacing={2}>
@@ -143,7 +157,11 @@ export default function CourseTable() {
                         {moment(row.endDate).format("MMM Do")}
                       </StyledTableCell>
                       <StyledTableCell align="right">
-                        Mon,Thurs,Fri 6PM-9PM{" "}
+                        {/* {row.daysOfTheWeek.map((item, index) => (<> 
+                        { item}
+                        
+                        </>))} */}
+                        {row.days} {row.startTime}-{row.endTime}
                       </StyledTableCell>
                       <StyledTableCell align="right">
                         ${row.cost}
@@ -160,13 +178,13 @@ export default function CourseTable() {
                       <StyledTableCell align="right">
                         {" "}
                         <ApplyButton2
-                          disabled={row.isExpired}
+                          disabled={true}
                           sx={{
                             background:
                               "linear-gradient(90.21deg, #AA367C -5.91%, #4A2FBD 111.58%)",
                             color: "white",
                           }}
-                          onClick={() => handleApply(row.batchId)}
+                          onClick={() => handleApply(row)}
                         >
                           Apply
                         </ApplyButton2>{" "}

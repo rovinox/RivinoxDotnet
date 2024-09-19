@@ -21,15 +21,16 @@ export default function Apply() {
   const navigate = useNavigate();
   const batchId = state?.id;
   const [selectedBatch, setSelectedBatch] = useState(batchId);
+  console.log('selectedBatch: ', selectedBatch);
   const [batch, setBatch] = useState([]);
 
   useEffect(() => {
     const getBatch = async () => {
       try {
-        const result = await axios.get("/getbatch");
+        const result = await axios.get("http://localhost:5122/api/batch");
         console.log("result: ", result);
 
-        setBatch(result.data.batch);
+        setBatch(result.data);
       } catch (e) {
         console.log(e);
       }
@@ -38,10 +39,11 @@ export default function Apply() {
 
   }, []);
   const batchList =
-    batch.length > 0 &&
+    batch?.length > 0 &&
     batch.map((option) => {
+      console.log(option);
       return {
-        value: option.batchId,
+        value: option.id,
         label: `${moment(option.startDate).format("MMM Do YY")} -
                           ${moment(option.endDate).format("MMM Do YY")}`,
       };
@@ -224,6 +226,7 @@ export default function Apply() {
                   select
                   label="Course"
                   value={selectedBatch}
+                  defaultValue={selectedBatch}
                 >
                   {batchList.length > 0 &&
                     batchList.map((option) => (
@@ -231,6 +234,7 @@ export default function Apply() {
                         onClick={() => setSelectedBatch(option.value)}
                         key={option.value}
                         value={option.value}
+                      
                       >
                         {option.label}
                       </MenuItem>

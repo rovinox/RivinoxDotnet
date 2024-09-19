@@ -14,7 +14,7 @@ import axios from "axios";
 import { toast } from "react-toastify";
 import ReactToastify from "../component/ReactToastify";
 import Header from "../home/Header";
-const LOGIN_URL = "/login";
+const LOGIN_URL = "http://localhost:5122/api/account/login";
 
 export default function Login() {
   const [email, setEmail] = useState("");

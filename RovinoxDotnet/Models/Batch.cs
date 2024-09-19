@@ -14,10 +14,13 @@ namespace RovinoxDotnet.Models
         public decimal Cost { get; set; }
         public DateTime StartDate { get; set; }
         public DateTime EndDate { get; set; }
+        public string StartTime { get; set; }  = string.Empty;
+        public string EndTime { get; set; }  = string.Empty;
         public DateTime CreatedOn { get; set; } = DateTime.Now;
         public bool Enabled { get; set; } = true;
         public List<Enrollment>? Enrollment { get; set; } 
         public List<Curriculum>? Curriculum { get; set; } 
+        public string[]? DaysOfTheWeek { get; set; } 
     }
 
 }

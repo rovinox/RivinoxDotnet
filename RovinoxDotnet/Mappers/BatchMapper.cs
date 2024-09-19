@@ -17,6 +17,9 @@ namespace RovinoxDotnet.Mappers
                 Cost = batchDto.Cost,
                 StartDate = batchDto.StartDate,
                 EndDate = batchDto.EndDate,
+                StartTime = batchDto.StartTime,
+                EndTime = batchDto.EndTime,
+                DaysOfTheWeek = batchDto.DaysOfTheWeek
             };
         }
     }

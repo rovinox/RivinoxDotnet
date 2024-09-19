@@ -16,7 +16,8 @@ namespace RovinoxDotnet.DTOs.Batch
         public DateTime StartDate { get; set; }
         [Required]
         public DateTime EndDate { get; set; }
-        public DateTime CreatedOn { get; set; } = DateTime.Now;
-        public bool Enabled { get; set; } = true;
+        public string StartTime { get; set; }  = string.Empty;
+        public string EndTime { get; set; }  = string.Empty;  
+        public string[]? DaysOfTheWeek { get; set; }    
     }
 }

@@ -12,5 +12,6 @@ namespace RovinoxDotnet.Models
         public string LastName { get; set; } = string.Empty;
         public List<Enrollment>? Enrollment { get; set; } 
         public decimal Balance { get; set; } 
+        public bool Enabled { get; set; }
     }
 }

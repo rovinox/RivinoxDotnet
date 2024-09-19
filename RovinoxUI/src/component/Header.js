@@ -19,7 +19,6 @@ import logoRvinox from "../asset/logoRvinox.svg";
 
 const Header = () => {
   const user = JSON.parse(localStorage.getItem("user"));
-  console.log("user: ", user);
   const dispatch = useDispatch();
   const [anchorElNav, setAnchorElNav] = useState(null);
   const [anchorElUser, setAnchorElUser] = useState(null);
@@ -163,7 +162,7 @@ const Header = () => {
                 <Typography textAlign="center">
                   {" "}
                   {location.pathname !== "/admin" &&
-                    user.role !== "student" && (
+                    user?.roles !== "User" && (
                       <Button onClick={handleAdmin}> Admin</Button>
                     )}
                 </Typography>
@@ -211,7 +210,7 @@ const Header = () => {
               )}
             </>
 
-            {location.pathname !== "/admin" && user.role !== "student" && (
+            {location.pathname !== "/admin" && user.roles !== "User" && (
               <Button
                 onClick={handleAdmin}
                 sx={{ my: 2, color: "white", display: "block" }}
