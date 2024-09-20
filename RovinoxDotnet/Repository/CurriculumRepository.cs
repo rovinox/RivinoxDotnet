@@ -33,8 +33,10 @@ namespace RovinoxDotnet.Repository
         // }
 
         public async Task<List<Curriculum>> GetAllByBatchIdAsync(int BatchId)
+        
         {
-            return await _dbContext.Curriculums.Include(x => x.Batch).ToListAsync();
+            return await _dbContext.Curriculums.Where(x => x.BatchId == BatchId).OrderBy(o => o.Order).ToListAsync();
+           
         }
     }
 }

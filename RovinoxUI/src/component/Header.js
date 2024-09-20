@@ -16,8 +16,11 @@ import { useNavigate, useLocation } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { openDrawer } from "../duck/drawerSlice";
 import logoRvinox from "../asset/logoRvinox.svg";
+import { axiosPrivate } from "../api/axios";
+import CourseDropdown from "./courseDropdown/CourseDropdown";
+import CourseListDrawer from "../student/CourseListDrawer";
 
-const Header = () => {
+const Header = ({enrollments}) => {
   const user = JSON.parse(localStorage.getItem("user"));
   const dispatch = useDispatch();
   const [anchorElNav, setAnchorElNav] = useState(null);
@@ -25,7 +28,6 @@ const Header = () => {
   const navigate = useNavigate();
   const location = useLocation();
 
-  console.log(location);
 
   const handleAdmin = () => {
     navigate("/admin");
@@ -110,6 +112,8 @@ const Header = () => {
   }, []);
 
   return (
+    <div>
+
     <AppBar
       sx={{ boxShadow: "none", background: !scrolled ? "none" : "#252251" }}
       position="fixed"
@@ -152,9 +156,10 @@ const Header = () => {
               {user?.enabled && location.pathname === "/student" && (
                 <MenuItem onClick={handleCloseNavMenu}>
                   <Typography textAlign="center">
-                    <Button onClick={() => dispatch(openDrawer())}>
+                    {/* <Button onClick={() => dispatch(openDrawer())}>
                       course
-                    </Button>
+                    </Button> */}
+                    <CourseDropdown enrollments={enrollments} />
                   </Typography>
                 </MenuItem>
               )}
@@ -199,14 +204,15 @@ const Header = () => {
 
             <>
               {user?.enabled && location.pathname === "/student" && (
-                <Button
-                  onClick={() => {
-                    dispatch(openDrawer());
-                  }}
-                  sx={{ my: 2, color: "white", display: "block" }}
-                >
-                  course
-                </Button>
+                // <Button
+                //   onClick={() => {
+                //     dispatch(openDrawer());
+                //   }}
+                //   sx={{ my: 2, color: "white", display: "block" }}
+                // >
+                //   course
+                // </Button>
+                <CourseDropdown enrollments={enrollments} />
               )}
             </>
 
@@ -271,6 +277,8 @@ const Header = () => {
         </Toolbar>
       </Container>
     </AppBar>
+    <CourseListDrawer />
+    </div>
   );
 };
 export default Header;

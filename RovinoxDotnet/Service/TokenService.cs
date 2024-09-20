@@ -26,7 +26,8 @@ namespace Service
             var claims = new List<Claim>
             {
                 new(JwtRegisteredClaimNames.Email, user.Email),
-                new(JwtRegisteredClaimNames.GivenName, user.UserName)
+                new(JwtRegisteredClaimNames.GivenName, user.UserName),
+                new("userId", user.Id.ToString()),
             };
 
             var creds = new SigningCredentials(_key, SecurityAlgorithms.HmacSha512Signature);

@@ -1,12 +1,10 @@
 import axios from "axios";
-const BASE_URL = "http://localhost:8080";
 
-export default axios.create({
-  baseURL: BASE_URL,
+
+
+const user = JSON.parse(localStorage.getItem("user"));
+export const axiosPrivate = axios.create({
+  headers: { "Content-Type": "application/json" ,
+    Authorization: `Bearer ${user?.token}`
+  },
 });
-
-// export const axiosPrivate = axios.create({
-//   baseURL: BASE_URL,
-//   headers: { "Content-Type": "application/json" },
-//   //withCredentials: true,
-// });

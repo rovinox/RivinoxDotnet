@@ -16,6 +16,7 @@ import ContactUS from "./component/ContactUS.js";
 import NotFound from "./component/NotFound.js";
 import PaymentForm from "./component/payment/PaymentForm.js";
 import Profile from "./component/profile/Profile.js";
+import CurriculumContent from "./component/curriculum/CurriculumContent.js";
 
 const getDesignTokens = (mode) => ({
   palette: {
@@ -69,6 +70,7 @@ export default function Router() {
         <Routes>
           <Route path="/" element={<RovinoxLanding />} />
           <Route path="/student" element={<StudentLanding />} />
+          <Route path="/student/curriculumId/:curriculumId/batchId/:batchId" element={<CurriculumContent />} />
           <Route path="/login" element={<Login />} />
           <Route path="/apply" element={<Apply />} />
           <Route path="/admin" element={<AdminLanding />} />

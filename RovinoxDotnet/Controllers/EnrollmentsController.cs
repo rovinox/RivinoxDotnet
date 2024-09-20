@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using RovinoxDotnet.DTOs.Enrollment;
@@ -43,9 +44,16 @@ namespace RovinoxDotnet.Controllers
                 return BadRequest("Enrollment already exists for user to this Batch");
             }
         }
-        // public async Task<IActionResult> GetAllAsync()
-        // {
-              
-        // }
+        [HttpGet]
+        public async Task<IActionResult> GetAll()
+        {
+             if (!ModelState.IsValid) {
+                return BadRequest(ModelState);
+             }
+             
+              var enrollments = await _enrollmentRepository.GetAllAsync();
+              return Ok(enrollments);
+        }
+        
     }
 }

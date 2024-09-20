@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -17,12 +18,14 @@ namespace RovinoxDotnet.Repository
     {
          private readonly ApplicationDBContext _dbContext;
         private readonly UserManager<AppUser> _userManager;
-            private readonly IBatchRepository _batchRepository;
-        public EnrollmentRepository(ApplicationDBContext dbContext, UserManager<AppUser> userManager, IBatchRepository batchRepository)
+        private readonly IBatchRepository _batchRepository;
+        private readonly IHttpContextAccessor _httpContextAccessor;
+        public EnrollmentRepository(ApplicationDBContext dbContext, UserManager<AppUser> userManager, IBatchRepository batchRepository, IHttpContextAccessor httpContextAccessor)
         {
              _dbContext = dbContext;
              _userManager = userManager;
              _batchRepository = batchRepository;
+             _httpContextAccessor = httpContextAccessor;
         }
 
         public async Task<Enrollment> CreateAsync(CreateEnrollmentDto enrollmentModel)
@@ -55,6 +58,29 @@ namespace RovinoxDotnet.Repository
             } else {
                 return result;
             }
+        }
+    
+
+        public async Task<List<Enrollment>> GetAllAsync()
+
+        {
+               //   var userId = _httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.Email);
+
+        //     var userEmail =  _userManager.FindFirstValue(ClaimTypes.Email); // will give the user's Email
+        //     var user = _httpContextAccessor.HttpContext?.User;
+        //    var userId =   _httpContextAccessor.HttpContext.User.FindFirstValue("userId");
+        //    var email =   _httpContextAccessor.HttpContext.User.FindFirstValue("Email");
+          // var user =  await _userManager.GetUserAsync(_httpContextAccessor.HttpContext.User);
+
+           //var result = await _dbContext.Enrollments.Include( a =>a.UserId).ToArrayAsync();
+         //  string userId =  "759eb736-715c-44ba-92aa-1656c35e8dd2";
+         //TODO need to only return data for login users
+           
+            return await _dbContext.Enrollments.Select(x => x).ToListAsync();
+         
+               // return result;
+           // var  user =  await _userManager.GetUserAsync(HttpContext.User.FindFirstValue("userId"));
+            
         }
     }
 }

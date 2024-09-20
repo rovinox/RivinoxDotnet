@@ -1,6 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit";
 const initialState = {
   open: false,
+  batchId: null,
 };
 
 export const drawerSlicer = createSlice({
@@ -9,7 +10,13 @@ export const drawerSlicer = createSlice({
   reducers: {
     openDrawer: (state) => {
       state.open = true;
-      console.log("hit1", state.open);
+    
+    },
+    upDateBatchId: (state,payload) => {
+      const {batchId} = payload.payload
+      console.log("hit1", payload, "batchId", batchId);
+      state.batchId = batchId;
+    
     },
     closeDrawer: (state) => {
       state.open = false;
@@ -17,5 +24,5 @@ export const drawerSlicer = createSlice({
   },
 });
 
-export const { openDrawer, closeDrawer } = drawerSlicer.actions;
+export const { openDrawer, closeDrawer, upDateBatchId } = drawerSlicer.actions;
 export default drawerSlicer.reducer;
