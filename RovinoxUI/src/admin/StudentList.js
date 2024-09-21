@@ -30,8 +30,16 @@ const labels = {
 };
 const columns = [
   {
+    field: "course",
+    headerName: "Batch Name",
+    width: 250,
+    // renderCell: (props) => {
+    //   console.log("line", props);
+    // },
+  },
+  {
     field: "batch",
-    headerName: "Batch",
+    headerName: "Batch Dates",
     width: 250,
     // renderCell: (props) => {
     //   console.log("line", props);
@@ -64,11 +72,10 @@ export default function StudentList({ batch }) {
       console.log('result: ', result);
       if (result?.data) {
         result.data.forEach((item, index) => {
-          // item.id = item.studentId;
-          item.batch = "some day"
-          // item.batch = `${moment(item?.startDate).format(
-          //   "MMM Do YY"
-          // )} - ${moment(item?.endDate).format("MMM Do YY")}`;
+        
+          item.batch = `${moment(item?.startDate).format(
+            "MMM Do YY"
+          )} - ${moment(item?.endDate).format("MMM Do YY")}`;
           item.active = item.enabled ? "Yes" : "No";
         });
         setLoading(false);

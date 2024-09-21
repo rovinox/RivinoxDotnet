@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using RovinoxDotnet.common;
+using RovinoxDotnet.Data;
 using RovinoxDotnet.DTOs.Account;
 using RovinoxDotnet.DTOs.Enrollment;
 using RovinoxDotnet.Interfaces;
@@ -16,13 +17,14 @@ namespace RovinoxDotnet.Controllers
 {
     [Route("api/account")]
     [ApiController]
-    public class AccountController(UserManager<AppUser> userManager, ITokenService tokenService, SignInManager<AppUser> signInManager, IBatchRepository batchRepository, IEnrollmentRepository enrollmentRepository) : ControllerBase
+    public class AccountController(UserManager<AppUser> userManager, ITokenService tokenService, SignInManager<AppUser> signInManager, IBatchRepository batchRepository, IEnrollmentRepository enrollmentRepository, ApplicationDBContext dbContext) : ControllerBase
     {
         private readonly UserManager<AppUser> _userManager = userManager;
         private readonly ITokenService _tokenService = tokenService;
         private readonly SignInManager<AppUser> _signInManager = signInManager;
         private readonly IBatchRepository _batchRepository = batchRepository;
         private readonly IEnrollmentRepository _enrollmentRepository = enrollmentRepository;
+        private readonly ApplicationDBContext _dbContext = dbContext;
 
         [HttpPost("login")]
         public async Task<IActionResult> Login(LoginDto loginDto)
@@ -82,16 +84,16 @@ namespace RovinoxDotnet.Controllers
 
                 if (createdUser.Succeeded)
                 {
-                    var user = await _userManager.FindByEmailAsync(registerDto.Email);
-                    var defaultRole = "User";
+                  //  var user = await _userManager.FindByEmailAsync(registerDto.Email);
+                    var defaultRole = Roles.Admin;
 
 
                     var enrollmentDto = new CreateEnrollmentDto
                     {
-                        FirstName = registerDto.FirstName,
-                        LastName = registerDto.LastName,
+                        FirstName = appUser.FirstName,
+                        LastName = appUser.LastName,
                         Course = batch.Course,
-                        UserId = user.Id,
+                        UserId = appUser.Id,
                         BatchId = batch.Id
                     };
                     var enrollment = await _enrollmentRepository.CreateAsync(enrollmentDto);
@@ -100,10 +102,12 @@ namespace RovinoxDotnet.Controllers
                     {
                         return Ok(
                             new NewUserDto
-                            {
+                            {    FirstName = appUser.FirstName,
+                                 LastName = appUser.LastName,
                                 Roles = defaultRole,
                                 Email = appUser.Email,
-                                Token = _tokenService.CreateToken(appUser)
+                                Token = _tokenService.CreateToken(appUser),
+                                 Enabled = true
                             }
                         );
                     }
@@ -126,26 +130,30 @@ namespace RovinoxDotnet.Controllers
         // [Authorize(Roles =Roles.Admin )]
         public IActionResult GetAll()
         {
-            var formattedData = new List<AppUserDTO> { };
 
+            var AllUsers = from cols in _userManager.Users
+                           from e in _dbContext.Enrollments
+                           from b in _dbContext.Batches
+                           from ur in _dbContext.UserRoles
+                           from r in _dbContext.Roles
+                           where cols.Id == e.UserId && b.Id == e.BatchId && cols.Id  == ur.UserId && r.Id == ur.RoleId
+                           select new
+                           {
+                               FirstName = cols.FirstName,
+                               LastName = cols.LastName,
+                               Balance = cols.Balance,
+                               Enabled = cols.Enabled,
+                               Id = cols.Id,
+                               Email = cols.Email,
+                               PhoneNumber = cols.PhoneNumber,
+                               Course = e.Course,
+                               BatchId = b.Id,
+                               StartDate = b.StartDate,
+                               EndDate = b.EndDate,
+                               role = r.Name
+                           };
 
-            var users = userManager.Users.ToArray();
-            foreach (var user in users)
-            {
-                var currentIter = new AppUserDTO
-                {
-                    FirstName = user.FirstName,
-                    LastName = user.LastName,
-                    Balance = user.Balance,
-                    Enabled = user.Enabled,
-                    Id = user.Id,
-                    Email = user.Email,
-                    PhoneNumber = user.PhoneNumber
-                };
-                formattedData.Add(currentIter);
-
-            }
-            return Ok(formattedData);
+            return Ok(AllUsers);
 
 
         }

@@ -52,11 +52,11 @@ const Header = ({enrollments}) => {
   };
   const handleLogout = async () => {
     try {
-      const result = await axios.get("/logout");
-      console.log("vv2", result);
+      // const result = await axios.get("/logout");
+      // console.log("vv2", result);
 
-      navigate("/login");
       localStorage.setItem("user", JSON.stringify({}));
+      navigate("/login");
     } catch (error) {
       console.error(error?.message);
     }

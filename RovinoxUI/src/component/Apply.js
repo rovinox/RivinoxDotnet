@@ -45,7 +45,7 @@ export default function Apply() {
       console.log(option);
       return {
         value: option.id,
-        label: `${moment(option.startDate).format("MMM Do YY")} -
+        label: ` ${option.course} / ${moment(option.startDate).format("MMM Do YY")} -
                           ${moment(option.endDate).format("MMM Do YY")}`,
       };
     });
@@ -60,14 +60,20 @@ export default function Apply() {
       password: data.get("password"),
       batchId: selectedBatch,
     };
+
+    const confirmPassword = data.get("confirmPassword");
+    if(confirmPassword !== user.password){
+      toast.error("The password didn't not match");
+      return
+    }
+
     try {
-      const result = await axios.post("/register", user);
+      const result = await apiService.post("http://localhost:5122/api/account/register", user);
       console.log("result: ", result);
       // await axios.post("/email", user);
       if (result.status === 200) {
         localStorage.setItem("user", JSON.stringify(result.data));
         navigate("/student");
-        console.log("hi");
       }
     } catch (err) {
       if (!err?.response) {
@@ -208,7 +214,18 @@ export default function Apply() {
                   label="Create a Password"
                   type="password"
                   id="password"
-                  autoComplete="new-password"
+                  
+                />
+              </Grid>
+              <Grid item xs={12}>
+                <TextField
+                  required
+                  fullWidth
+                  name="confirmPassword"
+                  label="confirmPassword"
+                  type="password"
+                  id="confirmPassword"
+                  
                 />
               </Grid>
               <Grid item xs={12}>
