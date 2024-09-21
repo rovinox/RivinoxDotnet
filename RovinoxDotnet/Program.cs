@@ -8,6 +8,7 @@ using RovinoxDotnet.Data;
 using RovinoxDotnet.Interfaces;
 using RovinoxDotnet.Models;
 using RovinoxDotnet.Repository;
+using RovinoxDotnet.Service;
 using Service;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -56,6 +57,8 @@ builder.Services.AddScoped<ITokenService, TokenService>();
 builder.Services.AddScoped<IEnrollmentRepository, EnrollmentRepository>();
 builder.Services.AddScoped<IHomeworkRepository, HomeworkRepository>();
 builder.Services.AddScoped<ICommentRepository, CommentRepository>();
+builder.Services.AddScoped<IAuthenticatedUserService, AuthenticatedUserService>();
+
 builder.Services.AddIdentity<AppUser, IdentityRole>(options =>
 {
     options.Password.RequireDigit = true;

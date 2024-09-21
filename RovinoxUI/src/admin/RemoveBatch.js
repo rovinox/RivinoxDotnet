@@ -98,7 +98,7 @@ export default function RemoveBatch({ batch }) {
             </TableRow>
           </TableHead>
           <TableBody>
-            {batch.length &&
+            {batch.length > 0 &&
               batch.map((row) => (
                 <TableRow
                   key={row._id}

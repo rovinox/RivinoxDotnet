@@ -41,10 +41,11 @@ namespace RovinoxDotnet.Controllers
             }
             else
             {
-                return BadRequest("Enrollment already exists for user to this Batch");
+                return BadRequest("Enrollment already exists for this user to this Batch");
             }
         }
         [HttpGet]
+         //[Authorize]
         public async Task<IActionResult> GetAll()
         {
              if (!ModelState.IsValid) {

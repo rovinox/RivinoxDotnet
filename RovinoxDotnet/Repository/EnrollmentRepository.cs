@@ -20,12 +20,14 @@ namespace RovinoxDotnet.Repository
         private readonly UserManager<AppUser> _userManager;
         private readonly IBatchRepository _batchRepository;
         private readonly IHttpContextAccessor _httpContextAccessor;
-        public EnrollmentRepository(ApplicationDBContext dbContext, UserManager<AppUser> userManager, IBatchRepository batchRepository, IHttpContextAccessor httpContextAccessor)
+        private readonly IAuthenticatedUserService _authenticatedUserService;
+        public EnrollmentRepository(ApplicationDBContext dbContext, UserManager<AppUser> userManager, IBatchRepository batchRepository, IHttpContextAccessor httpContextAccessor, IAuthenticatedUserService authenticatedUserService)
         {
              _dbContext = dbContext;
              _userManager = userManager;
              _batchRepository = batchRepository;
              _httpContextAccessor = httpContextAccessor;
+             _authenticatedUserService = authenticatedUserService;
         }
 
         public async Task<Enrollment> CreateAsync(CreateEnrollmentDto enrollmentModel)
@@ -74,9 +76,10 @@ namespace RovinoxDotnet.Repository
 
            //var result = await _dbContext.Enrollments.Include( a =>a.UserId).ToArrayAsync();
          //  string userId =  "759eb736-715c-44ba-92aa-1656c35e8dd2";
+         var userId  = _authenticatedUserService.UserId;
          //TODO need to only return data for login users
            
-            return await _dbContext.Enrollments.Select(x => x).ToListAsync();
+            return await _dbContext.Enrollments.Where(x => x.UserId == userId).ToListAsync();
          
                // return result;
            // var  user =  await _userManager.GetUserAsync(HttpContext.User.FindFirstValue("userId"));

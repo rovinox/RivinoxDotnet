@@ -65,7 +65,7 @@ export default function CourseDropdown({ enrollments }) {
           open={Boolean(anchorElUser)}
           onClose={handleCloseUserMenu}
         >
-          {enrollments?.length &&
+          {enrollments?.length > 0 &&
             enrollments.map((item) => (
               <MenuItem
                 onClick={() => {
