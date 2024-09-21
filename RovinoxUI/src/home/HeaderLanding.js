@@ -11,7 +11,7 @@ import Button from "@mui/material/Button";
 import MenuItem from "@mui/material/MenuItem";
 import { useNavigate } from "react-router-dom";
 import { ApplyButton } from "./RovinoxLanding.styled.tsx";
-import { axiosPrivate } from "../api/axios.js";
+import { apiService } from "../api/axios.js";
 import axios from "axios";
 import logoRvinox from "../asset/logoRvinox.svg";
 const pages = ["Career Support", "About Us", "Contact US"];

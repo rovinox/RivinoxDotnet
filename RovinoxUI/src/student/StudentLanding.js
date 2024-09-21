@@ -7,7 +7,7 @@ import { useNavigate, useLocation } from "react-router-dom";
 import Header from "../component/Header";
 import { useSelector, useDispatch } from "react-redux";
 import { changeGradeHomeView } from "../duck/GradeHomeViewSlice";
-import { axiosPrivate } from "../api/axios";
+import { apiService } from "../api/axios";
 
 export default function StudentLanding(...prop) {
   const [currentCourse, setCurrentCourse] = useState(0);
@@ -30,24 +30,24 @@ export default function StudentLanding(...prop) {
     console.log("vv user", user);
     setActiveStudent(user?.enabled);
     setIsAdmin(user?.enabled);
-    const getUser = async () => {
-      try {
-        const result = await axios.get("/usersession", {
-          headers: {
-            authorization: `Bearer ${user?.accessToken}`,
-            "Content-Type": "application/json",
-          },
-          //withCredentials: true,
-        });
-        console.log("vv1", result);
-        if (!result?.data?.login) {
-          navigate("/login");
-        }
-      } catch (error) {
-        console.error(error?.message);
-      }
-    };
-    getUser();
+    // const getUser = async () => {
+    //   try {
+    //     const result = await axios.get("/usersession", {
+    //       headers: {
+    //         authorization: `Bearer ${user?.accessToken}`,
+    //         "Content-Type": "application/json",
+    //       },
+    //       //withCredentials: true,
+    //     });
+    //     console.log("vv1", result);
+    //     if (!result?.data?.login) {
+    //       navigate("/login");
+    //     }
+    //   } catch (error) {
+    //     console.error(error?.message);
+    //   }
+    // };
+    // getUser();
   }, [batchId, dispatch, gradeHomeView, navigate]);
 
   useEffect(() => {
@@ -56,7 +56,7 @@ export default function StudentLanding(...prop) {
 
       try {
         
-        const response = await axiosPrivate.get("http://localhost:5122/api/enrollment")
+        const response = await apiService.get("http://localhost:5122/api/enrollment")
         console.log('response: ', response);
         if(response.data){
           setEnrollments(response.data)

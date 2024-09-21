@@ -13,7 +13,7 @@ import Typography from "@mui/material/Typography";
 import axios from "axios";
 import { toast } from "react-toastify";
 import ReactToastify from "../component/ReactToastify";
-import Header from "../home/Header";
+import Header from "../home/HeaderLanding";
 const LOGIN_URL = "http://localhost:5122/api/account/login";
 
 export default function Login() {

@@ -10,7 +10,7 @@ import CourseTable from "../component/CourseTable";
 import { CoursePromise } from "./RovinoxLanding.styled.tsx";
 import FAQ from "../component/FAQ";
 import Grid from "@mui/material/Grid";
-import Header from "./Header";
+import Header from "./HeaderLanding.js";
 import "react-chat-widget/lib/styles.css";
 import Box from "@mui/material/Box";
 import Paper from "@mui/material/Paper";

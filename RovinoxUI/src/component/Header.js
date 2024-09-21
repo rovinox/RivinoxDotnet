@@ -16,7 +16,7 @@ import { useNavigate, useLocation } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { openDrawer } from "../duck/drawerSlice";
 import logoRvinox from "../asset/logoRvinox.svg";
-import { axiosPrivate } from "../api/axios";
+import { apiService } from "../api/axios";
 import CourseDropdown from "./courseDropdown/CourseDropdown";
 import CourseListDrawer from "../student/CourseListDrawer";
 

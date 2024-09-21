@@ -2,7 +2,7 @@ import React from "react";
 import Banner from "./Banner";
 import "./style/careerSupport.css";
 import CareerSupportText from "./CareerSupportText";
-import Header from "../home/Header";
+import Header from "../home/HeaderLanding";
 import Footer from "../home/Footer";
 
 export default function CareerSupport() {

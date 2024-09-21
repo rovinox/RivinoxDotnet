@@ -10,11 +10,12 @@ import { useLocation, useNavigate, Link } from "react-router-dom";
 import ReactToastify from "../component/ReactToastify.js";
 import { toast } from "react-toastify";
 import moment from "moment";
-import Header from "../home/Header";
+import Header from "../home/HeaderLanding.js";
 import Banner from "./Banner.js";
 import StepBar from "./StepBar.js";
 import Group7 from "../asset/Group7.svg";
 import Footer from "../home/Footer.js";
+import { apiService } from "../api/axios.js";
 
 export default function Apply() {
   const { state } = useLocation();
@@ -27,7 +28,7 @@ export default function Apply() {
   useEffect(() => {
     const getBatch = async () => {
       try {
-        const result = await axios.get("http://localhost:5122/api/batch");
+        const result = await apiService.get("http://localhost:5122/api/batch");
         console.log("result: ", result);
 
         setBatch(result.data);

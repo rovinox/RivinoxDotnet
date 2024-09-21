@@ -6,7 +6,7 @@ import Box from "@mui/material/Box";
 import contactUS from "../asset/contact-us-showcase.png";
 import Banner from "./Banner";
 import Footer from "../home/Footer";
-import Header from "../home/Header";
+import Header from "../home/HeaderLanding.js";
 import axios from "axios";
 import { toast } from "react-toastify";
 import ReactToastify from "../component/ReactToastify.js";

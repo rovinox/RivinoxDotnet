@@ -11,6 +11,7 @@ import GradeHomework from "./GradeHomework";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import RemoveBatch from "./RemoveBatch";
+import { apiService } from "../api/axios";
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -56,14 +57,16 @@ export default function AdminLanding() {
   };
 
   useEffect(() => {
-    if (user?.role === "student") {
-      navigate("/student");
-    }
+    // if (user?.role === "student") {
+    //   navigate("/student");
+    // }
     const getBatch = async () => {
       try {
-        const result = await axios.get("http://localhost:5122/api/batch");
+        const result = await apiService.get("http://localhost:5122/api/batch");
         console.log("result: ", result);
-        setBatch(result.data.batch);
+        if(result.data){
+          setBatch(result.data);
+        }
       } catch (e) {}
     };
     getBatch();

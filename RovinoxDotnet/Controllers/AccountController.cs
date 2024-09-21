@@ -2,9 +2,11 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using RovinoxDotnet.common;
 using RovinoxDotnet.DTOs.Account;
 using RovinoxDotnet.DTOs.Enrollment;
 using RovinoxDotnet.Interfaces;
@@ -120,6 +122,34 @@ namespace RovinoxDotnet.Controllers
                 return StatusCode(500, e);
             }
         }
+        [HttpGet("users")]
+        // [Authorize(Roles =Roles.Admin )]
+        public IActionResult GetAll()
+        {
+            var formattedData = new List<AppUserDTO> { };
+
+
+            var users = userManager.Users.ToArray();
+            foreach (var user in users)
+            {
+                var currentIter = new AppUserDTO
+                {
+                    FirstName = user.FirstName,
+                    LastName = user.LastName,
+                    Balance = user.Balance,
+                    Enabled = user.Enabled,
+                    Id = user.Id,
+                    Email = user.Email,
+                    PhoneNumber = user.PhoneNumber
+                };
+                formattedData.Add(currentIter);
+
+            }
+            return Ok(formattedData);
+
+
+        }
 
     }
+
 }

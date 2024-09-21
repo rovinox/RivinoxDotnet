@@ -1,5 +1,5 @@
 import React from "react";
-import Header from "../home/Header";
+import Header from "../home/HeaderLanding";
 import Banner from "./Banner";
 
 export default function Pricing() {

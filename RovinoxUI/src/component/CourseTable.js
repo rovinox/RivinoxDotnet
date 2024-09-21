@@ -14,6 +14,7 @@ import { ApplyButton2 } from "../home/RovinoxLanding.styled.tsx";
 import TableCell, { tableCellClasses } from "@mui/material/TableCell";
 import { styled } from "@mui/material/styles";
 import Paper from "@mui/material/Paper";
+import { apiService } from "../api/axios.js";
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
@@ -46,7 +47,7 @@ export default function CourseTable() {
     let newBatch = [];
     const getBatch = async () => {
       try {
-        const result = await axios.get("http://localhost:5122/api/batch");
+        const result = await apiService.get("http://localhost:5122/api/batch");
         console.log('result: ', result);
         if (result.data) {
           result.data.forEach((item) => {

@@ -14,6 +14,7 @@ import { PieChart, Pie, Cell, Legend } from "recharts";
 import HomeworkView from "./HomeworkView.js";
 import Rating from "@mui/material/Rating";
 import { Typography } from "@mui/material";
+import { apiService } from "../api/axios.js";
 const labels = {
   0: "Not Rated",
   0.5: "Useless",
@@ -41,7 +42,7 @@ const columns = [
   { field: "email", headerName: "Email", width: 320 },
   { field: "phoneNumber", headerName: "Phone Number", width: 130 },
   { field: "active", headerName: "Enabled", width: 100 },
-  { field: "role", headerName: "Role", width: 100 },
+  // { field: "role", headerName: "Role", width: 100 },
   { field: "balance", headerName: "Balance", width: 100 },
 ];
 
@@ -59,20 +60,22 @@ export default function StudentList({ batch }) {
   const [balance, setBalance] = useState(selectedStudent?.balance);
   const getUsers = async () => {
     try {
-      const result = await axios.get("/users");
-      if (result?.data?.users) {
-        result.data.users.forEach((item, index) => {
-          item.id = item.studentId;
-          item.batch = `${moment(item?.startDate).format(
-            "MMM Do YY"
-          )} - ${moment(item?.endDate).format("MMM Do YY")}`;
+      const result = await apiService.get("http://localhost:5122/api/account/users");
+      console.log('result: ', result);
+      if (result?.data) {
+        result.data.forEach((item, index) => {
+          // item.id = item.studentId;
+          item.batch = "some day"
+          // item.batch = `${moment(item?.startDate).format(
+          //   "MMM Do YY"
+          // )} - ${moment(item?.endDate).format("MMM Do YY")}`;
           item.active = item.enabled ? "Yes" : "No";
         });
         setLoading(false);
       }
 
-      setUsers(result.data.users);
-      console.log("result.data.users: ", result.data.users);
+      setUsers(result.data);
+      console.log("result.data.users: ", result.data);
     } catch (err) {
       console.log(err);
     }

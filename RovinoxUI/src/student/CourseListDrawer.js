@@ -9,7 +9,7 @@ import ListItemButton from "@mui/material/ListItemButton";
 import { courseList } from "../component/course";
 import { useSelector, useDispatch } from "react-redux";
 import { closeDrawer } from "../duck/drawerSlice";
-import { axiosPrivate } from "../api/axios";
+import { apiService } from "../api/axios";
 import { useNavigate } from "react-router-dom";
 
 export default function CourseListDrawer() {
@@ -25,7 +25,7 @@ export default function CourseListDrawer() {
 
       try {
         
-        const response = await axiosPrivate.get(`http://localhost:5122/api/curriculum/batch/${1}`)
+        const response = await apiService.get(`http://localhost:5122/api/curriculum/batch/${1}`)
         console.log('response: ', response);
         if(response?.data){
           setCourseList(response.data)
