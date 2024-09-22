@@ -15,6 +15,7 @@ import HomeworkView from "./HomeworkView.js";
 import Rating from "@mui/material/Rating";
 import { Typography } from "@mui/material";
 import { apiService } from "../api/axios.js";
+import { useSelector } from "react-redux";
 const labels = {
   0: "Not Rated",
   0.5: "Useless",
@@ -54,7 +55,10 @@ const columns = [
   { field: "balance", headerName: "Balance", width: 100 },
 ];
 
-export default function StudentList({ batch }) {
+export default function StudentList() {
+  const batches = useSelector(
+    (state) => state.batches
+  );
   const user = JSON.parse(localStorage.getItem("user"));
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -103,7 +107,7 @@ export default function StudentList({ batch }) {
     { value: false, label: "No" },
     { value: true, label: "Yes" },
   ];
-  const batchList = batch.map((option) => {
+  const batchList = batches?.map((option) => {
     return {
       value: option.batchId,
       label: `${moment(option.startDate).format("MMM Do YY")} - ${moment(
@@ -116,12 +120,7 @@ export default function StudentList({ batch }) {
     const id = selectedStudent.studentId;
     console.log("id: ", id);
     e.preventDefault();
-    console.log({
-      batchId,
-      role,
-      enabled,
-      id,
-    });
+    
 
     try {
       if (user.role === "admin") {
@@ -299,7 +298,7 @@ export default function StudentList({ batch }) {
                     value={selectedStudent.lastName}
                   />
                 </Grid>
-                {batchList.length > 0 && (
+                {batchList?.length > 0 && (
                   <Grid item xs={12} sm={6}>
                     <TextField
                       required

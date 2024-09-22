@@ -67,9 +67,12 @@ const IOSSwitch = styled((props) => (
     }),
   },
 }));
-export default function GradeHomework({ batch, setBatch }) {
+export default function GradeHomework() {
   const gradeHomeView = useSelector(
     (state) => state.changeGradeHomeView.gradeHomeView
+  );
+  const batches = useSelector(
+    (state) => state.batches
   );
   const dispatch = useDispatch();
   let navigate = useNavigate();
@@ -131,8 +134,8 @@ export default function GradeHomework({ batch, setBatch }) {
               </TableRow>
             </TableHead>
             <TableBody>
-              {batch.length > 0 &&
-                batch.map((row) => (
+              {batches.length > 0 &&
+                batches.map((row) => (
                   <TableRow
                     key={row._id}
                     sx={{ "&:last-child td, &:last-child th": { border: 0 } }}

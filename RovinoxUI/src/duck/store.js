@@ -1,6 +1,7 @@
 import { configureStore } from "@reduxjs/toolkit";
 import themeReducer from "./themeSlice";
 import drawerReducer from "./drawerSlice";
+import batchReducer from "./batchSlice";
 import changeGradeHomeView from "./GradeHomeViewSlice";
 import storage from "redux-persist/lib/storage";
 import {
@@ -23,6 +24,7 @@ const reducer = combineReducers({
   changeTheme: themeReducer,
   drawer: drawerReducer,
   changeGradeHomeView,
+  batch:batchReducer
 });
 const persistedReducer = persistReducer(persistConfig, reducer);
 export const store = configureStore({

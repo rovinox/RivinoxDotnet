@@ -14,7 +14,8 @@ import MenuItem from "@mui/material/MenuItem";
 import axios from "axios";
 import { useNavigate, useLocation } from "react-router-dom";
 import { useDispatch } from "react-redux";
-import { openDrawer, upDateBatchId } from "../../duck/drawerSlice";
+import { openDrawer } from "../../duck/drawerSlice";
+import { updateBatchId } from "../../duck/batchSlice";
 import { apiService } from "../../api/axios";
 export default function CourseDropdown() {
   const [enrollments, setEnrollments] = useState([]);
@@ -91,7 +92,8 @@ export default function CourseDropdown() {
               <MenuItem
                 onClick={() => {
                     const payload =  { batchId: item.batchId }
-                dispatch(upDateBatchId(payload));
+                dispatch(updateBatchId(payload));
+                console.log('kfnh');
                 dispatch(openDrawer());
                 handleCloseUserMenu();
                 }}

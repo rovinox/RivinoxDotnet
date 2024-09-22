@@ -13,6 +13,7 @@ import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
 import Modal from "@mui/material/Modal";
+import { useSelector } from "react-redux";
 
 const style = {
   position: "absolute",
@@ -26,8 +27,13 @@ const style = {
   p: 4,
 };
 
-export default function RemoveBatch({ batch }) {
+export default function RemoveBatch() {
   const user = JSON.parse(localStorage.getItem("user"));
+  const batches = useSelector(
+    (state) => state.batch.batches
+  );
+
+  console.log('state batches: ', batches);
   const [open, setOpen] = useState(false);
   const [batchId, setBatchId] = useState("");
   const handleOpen = () => setOpen(true);
@@ -98,8 +104,8 @@ export default function RemoveBatch({ batch }) {
             </TableRow>
           </TableHead>
           <TableBody>
-            {batch.length > 0 &&
-              batch.map((row) => (
+            {batches?.length > 0 &&
+              batches.map((row) => (
                 <TableRow
                   key={row._id}
                   sx={{ "&:last-child td, &:last-child th": { border: 0 } }}

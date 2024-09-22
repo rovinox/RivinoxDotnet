@@ -7,6 +7,7 @@ import Typography from "@mui/material/Typography";
 import Box from "@mui/material/Box";
 import RemoveBatch from "../../admin/RemoveBatch";
 import AddBatch from "../../admin/AddBatch";
+import AddCurriculum from "../batchCurriculum/AddCurriculum";
 
 // const useStyles = makeStyles({
 //     root: {
@@ -83,12 +84,16 @@ export default function VerticalTabs({ batch }) {
       >
         <Tab label="Add Batch" {...a11yProps(0)} />
         <Tab label="Remove Batch" {...a11yProps(1)} />
+        <Tab label="Add Curriculum" {...a11yProps(1)} />
       </Tabs>
       <TabPanel value={value} index={0}>
         <AddBatch />
       </TabPanel>
       <TabPanel value={value} index={1}>
-        <RemoveBatch batch={batch} />
+        <RemoveBatch />
+      </TabPanel>
+      <TabPanel value={value} index={2}>
+        <AddCurriculum />
       </TabPanel>
     </Box>
   );

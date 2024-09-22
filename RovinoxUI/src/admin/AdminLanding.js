@@ -13,6 +13,8 @@ import { useNavigate } from "react-router-dom";
 import RemoveBatch from "./RemoveBatch";
 import { apiService } from "../api/axios";
 import VerticalTabs from "../component/batch/VerticalTabs";
+import { useSelector, useDispatch } from "react-redux";
+import { getBatch } from "../duck/batchSlice";
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -48,6 +50,7 @@ function a11yProps(index) {
 }
 
 export default function AdminLanding() {
+  const dispatch = useDispatch()
   const [value, setValue] = useState(0);
   const navigate = useNavigate();
   const [batch, setBatch] = useState([]);
@@ -58,20 +61,8 @@ export default function AdminLanding() {
   };
 
   useEffect(() => {
-    // if (user?.role === "student") {
-    //   navigate("/student");
-    // }
-    const getBatch = async () => {
-      try {
-        const result = await apiService.get("http://localhost:5122/api/batch");
-        console.log("result: ", result);
-        if(result.data){
-          setBatch(result.data);
-        }
-      } catch (e) {}
-    };
-    getBatch();
-  }, [navigate, user?.role]);
+    dispatch(getBatch());
+  }, [dispatch]);
 
   return (
     <>
@@ -86,14 +77,14 @@ export default function AdminLanding() {
         </Box>
 
         <TabPanel value={value} index={0}>
-          <StudentList batch={batch} />
+          <StudentList />
         </TabPanel>
         <TabPanel value={value} index={1}>
-          <VerticalTabs batch={batch} />
+          <VerticalTabs  />
         </TabPanel>
     
         <TabPanel value={value} index={2}>
-          <GradeHomework setBatch={setBatch} batch={batch} />
+          <GradeHomework  />
         </TabPanel>
       </Box>
       {/* <Test /> */}
