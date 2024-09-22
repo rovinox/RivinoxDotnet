@@ -5,9 +5,10 @@ import Tab from "@mui/material/Tab";
 import Typography from "@mui/material/Typography";
 // import { makeStyles } from '@mui/styles';
 import Box from "@mui/material/Box";
-import RemoveBatch from "../../admin/RemoveBatch";
-import AddBatch from "../../admin/AddBatch";
+import RemoveBatch from "./RemoveBatch";
+import AddBatch from "./AddBatch";
 import AddCurriculum from "../batchCurriculum/AddCurriculum";
+import StartBatch from "./StartBatch";
 
 // const useStyles = makeStyles({
 //     root: {
@@ -82,17 +83,21 @@ export default function VerticalTabs({ batch }) {
         aria-label="Vertical tabs example"
         // sx={{ borderRight: 1, borderColor: 'divider' }}
       >
-        <Tab label="Add Batch" {...a11yProps(0)} />
-        <Tab label="Remove Batch" {...a11yProps(1)} />
-        <Tab label="Add Curriculum" {...a11yProps(1)} />
+        <Tab label="Start Batch" {...a11yProps(0)} />
+        <Tab label="Add Batch" {...a11yProps(1)} />
+        <Tab label="Remove Batch" {...a11yProps(2)} />
+        <Tab label="Add Curriculum" {...a11yProps(3)} />
       </Tabs>
       <TabPanel value={value} index={0}>
-        <AddBatch />
+        <StartBatch />
       </TabPanel>
       <TabPanel value={value} index={1}>
-        <RemoveBatch />
+        <AddBatch />
       </TabPanel>
       <TabPanel value={value} index={2}>
+        <RemoveBatch />
+      </TabPanel>
+      <TabPanel value={value} index={3}>
         <AddCurriculum />
       </TabPanel>
     </Box>

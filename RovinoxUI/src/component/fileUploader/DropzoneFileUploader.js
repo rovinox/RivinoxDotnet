@@ -8,7 +8,7 @@ import { DropzoneArea } from "mui-file-dropzone";
 
   }
   return (
-    <div><DropzoneArea onChange={handleFile} /></div>
+    <div style={{marginTop:30}}><DropzoneArea  acceptedFiles={['image/*']} filesLimit={1} onChange={handleFile} /></div>
   )
 }
 export default DropzoneFileUploader;

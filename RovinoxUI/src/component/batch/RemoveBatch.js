@@ -8,7 +8,7 @@ import TableRow from "@mui/material/TableRow";
 import axios from "axios";
 import moment from "moment";
 import { toast } from "react-toastify";
-import ReactToastify from "../component/ReactToastify.js";
+import ReactToastify from "../ReactToastify.js";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";

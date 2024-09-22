@@ -10,33 +10,31 @@ import { MobileDatePicker } from "@mui/x-date-pickers/MobileDatePicker";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { AdapterMoment } from "@mui/x-date-pickers/AdapterMoment";
 import { toast } from "react-toastify";
-import ReactToastify from "../component/ReactToastify";
-
-
+import ReactToastify from "../ReactToastify";
+import { useSelector } from "react-redux";
 import moment from "moment";
 import axios from "axios";
+import MultiSelectDropdown from "../common/MultiSelectDropdown";
+import BasicTimePicker from "../common/BasicTimePicker";
+import { apiService } from "../../api/axios";
 
-function Copyright(props) {
-  return (
-    <Typography
-      variant="body2"
-      color="text.secondary"
-      align="center"
-      {...props}
-    >
-      {"Copyright © "}
 
-      {new Date().getFullYear()}
-      {"."}
-    </Typography>
-  );
-}
 
 export default function AddBatch() {
   const [startDate, setStartDate] = useState(moment(new Date()));
   const [endDate, setEndDate] = useState(moment(new Date()));
+  const [startTime, setStartTime] = useState(moment(new Date()));
+  const [endTime, setEndTime] = useState(moment(new Date()));
   const [selectedCost, setSelectedCost] = useState(null);
   const [selectedCourse, setSelectedCourse] = useState(null);
+  const [selectedDays, setSelectedDays] = useState([]);
+  const [newBatch, setNewBatch] = useState('');
+  const [loading, setLoading] = useState(false);
+  const batches = useSelector(
+    (state) => state.batch.batches
+  );
+
+  const daysOfWeek = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
 
   const handleStartDate = (newValue) => {
     setStartDate(newValue);
@@ -47,64 +45,48 @@ export default function AddBatch() {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
+    setLoading(true)
     const batch = {
       startDate: moment(startDate).format(),
       endDate: moment(endDate).format(),
       cost: selectedCost,
-      course: selectedCourse,
+      course: selectedCourse === "CREATE-NEW" ?  newBatch : selectedCourse,
     };
     console.log(batch);
     try {
-      const result = await axios.post("/addbatch", batch);
+      const result = await apiService.post("/addbatch", batch);
       console.log(result);
       if (result?.data?.message) {
         toast.success(`${result?.data?.message}`);
+        setLoading(true)
       }
     } catch (err) {
       toast.error(`${err?.message}`);
     }
   };
-  const courseList = [
-    {
-      value: "Full-Stack",
-      label: "Full-Stack",
-    },
-  ];
-  const cost = [
-    {
-      value: "2000",
-      label: "$2000",
-    },
-    {
-      value: "3000",
-      label: "$3000",
-    },
-    {
-      value: "4000",
-      label: "$4000",
-    },
-    {
-      value: "5000",
-      label: "$5000",
-    },
-  ];
+  const courseList = batches.map(batch => {
+    return {
+      value: batch.id,
+      label: batch.course
+    }
+  });
+  courseList.unshift({
+    value: "CREATE-NEW",
+    label: "Create new course",
+  })
+    
 
   return (
     <LocalizationProvider dateAdapter={AdapterMoment}>
 
         <ReactToastify />
         <Box
-          sx={{
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "center",
-          }}
         >
           <Box
             component="form"
             Validate
             onSubmit={handleSubmit}
-            sx={{ mt: 3, width: "500px" }}
+            sx={{ mt: 3, width: "400px" }}
           >
             <Grid container spacing={2}>
               <Grid item xs={12} sm={6}>
@@ -125,9 +107,18 @@ export default function AddBatch() {
                   renderInput={(params) => <TextField {...params} />}
                 />
               </Grid>
+              <Grid item xs={12} sm={6}>
+                <BasicTimePicker label="Start Time" value={startTime} onChange={setStartTime}
+                />
+              </Grid>
+              
+              <Grid item xs={12} sm={6}>
+                <BasicTimePicker label="End Time" value={endTime} onChange={setEndTime}
+                />
+              </Grid>
               <Grid item xs={12}>
                 <TextField
-                  sx={{ mt: 3, mb: 3 }}
+                  sx={{ mt: 1, mb: 2 }}
                   required
                   fullWidth
                   name="course"
@@ -145,30 +136,38 @@ export default function AddBatch() {
                     </MenuItem>
                   ))}
                 </TextField>
+               { selectedCourse === "CREATE-NEW" && <TextField
+                         sx={{ mb: 2 }}
+                  required
+                  fullWidth
+                  id="newCourse"
+                  label="Enter new Course"
+                  name="newCourse"
+                  onChange={setNewBatch}
+
+                />}
                 <TextField
+       
                   required
                   fullWidth
                   name="cost"
-                  select
                   label="Cost"
-                  value={cost.value}
+                  type="number"
+                  //value={cost.value}
+                  onChange={setSelectedCost}
                 >
-                  {cost.map((option) => (
-                    <MenuItem
-                      onClick={() => setSelectedCost(option.value)}
-                      key={option.value}
-                      value={option.value}
-                    >
-                      {option.label}
-                    </MenuItem>
-                  ))}
+                  
                 </TextField>
+              </Grid>
+              <Grid item xs={12}>
+                <MultiSelectDropdown  label="Weekly Occurrence " value={selectedDays} dropdownOptions={daysOfWeek} onChange={setSelectedDays} />
               </Grid>
             </Grid>
             <Button
               type="submit"
               fullWidth
               variant="contained"
+              disabled={loading}
               sx={{ mt: 3, mb: 2 }}
               //onClick={navigateToHome}
             >
