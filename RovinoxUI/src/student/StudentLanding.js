@@ -13,7 +13,7 @@ export default function StudentLanding(...prop) {
   const [currentCourse, setCurrentCourse] = useState(0);
   const [isAdmin, setIsAdmin] = useState(false);
   const [activeStudent, setActiveStudent] = useState(false);
-  const [enrollments, setEnrollments] = useState([]);
+
   const navigate = useNavigate();
   const params = useLocation();
   const batchId = params?.state?.batchId;
@@ -50,30 +50,14 @@ export default function StudentLanding(...prop) {
     // getUser();
   }, [batchId, dispatch, gradeHomeView, navigate]);
 
-  useEffect(() => {
- 
-    const getEnrollments = async() =>{
 
-      try {
-        
-        const response = await apiService.get("http://localhost:5122/api/enrollment")
-        console.log('response: ', response);
-        if(response.data){
-          setEnrollments(response.data)
-        }
-      } catch (error) {
-        console.log(error);
-      }
-    }
-    getEnrollments()
-  }, []);
 
 
   return (
     <div style={{ marginTop: 30 }}>
       {activeStudent ? (
         <>
-          <Header enrollments={enrollments} />
+          <Header  />
           {/* <CourseContent
             isAdmin={isAdmin}
             batchId={batchId}

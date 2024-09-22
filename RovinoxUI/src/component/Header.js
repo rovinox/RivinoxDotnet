@@ -20,7 +20,7 @@ import { apiService } from "../api/axios";
 import CourseDropdown from "./courseDropdown/CourseDropdown";
 import CourseListDrawer from "../student/CourseListDrawer";
 
-const Header = ({enrollments}) => {
+const Header = () => {
   const user = JSON.parse(localStorage.getItem("user"));
   const dispatch = useDispatch();
   const [anchorElNav, setAnchorElNav] = useState(null);
@@ -156,10 +156,7 @@ const Header = ({enrollments}) => {
               {user?.enabled && location.pathname === "/student" && (
                 <MenuItem onClick={handleCloseNavMenu}>
                   <Typography textAlign="center">
-                    {/* <Button onClick={() => dispatch(openDrawer())}>
-                      course
-                    </Button> */}
-                    <CourseDropdown enrollments={enrollments} />
+                    <CourseDropdown  />
                   </Typography>
                 </MenuItem>
               )}
@@ -193,30 +190,19 @@ const Header = ({enrollments}) => {
             ROVINOX
           </Typography>
           <Box sx={{ flexGrow: 1, display: { xs: "none", md: "flex" } }}>
-            {location.pathname !== "/student" && (
+            {/* {location.pathname !== "/student" && (
               <Button
                 onClick={handleStudent}
                 sx={{ my: 2, color: "white", display: "block" }}
               >
                 Student
               </Button>
-            )}
+            )} */}
 
-            <>
-              {user?.enabled && location.pathname === "/student" && (
-                // <Button
-                //   onClick={() => {
-                //     dispatch(openDrawer());
-                //   }}
-                //   sx={{ my: 2, color: "white", display: "block" }}
-                // >
-                //   course
-                // </Button>
-                <CourseDropdown enrollments={enrollments} />
-              )}
-            </>
+         
+                <CourseDropdown  />
 
-            {location.pathname !== "/admin" && user.roles !== "User" && (
+            { user.roles !== "User" && location.pathname !== "/admin" && (
               <Button
                 onClick={handleAdmin}
                 sx={{ my: 2, color: "white", display: "block" }}

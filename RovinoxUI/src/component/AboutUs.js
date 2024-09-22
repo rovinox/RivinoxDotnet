@@ -2,7 +2,7 @@ import { Typography } from "@mui/material";
 import React from "react";
 import Banner from "./Banner";
 import Grid from "@mui/material/Unstable_Grid2";
-import Header from "../home/HeaderLanding";
+import HeaderLanding from "../home/HeaderLanding";
 import pic1 from "../asset/bro2.svg";
 import pic2 from "../asset/pana.svg";
 import pic3 from "../asset/pana1.svg";
@@ -11,7 +11,7 @@ import Footer from "../home/Footer";
 export default function AboutUs() {
   return (
     <>
-      <Header />
+      <HeaderLanding />
       <Banner
         page="ABOUT US"
         bannerTitle="Immersive Experiences that Change Lives About the Rovinox Bootcamp

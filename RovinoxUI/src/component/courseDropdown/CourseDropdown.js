@@ -15,13 +15,34 @@ import axios from "axios";
 import { useNavigate, useLocation } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { openDrawer, upDateBatchId } from "../../duck/drawerSlice";
-export default function CourseDropdown({ enrollments }) {
+import { apiService } from "../../api/axios";
+export default function CourseDropdown() {
+  const [enrollments, setEnrollments] = useState([]);
+  console.log('enrollments: ', enrollments);
   const user = JSON.parse(localStorage.getItem("user"));
   const dispatch = useDispatch();
   const [anchorElNav, setAnchorElNav] = useState(null);
   const [anchorElUser, setAnchorElUser] = useState(null);
   const navigate = useNavigate();
   const location = useLocation();
+
+  useEffect(() => {
+ 
+    const getEnrollments = async() =>{
+
+      try {
+        
+        const response = await apiService.get("http://localhost:5122/api/enrollment")
+        console.log('response: ', response);
+        if(response.data){
+          setEnrollments(response.data)
+        }
+      } catch (error) {
+        console.log(error);
+      }
+    }
+    getEnrollments()
+  }, []);
 
   const handleOpenNavMenu = (event) => {
     setAnchorElNav(event.currentTarget);

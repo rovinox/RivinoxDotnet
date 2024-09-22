@@ -50,7 +50,7 @@ const columns = [
   { field: "email", headerName: "Email", width: 320 },
   { field: "phoneNumber", headerName: "Phone Number", width: 130 },
   { field: "active", headerName: "Enabled", width: 100 },
-  // { field: "role", headerName: "Role", width: 100 },
+  { field: "role", headerName: "Role", width: 100 },
   { field: "balance", headerName: "Balance", width: 100 },
 ];
 

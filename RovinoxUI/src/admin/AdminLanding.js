@@ -12,6 +12,7 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import RemoveBatch from "./RemoveBatch";
 import { apiService } from "../api/axios";
+import VerticalTabs from "../component/batch/VerticalTabs";
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -79,8 +80,7 @@ export default function AdminLanding() {
         <Box sx={{ width: "100%", bgcolor: "background.paper" }}>
           <Tabs value={value} onChange={handleChange} centered>
             <Tab label="Student List" {...a11yProps(0)} />
-            <Tab label="Remove Batch" {...a11yProps(1)} />
-            <Tab label="Add Batch" {...a11yProps(2)} />
+            <Tab label="Batch" {...a11yProps(1)} />
             <Tab label="Grade Homework" {...a11yProps(3)} />
           </Tabs>
         </Box>
@@ -89,12 +89,10 @@ export default function AdminLanding() {
           <StudentList batch={batch} />
         </TabPanel>
         <TabPanel value={value} index={1}>
-          <RemoveBatch batch={batch} />
+          <VerticalTabs batch={batch} />
         </TabPanel>
+    
         <TabPanel value={value} index={2}>
-          <AddBatch />
-        </TabPanel>
-        <TabPanel value={value} index={3}>
           <GradeHomework setBatch={setBatch} batch={batch} />
         </TabPanel>
       </Box>

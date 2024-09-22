@@ -150,7 +150,8 @@ namespace RovinoxDotnet.Controllers
                                BatchId = b.Id,
                                StartDate = b.StartDate,
                                EndDate = b.EndDate,
-                               role = r.Name
+                               Role = r.Name,
+                               RoleId = r.Id
                            };
 
             return Ok(AllUsers);

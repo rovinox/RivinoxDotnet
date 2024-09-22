@@ -90,22 +90,20 @@ export default function AddBatch() {
 
   return (
     <LocalizationProvider dateAdapter={AdapterMoment}>
-      <Container component="main" maxWidth="md">
+
         <ReactToastify />
         <Box
           sx={{
-            marginTop: 8,
             display: "flex",
             flexDirection: "column",
             alignItems: "center",
-            width: "100%",
           }}
         >
           <Box
             component="form"
             Validate
             onSubmit={handleSubmit}
-            sx={{ mt: 3, width: "50%" }}
+            sx={{ mt: 3, width: "500px" }}
           >
             <Grid container spacing={2}>
               <Grid item xs={12} sm={6}>
@@ -177,8 +175,6 @@ export default function AddBatch() {
             </Button>
           </Box>
         </Box>
-        <Copyright sx={{ mt: 5 }} />
-      </Container>
     </LocalizationProvider>
   );
 }

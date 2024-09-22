@@ -78,13 +78,13 @@ export default function RemoveBatch({ batch }) {
       </Modal>
       <ReactToastify />
       <TableContainer
-        sx={{
-          marginTop: 8,
-          display: "flex",
-          flexDirection: "column",
-          alignItems: "center",
-          width: "100%",
-        }}
+        // sx={{
+        //   marginTop: 8,
+        //   display: "flex",
+        //   flexDirection: "column",
+        //   alignItems: "center",
+        //   width: "100%",
+        // }}
       >
         <Typography sx={{ textAlign: "center", m: 5 }} variant="h5">
           Select a batch to disable

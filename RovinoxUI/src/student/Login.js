@@ -13,7 +13,7 @@ import Typography from "@mui/material/Typography";
 import axios from "axios";
 import { toast } from "react-toastify";
 import ReactToastify from "../component/ReactToastify";
-import Header from "../home/HeaderLanding";
+import HeaderLanding from "../home/HeaderLanding";
 const LOGIN_URL = "http://localhost:5122/api/account/login";
 
 export default function Login() {
@@ -54,7 +54,7 @@ export default function Login() {
 
   return (
     <>
-      <Header />
+      <HeaderLanding />
 
       <Grid container component="main" sx={{ height: "100vh" }}>
         <ReactToastify />

@@ -10,7 +10,7 @@ import { useLocation, useNavigate, Link } from "react-router-dom";
 import ReactToastify from "../component/ReactToastify.js";
 import { toast } from "react-toastify";
 import moment from "moment";
-import Header from "../home/HeaderLanding.js";
+import HeaderLanding from "../home/HeaderLanding.js";
 import Banner from "./Banner.js";
 import StepBar from "./StepBar.js";
 import Group7 from "../asset/Group7.svg";
@@ -88,7 +88,7 @@ export default function Apply() {
   return (
     <>
       <ReactToastify />
-      <Header />
+      <HeaderLanding />
       <Banner bannerTitle="Here are the steps we follow for admission. We understand you may or may not have prior coding experience" />
       <StepBar />
       <div
