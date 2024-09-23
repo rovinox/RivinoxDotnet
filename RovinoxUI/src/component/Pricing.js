@@ -1,6 +1,6 @@
 import React from "react";
 import HeaderLanding from "../home/HeaderLanding";
-import Banner from "./Banner";
+import Banner from "../component/banner/Banner";
 
 export default function Pricing() {
   return (

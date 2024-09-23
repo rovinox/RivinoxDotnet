@@ -10,7 +10,7 @@
     "@mui/lab": "^6.0.0-beta.10",
     "@mui/material": "^5.16.7",
     "@mui/x-data-grid": "^5.17.4",
-    "@mui/x-date-pickers": "^5.0.5",
+    "@mui/x-date-pickers": "^7.18.0",
     "@react-spring/three": "^9.6.1",
     "@react-three/drei": "^9.48.1",
     "@react-three/fiber": "^8.9.1",

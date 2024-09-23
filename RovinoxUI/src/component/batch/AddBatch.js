@@ -49,16 +49,18 @@ export default function AddBatch() {
     const batch = {
       startDate: moment(startDate).format(),
       endDate: moment(endDate).format(),
+      startTime: moment(startTime).format(),
+      endTime: moment(endTime).format(),
       cost: selectedCost,
+      daysOfTheWeek: selectedDays,
       course: selectedCourse === "CREATE-NEW" ?  newBatch : selectedCourse,
     };
-    console.log(batch);
     try {
-      const result = await apiService.post("/addbatch", batch);
+      const result = await apiService.post("http://localhost:5122/api/batch", batch);
       console.log(result);
-      if (result?.data?.message) {
-        toast.success(`${result?.data?.message}`);
-        setLoading(true)
+      if (result?.data) {
+        toast.success("Created Successfully" );
+        setLoading(false)
       }
     } catch (err) {
       toast.error(`${err?.message}`);
@@ -94,6 +96,7 @@ export default function AddBatch() {
                   label="Start Date"
                   inputFormat="MM/DD/YYYY"
                   value={startDate}
+                  disablePast
                   onChange={handleStartDate}
                   renderInput={(params) => <TextField {...params} />}
                 />
@@ -104,6 +107,7 @@ export default function AddBatch() {
                   inputFormat="MM/DD/YYYY"
                   value={endDate}
                   onChange={handleEndDate}
+                  disablePast
                   renderInput={(params) => <TextField {...params} />}
                 />
               </Grid>
@@ -143,7 +147,7 @@ export default function AddBatch() {
                   id="newCourse"
                   label="Enter new Course"
                   name="newCourse"
-                  onChange={setNewBatch}
+                  onChange={(e)=>{setNewBatch(e.target.value)}}
 
                 />}
                 <TextField
@@ -153,8 +157,8 @@ export default function AddBatch() {
                   name="cost"
                   label="Cost"
                   type="number"
-                  //value={cost.value}
-                  onChange={setSelectedCost}
+                  //value={cost.value}{
+                  onChange={(e)=>{setSelectedCost(e.target.value)}}
                 >
                   
                 </TextField>

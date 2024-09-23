@@ -1,6 +1,6 @@
 import { Typography } from "@mui/material";
 import React from "react";
-import Banner from "./Banner";
+import Banner from "../component/banner/Banner";
 import Grid from "@mui/material/Unstable_Grid2";
 import HeaderLanding from "../home/HeaderLanding";
 import pic1 from "../asset/bro2.svg";

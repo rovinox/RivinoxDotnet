@@ -11,7 +11,7 @@ import ReactToastify from "../component/ReactToastify.js";
 import { toast } from "react-toastify";
 import moment from "moment";
 import HeaderLanding from "../home/HeaderLanding.js";
-import Banner from "./Banner.js";
+import Banner from "./banner/Banner.js";
 import StepBar from "./StepBar.js";
 import Group7 from "../asset/Group7.svg";
 import Footer from "../home/Footer.js";
@@ -177,13 +177,12 @@ export default function Apply() {
             <Grid container spacing={2}>
               <Grid item xs={12} sm={6}>
                 <TextField
-                  autoComplete="given-name"
                   name="firstName"
                   required
                   fullWidth
                   id="firstName"
                   label="First Name"
-                  autoFocus
+                  
                 />
               </Grid>
               <Grid item xs={12} sm={6}>
@@ -193,7 +192,6 @@ export default function Apply() {
                   id="lastName"
                   label="Last Name"
                   name="lastName"
-                  autoComplete="family-name"
                 />
               </Grid>
               <Grid item xs={12}>
@@ -203,7 +201,7 @@ export default function Apply() {
                   id="email"
                   label="Email Address"
                   name="email"
-                  autoComplete="email"
+
                 />
               </Grid>
               <Grid item xs={12}>

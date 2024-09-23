@@ -1,6 +1,5 @@
 import React from "react";
-import Banner from "./Banner";
-import "./style/careerSupport.css";
+import Banner from "../component/banner/Banner";
 import CareerSupportText from "./CareerSupportText";
 import HeaderLanding from "../home/HeaderLanding";
 import Footer from "../home/Footer";

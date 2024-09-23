@@ -162,7 +162,8 @@ export default function CourseTable() {
                         { item}
                         
                         </>))} */}
-                        {row.days} {row.startTime}-{row.endTime}
+                        {/* console.log(moment(myDate).format("hh:mm a")) */}
+                        {row.days} / {moment(row.startTime).format("hh:mm a")} - { moment(row.endTime).format("hh:mm a")}
                       </StyledTableCell>
                       <StyledTableCell align="right">
                         ${row.cost}

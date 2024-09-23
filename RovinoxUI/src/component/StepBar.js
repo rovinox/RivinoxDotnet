@@ -1,5 +1,4 @@
 import React from "react";
-import "./style/banner.scss";
 import { Typography } from "@mui/material";
 import studentsPic from "../asset/students.svg";
 import GroupPercent from "../asset/GroupPercent.svg";

@@ -14,6 +14,7 @@ import axios from "axios";
 import { toast } from "react-toastify";
 import ReactToastify from "../component/ReactToastify";
 import HeaderLanding from "../home/HeaderLanding";
+import codingAnimation from "../asset/codingAnimation.svg";
 const LOGIN_URL = "http://localhost:5122/api/account/login";
 
 export default function Login() {
@@ -55,28 +56,34 @@ export default function Login() {
   return (
     <>
       <HeaderLanding />
-
-      <Grid container component="main" sx={{ height: "100vh" }}>
-        <ReactToastify />
+      <ReactToastify />
+       <Grid Grid container spacing={2}>
         <Grid
           item
-          xs={false}
-          sm={4}
-          md={7}
           sx={{
-            backgroundImage:
-              "url(https://source.unsplash.com/random/?programming)",
-            backgroundRepeat: "no-repeat",
-            backgroundColor: (t) =>
-              t.palette.mode === "light"
-                ? t.palette.grey[50]
-                : t.palette.grey[900],
-            backgroundSize: "cover",
-            backgroundPosition: "center",
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
           }}
-        />
-        <Grid item xs={12} sm={8} md={5} component={Paper} elevation={6} square>
-          <Box
+          xs={12}
+          md={6}
+        >
+          <img style={{marginTop:100}} src={codingAnimation} alt="pic" />
+        </Grid>
+        <Grid
+          item
+          sx={{
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            flexDirection: "column",
+            p: 2,
+          }}
+          xs={12}
+          md={6}
+        >
+         
+         <Box
             sx={{
               my: 40,
               mx: 4,

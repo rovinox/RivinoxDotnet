@@ -4,7 +4,7 @@ import TextField from "@mui/material/TextField";
 import Grid from "@mui/material/Grid";
 import Box from "@mui/material/Box";
 import contactUS from "../asset/contact-us-showcase.png";
-import Banner from "./Banner";
+import Banner from "../component/banner/Banner";
 import Footer from "../home/Footer";
 import HeaderLanding from "../home/HeaderLanding.js";
 import axios from "axios";
