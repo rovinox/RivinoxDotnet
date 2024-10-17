@@ -15,8 +15,7 @@ import { useNavigate } from "react-router-dom";
 export default function CourseListDrawer() {
   const navigate = useNavigate();
   const isDrawer = useSelector((state) => state.drawer.open);
-  const batchId = useSelector((state) => state.drawer.batchId);
-  console.log('batchId: ', batchId);
+  const batchId = useSelector((state) => state.batch.batchId);
   const [courseList, setCourseList] = useState([]);
   const dispatch = useDispatch();
   useEffect(() => {
@@ -25,8 +24,7 @@ export default function CourseListDrawer() {
 
       try {
         
-        const response = await apiService.get(`http://localhost:5122/api/curriculum/batch/${1}`)
-        console.log('response: ', response);
+        const response = await apiService.get(`http://localhost:5122/api/curriculum/batch/${batchId}`)
         if(response?.data){
           setCourseList(response.data)
 

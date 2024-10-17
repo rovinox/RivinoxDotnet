@@ -93,7 +93,7 @@ export default function CourseDropdown() {
                 onClick={() => {
                     const payload =  { batchId: item.batchId }
                 dispatch(updateBatchId(payload));
-                console.log('kfnh');
+                console.log('kfnh', item.batchId);
                 dispatch(openDrawer());
                 handleCloseUserMenu();
                 }}

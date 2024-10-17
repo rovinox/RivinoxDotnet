@@ -22,10 +22,10 @@ export const batchSlicer = createSlice({
     },
   },
   extraReducers: {
-    updateBatchId: (state, action) => {
-      const { batchId } = action.payload;
-      state.batchId = batchId;
-    },
+    // updateBatchId: (state, action) => {
+    //   const { batchId } = action.payload;
+    //   state.batchId = batchId;
+    // },
     [getBatch.fulfilled]: (state, action) => {
       state.batches = action.payload;
     },
