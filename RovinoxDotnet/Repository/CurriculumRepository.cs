@@ -33,10 +33,11 @@ namespace RovinoxDotnet.Repository
         {
             foreach (var curriculum in ListOfCurriculum)
             {
-                _dbContext.Add(curriculum);
+                var formattedCurriculum = curriculum.FormatCurriculumCreateData();
+                await _dbContext.Curriculums.AddAsync(formattedCurriculum);
 
             }
-            await _dbContext.SaveChangesAsync();
+            var data = await _dbContext.SaveChangesAsync();
             return await _dbContext.Curriculums.Where(x => x.BatchId == batchId).OrderBy(o => o.Order).ToListAsync();
 
         }

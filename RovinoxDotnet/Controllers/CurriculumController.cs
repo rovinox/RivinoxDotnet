@@ -47,8 +47,9 @@ namespace RovinoxDotnet.Controllers
         }
         [HttpPost("upload/{batchId:int}")]
         // [Authorize]
-        public async Task<IActionResult> UpLoadExcelAsync([FromRoute] int batchId, [FromBody] IFormFile excelFile)
+        public async Task<IActionResult> UpLoadExcelAsync([FromRoute] int batchId, [FromForm] IFormFile excelFile)
         {
+            // , [FromBody] IFormFile excelFile
              Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
             if (!ModelState.IsValid)
             {
@@ -79,7 +80,7 @@ namespace RovinoxDotnet.Controllers
                     {
                         do
                         {
-                            bool isHeaderSkipped = false;
+                             bool isHeaderSkipped = false;
 
                             while (reader.Read())
                             {
@@ -88,29 +89,25 @@ namespace RovinoxDotnet.Controllers
                                     isHeaderSkipped = true;
                                     continue;
                                 }
-                                CreateCurriculumDto curriculumDto = new();
-                                var Title = reader.GetValue(1).ToString();
-                                var Title2 = reader.GetValue(2).ToString();
-                                curriculumDto.Title = reader.GetValue(1).ToString();
-                                curriculumDto.Order = Convert.ToInt32(reader.GetValue(2).ToString());
-                                curriculumDto.BatchId = batchId;
-                                ListOfCurriculum.Add(curriculumDto);
-                                // );
-                                // Student s = new Student();
-                                // s.Name = reader.GetValue(1).ToString();
-                                // s.Marks = Convert.ToInt32(reader.GetValue(2).ToString());
-
-                                // _context.Add(s);
-                                // await _context.SaveChangesAsync();
+                                CreateCurriculumDto curriculumDto = new()
+                                {
+                                    Title = reader.GetValue(0).ToString(),
+                                    Order = Convert.ToInt32(reader.GetValue(1).ToString()),
+                                    BatchId = batchId
+                                };
+                                ListOfCurriculum.Add(curriculumDto);                             
                             }
                         } while (reader.NextResult());
 
 
                     }
                 }
+              System.IO.File.Delete(filePath);
 
             }
+            
             var curriculum = await _curriculumRepository.CreateFromExcelByBatchIdAsync(batchId, ListOfCurriculum);
+            
             return Ok(curriculum);
         }
     }

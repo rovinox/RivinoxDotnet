@@ -22,17 +22,19 @@ export default function AddCurriculum() {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-    // if(file.length === 0){
-    //   toast.warning("Please add a xlsx file" );
-    //   return
-    // }
+    if(file.length === 0){
+      toast.warning("Please add a xlsx file" );
+      return
+    }
     if(!selectedBatchId){
       toast.warning("Please select a batch" );
       return
     }
     setLoading(true)
     try {
-      const result = await apiService.post(`http://localhost:5122/api/curriculum/upload/${selectedBatchId}`, {excelFile:file[0]});
+      const formData = new FormData();
+      formData.append('excelFile', file[0]);
+      const result = await apiService.post(`http://localhost:5122/api/curriculum/upload/${selectedBatchId}`, formData);
       console.log(result);
       if (result?.data) {
         toast.success("Created Successfully" );
