@@ -89,7 +89,7 @@ export default function Apply() {
     <>
       <ReactToastify />
       <HeaderLanding />
-      <Banner bannerTitle="Here are the steps we follow for admission. We understand you may or may not have prior coding experience" />
+      <Banner page="Apply" bannerTitle="Here are the steps we follow for admission. We understand you may or may not have prior coding experience" />
       <StepBar />
       <div
         style={{

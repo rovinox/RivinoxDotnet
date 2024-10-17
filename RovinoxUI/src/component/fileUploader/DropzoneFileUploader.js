@@ -1,6 +1,5 @@
 import React from 'react'
 import { DropzoneArea } from "mui-file-dropzone";
-import { Typography } from '@mui/material';
 
  const DropzoneFileUploader = ({acceptedFilesArray,onChange }) => {
   

@@ -6,7 +6,7 @@ import Box from "@mui/material/Box";
 export default function Banner({ bannerTitle, page }) {
   const images = ["https://xclcamps.com/wp-content/uploads/coding-difference-1.jpg", "https://www.computersciencedegreehub.com/wp-content/uploads/2023/02/shutterstock_535124956-scaled.jpg", "https://images.cointelegraph.com/cdn-cgi/image/format=auto,onerror=redirect,quality=90,width=717/https://s3.cointelegraph.com/uploads/2023-01/158029af-a86a-402f-a5b5-e915cc69f138.JPG"  ];
   let number = 0
-  console.log({bannerTitle, page});
+
 
   switch(page) {
     case "ABOUT US":
