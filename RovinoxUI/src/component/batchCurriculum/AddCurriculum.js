@@ -5,13 +5,43 @@ import moment from "moment";
 import Grid from "@mui/material/Grid";
 import TextField from "@mui/material/TextField";
 import MenuItem from "@mui/material/MenuItem";
+import { apiService } from '../../api/axios';
+import ReactToastify from '../ReactToastify';
+import { toast } from "react-toastify";
+import { Button } from '@mui/material';
+
+
 export default function AddCurriculum() {
 
   const batches = useSelector(
     (state) => state.batch.batches
   );
-  const [selectedBatch, setSelectedBatch] = useState('');
+  const [selectedBatchId, setSelectedBatchId] = useState('');
+  const [file, setFile] = useState([])
+  const [loading, setLoading] = useState(false);
 
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+    // if(file.length === 0){
+    //   toast.warning("Please add a xlsx file" );
+    //   return
+    // }
+    if(!selectedBatchId){
+      toast.warning("Please select a batch" );
+      return
+    }
+    setLoading(true)
+    try {
+      const result = await apiService.post(`http://localhost:5122/api/curriculum/upload/${selectedBatchId}`, {excelFile:file[0]});
+      console.log(result);
+      if (result?.data) {
+        toast.success("Created Successfully" );
+        setLoading(false)
+      }
+    } catch (err) {
+      toast.error(`${err?.message}`);
+    }
+  };
   const batchList =
   batches?.length > 0 &&
   batches.map((option) => {
@@ -24,6 +54,7 @@ export default function AddCurriculum() {
   });
   return (
     <div style={{minWidth:"500px"}}> 
+        <ReactToastify />
        <Grid Grid container spacing={2}>
 
      
@@ -34,13 +65,13 @@ export default function AddCurriculum() {
                   name="course"
                   select
                   label="Course"
-                  value={selectedBatch}
-                  defaultValue={selectedBatch}
+                  value={selectedBatchId}
+                  defaultValue={selectedBatchId}
                 >
                   {batchList.length > 0 &&
                     batchList.map((option) => (
                       <MenuItem
-                        onClick={() => setSelectedBatch(option.value)}
+                        onClick={() => setSelectedBatchId(option.value)}
                         key={option.value}
                         value={option.value}
                       
@@ -49,9 +80,14 @@ export default function AddCurriculum() {
                       </MenuItem>
                     ))}
                 </TextField>
-      <DropzoneFileUploader/>
+      <DropzoneFileUploader   acceptedFilesArray={['.xlsx']} onChange={setFile} />
               </Grid>
               </Grid>
+              <Button 
+              fullWidth
+              variant="contained"
+              disabled={loading}
+              sx={{ mt: 3, mb: 2 }} onClick={handleSubmit} >upload</Button>
        </div>
   )
 }

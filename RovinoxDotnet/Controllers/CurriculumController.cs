@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 using ExcelDataReader;
 using Microsoft.AspNetCore.Authorization;
@@ -44,57 +45,73 @@ namespace RovinoxDotnet.Controllers
             return Ok(curriculum);
             // return CreatedAtAction(nameof(GetById), new { id = commentModel.Id }, commentModel.ToCommentDto());
         }
-        // [HttpPost("upload/{batchId:int}")]
-        // public async Task<IActionResult> UpLoadExcel ( [FromRoute] int batchId, [FromBody] IFormFile excelFile)
-        // {
+        [HttpPost("upload/{batchId:int}")]
+        // [Authorize]
+        public async Task<IActionResult> UpLoadExcelAsync([FromRoute] int batchId, [FromBody] IFormFile excelFile)
+        {
+             Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+            List<CreateCurriculumDto> ListOfCurriculum = [];
 
-        //     if (!ModelState.IsValid)
-        //     {
-        //         return BadRequest(ModelState);
-        //     }
-            
-        //            var excelData = new List<List<object>>();
-        //      // Upload File
-        //     if (excelFile != null && excelFile.Length > 0)
-        //     {
-        //         var uploadDirectory = $"{Directory.GetCurrentDirectory()}\\Uploads";
 
-        //         if (!Directory.Exists(uploadDirectory))
-        //         {
-        //             Directory.CreateDirectory(uploadDirectory);
-        //         }
+            if (excelFile != null)
+            {
 
-        //         var filePath = Path.Combine(uploadDirectory, excelFile.FileName);
+                var uploadsFolder = $"{Directory.GetCurrentDirectory()}\\Uploads";
 
-        //         using (var stream = new FileStream(filePath, FileMode.Create))
-        //         {
-        //             await excelFile.CopyToAsync(stream);
-        //         }
+                if (!Directory.Exists(uploadsFolder))
+                {
+                    Directory.CreateDirectory(uploadsFolder);
+                }
 
-        //         //Read File
-        //         using (var stream = System.IO.File.Open(filePath, FileMode.Open, FileAccess.Read))
-        //         {
-             
-        //             using (var reader = ExcelReaderFactory.CreateReader(stream))
-        //             {
-        //                 do
-        //                 {
-        //                     while (reader.Read())
-        //                     {
-        //                         var rowData = new List<object>();
-        //                         for (int column = 0; column < reader.FieldCount; column++)
-        //                         {
-        //                             rowData.Add(reader.GetValue(column));
-        //                         }
-        //                         excelData.Add(rowData);
-        //                     }
-        //                 } while (reader.NextResult());
+                var filePath = Path.Combine(uploadsFolder, excelFile.FileName);
+                using (var stream = new FileStream(filePath, FileMode.Create))
+                {
+                    await excelFile.CopyToAsync(stream);
+                }
+                using (var stream = System.IO.File.Open(filePath, FileMode.Open, FileAccess.Read))
+                {
 
-        //             }
-        //         }
-        //     }
-        //     var curriculum = await _curriculumRepository.CreateFromExcelByBatchIdAsync(batchId, excelFile);
-        //     return Ok(curriculum);
-        // }
+                    using (var reader = ExcelReaderFactory.CreateReader(stream))
+                    {
+                        do
+                        {
+                            bool isHeaderSkipped = false;
+
+                            while (reader.Read())
+                            {
+                                if (!isHeaderSkipped)
+                                {
+                                    isHeaderSkipped = true;
+                                    continue;
+                                }
+                                CreateCurriculumDto curriculumDto = new();
+                                var Title = reader.GetValue(1).ToString();
+                                var Title2 = reader.GetValue(2).ToString();
+                                curriculumDto.Title = reader.GetValue(1).ToString();
+                                curriculumDto.Order = Convert.ToInt32(reader.GetValue(2).ToString());
+                                curriculumDto.BatchId = batchId;
+                                ListOfCurriculum.Add(curriculumDto);
+                                // );
+                                // Student s = new Student();
+                                // s.Name = reader.GetValue(1).ToString();
+                                // s.Marks = Convert.ToInt32(reader.GetValue(2).ToString());
+
+                                // _context.Add(s);
+                                // await _context.SaveChangesAsync();
+                            }
+                        } while (reader.NextResult());
+
+
+                    }
+                }
+
+            }
+            var curriculum = await _curriculumRepository.CreateFromExcelByBatchIdAsync(batchId, ListOfCurriculum);
+            return Ok(curriculum);
+        }
     }
 }

@@ -12,7 +12,7 @@ namespace RovinoxDotnet.Interfaces
          // Task<List<Curriculum>> GetAllAsync();
 
         Task<List<Curriculum>> GetAllByBatchIdAsync(int id);
-       // Task<List<Curriculum>> CreateFromExcelByBatchIdAsync(int batchId, IFormFile excelFile);
+       Task<List<Curriculum>> CreateFromExcelByBatchIdAsync(int batchId, List<CreateCurriculumDto> ListOfCurriculum);
         Task<Curriculum> CreateAsync(CreateCurriculumDto curriculumDtoModel);
         // Task<Comment?> UpdateAsync(int id, Comment commentDto); 
         // Task<Comment?> DeleteAsync(int id); 

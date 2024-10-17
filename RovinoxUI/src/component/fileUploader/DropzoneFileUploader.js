@@ -1,14 +1,10 @@
-import React, {useState} from 'react'
+import React from 'react'
 import { DropzoneArea } from "mui-file-dropzone";
 
- const DropzoneFileUploader = () => {
-  const [file, setFile] = useState([])
-
-  const handleFile = () =>{
-
-  }
+ const DropzoneFileUploader = ({acceptedFilesArray,onChange }) => {
+  
   return (
-    <div style={{marginTop:30}}><DropzoneArea  acceptedFiles={['image/*']} filesLimit={1} onChange={handleFile} /></div>
+    <div style={{marginTop:30}}><DropzoneArea  acceptedFiles={acceptedFilesArray} filesLimit={1} onChange={onChange} /></div>
   )
 }
 export default DropzoneFileUploader;

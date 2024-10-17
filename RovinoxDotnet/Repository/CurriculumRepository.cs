@@ -16,27 +16,36 @@ namespace RovinoxDotnet.Repository
         private readonly ApplicationDBContext _dbContext;
         public CurriculumRepository(ApplicationDBContext dbContext)
         {
-             _dbContext = dbContext;
+            _dbContext = dbContext;
         }
 
         public async Task<Curriculum> CreateAsync(CreateCurriculumDto curriculumDtoModel)
         {
-             var formattedCurriculum = curriculumDtoModel.FormatCurriculumCreateData();
-             await _dbContext.Curriculums.AddAsync( formattedCurriculum);
-           await _dbContext.SaveChangesAsync();
-           return formattedCurriculum;
+            var formattedCurriculum = curriculumDtoModel.FormatCurriculumCreateData();
+            await _dbContext.Curriculums.AddAsync(formattedCurriculum);
+            await _dbContext.SaveChangesAsync();
+            return formattedCurriculum;
         }
 
-        // public async Task<List<Curriculum>> CreateFromExcelByBatchIdAsync(int batchId, IFormFile excelFile)
-        // {
-        //     return null;
-        // }
+
+
+        public async Task<List<Curriculum>> CreateFromExcelByBatchIdAsync(int batchId, List<CreateCurriculumDto> ListOfCurriculum)
+        {
+            foreach (var curriculum in ListOfCurriculum)
+            {
+                _dbContext.Add(curriculum);
+
+            }
+            await _dbContext.SaveChangesAsync();
+            return await _dbContext.Curriculums.Where(x => x.BatchId == batchId).OrderBy(o => o.Order).ToListAsync();
+
+        }
 
         public async Task<List<Curriculum>> GetAllByBatchIdAsync(int BatchId)
-        
+
         {
             return await _dbContext.Curriculums.Where(x => x.BatchId == BatchId).OrderBy(o => o.Order).ToListAsync();
-           
+
         }
     }
 }
