@@ -14,7 +14,12 @@ import { ApplyButton2 } from "../home/RovinoxLanding.styled.tsx";
 import TableCell, { tableCellClasses } from "@mui/material/TableCell";
 import { styled } from "@mui/material/styles";
 import Paper from "@mui/material/Paper";
+import Button from "@mui/material/Button";
 import { apiService } from "../api/axios.js";
+import Box from "@mui/material/Box";
+import Modal from "@mui/material/Modal";
+import { toast } from "react-toastify";
+import ReactToastify from "./ReactToastify.js";
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
@@ -39,16 +44,31 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
   },
 }));
 
-export default function CourseTable() {
+const style = {
+  position: "absolute",
+  top: "50%",
+  left: "50%",
+  transform: "translate(-50%, -50%)",
+  width: 400,
+  bgcolor: "background.paper",
+  border: "2px solid #000",
+  boxShadow: 24,
+  p: 4,
+};
+
+export default function CourseTable({ tableAction }) {
   let navigate = useNavigate();
   const [batch, setBatch] = useState([]);
-
+  const [batchId, setBatchId] = useState("");
+  const [open, setOpen] = useState(false);
+  const handleOpen = () => setOpen(true);
+  const handleClose = () => setOpen(false);
   useEffect(() => {
     let newBatch = [];
     const getBatch = async () => {
       try {
         const result = await apiService.get("http://localhost:5122/api/batch");
-        console.log('result: ', result);
+        console.log("result: ", result);
         if (result.data) {
           result.data.forEach((item) => {
             var startDate = moment([
@@ -58,12 +78,13 @@ export default function CourseTable() {
             ]);
             let days = "";
             item.daysOfTheWeek.forEach((day, index) => {
-              const isLastIndex = item.daysOfTheWeek.length -1 === index
+              const isLastIndex = item.daysOfTheWeek.length - 1 === index;
 
-              days += isLastIndex ? day.replace('day', '') : `${day.replace('day', '')},`
-
-            })
-            item.days = days
+              days += isLastIndex
+                ? day.replace("day", "")
+                : `${day.replace("day", "")},`;
+            });
+            item.days = days;
             var now = moment([moment().format("MM-DD-YY")]);
             let dateDiff = startDate.diff(now, "days");
             if (dateDiff === 0) {
@@ -84,20 +105,65 @@ export default function CourseTable() {
     getBatch();
   }, []);
 
-  const handleApply = (row) => {
-    const {id} = row
-    if(!row.isExpired){
-      
-      navigate("/apply", {
-        state: {
-          id,
-        },
+  const disableBatch = async () => {
+    handleClose();
+
+    try {
+      const result = await axios.put("/removebatch", {
+        batchId,
       });
+      if (result?.data?.message) {
+        toast.success(`${result?.data?.message}`);
+      }
+    } catch (err) {
+      toast.error(`${err?.message}`);
     }
   };
- 
+
+  const handleTableAction = (row) => {
+    const { id } = row;
+    if (tableAction === "remove") {
+      handleOpen();
+      setBatchId(id);
+    }
+    if (tableAction === "apply") {
+      if (!row.isExpired) {
+        navigate("/apply", {
+          state: {
+            id,
+          },
+        });
+      }
+    }
+  };
+
   return (
     <Paper sx={{ pb: 20 }}>
+      <Modal
+        open={open}
+        onClose={handleClose}
+        aria-labelledby="modal-modal-title"
+        aria-describedby="modal-modal-description"
+      >
+        <Box sx={style}>
+          <Typography id="modal-modal-title" variant="h6" component="h2">
+            Are you sure you want to Delete this Batch?
+          </Typography>
+          <div style={{ display: "flex", justifyContent: "space-between" }}>
+            <Button onClick={disableBatch} color="primary" variant="contained">
+              Yes
+            </Button>
+            <Button
+              onClick={() => setOpen(false)}
+              variant="contained"
+              color="error"
+            >
+              No
+            </Button>
+          </div>
+        </Box>
+      </Modal>
+      <ReactToastify />
       <Grid sx={{ mt: 9, pr: 5, pl: 5 }} Grid container spacing={2}>
         <Grid sx={{ textAlign: "center" }} xs={12} md={12}>
           <div
@@ -109,12 +175,17 @@ export default function CourseTable() {
               padding: "20px",
             }}
           >
-            <h1>See What Cohorts Are Starting Soon</h1>
-            <Typography sx={{ mb: 10 }}>
-              Ready to plan out your Bootcamp experience? Start by viewing the
-              upcoming course start dates. You can easily start your application
-              once you’ve chosen a cohort.
-            </Typography>
+            {tableAction === "apply" && (
+              <>
+                {" "}
+                <h1>See What Cohorts Are Starting Soon</h1>
+                <Typography sx={{ mb: 10 }}>
+                  Ready to plan out your Bootcamp experience? Start by viewing
+                  the upcoming course start dates. You can easily start your
+                  application once you’ve chosen a cohort.
+                </Typography>{" "}
+              </>
+            )}
           </div>
         </Grid>
         <Grid xs={12} md={12}>
@@ -163,7 +234,8 @@ export default function CourseTable() {
                         
                         </>))} */}
                         {/* console.log(moment(myDate).format("hh:mm a")) */}
-                        {row.days} / {moment(row.startTime).format("hh:mm a")} - { moment(row.endTime).format("hh:mm a")}
+                        {row.days} / {moment(row.startTime).format("hh:mm a")} -{" "}
+                        {moment(row.endTime).format("hh:mm a")}
                       </StyledTableCell>
                       <StyledTableCell align="right">
                         ${row.cost}
@@ -178,18 +250,29 @@ export default function CourseTable() {
                         )}
                       </StyledTableCell>
                       <StyledTableCell align="right">
-                        {" "}
-                        <ApplyButton2
-                          disabled={true}
-                          sx={{
-                            background:
-                              "linear-gradient(90.21deg, #AA367C -5.91%, #4A2FBD 111.58%)",
-                            color: "white",
-                          }}
-                          onClick={() => handleApply(row)}
-                        >
-                          Apply
-                        </ApplyButton2>{" "}
+                        {tableAction === "remove" && (
+                          <Button
+                            onClick={() => {
+                              handleTableAction(row);
+                            }}
+                            variant="contained"
+                            color="error"
+                          >
+                            disable
+                          </Button>
+                        )}
+                        {tableAction === "apply" && (
+                          <ApplyButton2
+                            sx={{
+                              background:
+                                "linear-gradient(90.21deg, #AA367C -5.91%, #4A2FBD 111.58%)",
+                              color: "white",
+                            }}
+                            onClick={() => handleTableAction(row)}
+                          >
+                            Apply
+                          </ApplyButton2>
+                        )}
                       </StyledTableCell>
                     </StyledTableRow>
                   ))}
