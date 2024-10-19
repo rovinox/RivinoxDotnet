@@ -16,6 +16,7 @@ import Rating from "@mui/material/Rating";
 import { Typography } from "@mui/material";
 import { apiService } from "../api/axios.js";
 import { useSelector } from "react-redux";
+import ListOfBatch from "../component/common/ListOfBatch.js";
 const labels = {
   0: "Not Rated",
   0.5: "Useless",
@@ -61,21 +62,28 @@ export default function StudentList() {
   );
   const user = JSON.parse(localStorage.getItem("user"));
   const [users, setUsers] = useState([]);
+  const [roles, setRoles] = useState([]);
+  console.log('users: ', users);
   const [loading, setLoading] = useState(true);
   const [selectedStudent, setSelectedStudent] = useState(null);
+  console.log('selectedStudent: ', selectedStudent);
   const [homeworkCount, setHomeWorkCount] = useState(null);
   const [homeworkList, setHomeWorkList] = useState(null);
   const [batchId, setBatchId] = useState(selectedStudent?.batchId);
-  const [role, setRole] = useState(selectedStudent?.role);
   const [overallRating, setOverAllRating] = useState(0);
   const [enabled, setEnabled] = useState(selectedStudent?.enabled);
   const [balance, setBalance] = useState(selectedStudent?.balance);
+
   const getUsers = async () => {
     try {
-      const result = await apiService.get("http://localhost:5122/api/account/users");
-      console.log('result: ', result);
-      if (result?.data) {
-        result.data.forEach((item, index) => {
+      const usersResponse = await apiService.get("http://localhost:5122/api/account/users");
+      const rolesResponse = await apiService.get("http://localhost:5122/api/account/roles");
+      if(rolesResponse?.data){
+        setRoles(rolesResponse.data);
+      }
+      console.log('usersResponse: ', usersResponse, rolesResponse);
+      if (usersResponse?.data) {
+        usersResponse.data.forEach((item, index) => {
         
           item.batch = `${moment(item?.startDate).format(
             "MMM Do YY"
@@ -85,8 +93,8 @@ export default function StudentList() {
         setLoading(false);
       }
 
-      setUsers(result.data);
-      console.log("result.data.users: ", result.data);
+      setUsers(usersResponse.data);
+      console.log("usersResponse.data.users: ", usersResponse.data);
     } catch (err) {
       console.log(err);
     }
@@ -99,10 +107,10 @@ export default function StudentList() {
     { name: "Completed", value: homeworkCount },
     { name: "Total Number of Homework", value: 30 },
   ];
-  const roleList = [
-    { value: "admin", label: "Admin" },
-    { value: "student", label: "Student" },
-  ];
+  const roleList = roles.map((role) => ({value: role.id,  label: role.name}))
+  console.log('roleList: ', roleList);
+
+
   const enableList = [
     { value: false, label: "No" },
     { value: true, label: "Yes" },
@@ -126,7 +134,7 @@ export default function StudentList() {
       if (user.role === "admin") {
         const result = await axios.put("/updatestudent", {
           batchId,
-          role,
+         // role,
           enabled,
           id,
           balance,
@@ -211,7 +219,7 @@ export default function StudentList() {
         editMode={"row"}
         onCellClick={(props) => {
           handleProgress(props.row.studentId, props.row.batchId);
-          setRole(props.row.role);
+         // setRole(props.row.role);
           setSelectedStudent(props.row);
           setEnabled(props.row.enabled);
           setBatchId(props.row.batchId);
@@ -298,27 +306,12 @@ export default function StudentList() {
                     value={selectedStudent.lastName}
                   />
                 </Grid>
-                {batchList?.length > 0 && (
+                
                   <Grid item xs={12} sm={6}>
-                    <TextField
-                      required
-                      fullWidth
-                      name="batch"
-                      select
-                      label="Batch"
-                      value={batchId}
-                      onChange={(e) => {
-                        setBatchId(e.target.value);
-                      }}
-                    >
-                      {batchList.map((option, index) => (
-                        <MenuItem key={index} value={option.value}>
-                          {option.label}
-                        </MenuItem>
-                      ))}
-                    </TextField>
+                    <ListOfBatch defaultValue={selectedStudent.batchId} />
+                    
                   </Grid>
-                )}
+               
 
                 <Grid item xs={12} sm={6}>
                   <TextField
@@ -326,8 +319,8 @@ export default function StudentList() {
                     name="role"
                     select
                     label="Role"
-                    value={role}
-                    onChange={(e) => setRole(e.target.value)}
+                    defaultValue={selectedStudent.roleId}
+                   // onChange={(e) => setRole(e.target.value)}
                   >
                     {roleList.map((option, index) => (
                       <MenuItem key={index} value={option.value}>
@@ -359,6 +352,7 @@ export default function StudentList() {
                     id="balance"
                     label="Balance"
                     value={balance}
+                    disabled
                     onChange={(e) => setBalance(e.target.value)}
                   />
                 </Grid>

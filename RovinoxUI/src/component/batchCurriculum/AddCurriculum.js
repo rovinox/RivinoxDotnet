@@ -9,6 +9,7 @@ import { apiService } from '../../api/axios';
 import ReactToastify from '../ReactToastify';
 import { toast } from "react-toastify";
 import { Button } from '@mui/material';
+import ListOfBatch from '../common/ListOfBatch';
 
 
 export default function AddCurriculum() {
@@ -61,27 +62,7 @@ export default function AddCurriculum() {
 
      
          <Grid item xs={12}>
-                <TextField
-                  required
-                  fullWidth
-                  name="course"
-                  select
-                  label="Course"
-                  value={selectedBatchId}
-                  defaultValue={selectedBatchId}
-                >
-                  {batchList.length > 0 &&
-                    batchList.map((option) => (
-                      <MenuItem
-                        onClick={() => setSelectedBatchId(option.value)}
-                        key={option.value}
-                        value={option.value}
-                      
-                      >
-                        {option.label}
-                      </MenuItem>
-                    ))}
-                </TextField>
+          <ListOfBatch  onClick={setSelectedBatchId} />
       <DropzoneFileUploader   acceptedFilesArray={['.xlsx']} onChange={setFile} />
               </Grid>
               </Grid>

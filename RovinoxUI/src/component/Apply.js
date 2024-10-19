@@ -16,6 +16,7 @@ import StepBar from "./StepBar.js";
 import Group7 from "../asset/Group7.svg";
 import Footer from "../home/Footer.js";
 import { apiService } from "../api/axios.js";
+import ListOfBatch from "./common/ListOfBatch.js";
 
 export default function Apply() {
   const { state } = useLocation();
@@ -235,27 +236,10 @@ export default function Apply() {
                 />
               </Grid>
               <Grid item xs={12}>
-                <TextField
-                  required
-                  fullWidth
-                  name="course"
-                  select
-                  label="Course"
-                  value={selectedBatch}
-                  defaultValue={selectedBatch}
-                >
-                  {batchList.length > 0 &&
-                    batchList.map((option) => (
-                      <MenuItem
-                        onClick={() => setSelectedBatch(option.value)}
-                        key={option.value}
-                        value={option.value}
-                      
-                      >
-                        {option.label}
-                      </MenuItem>
-                    ))}
-                </TextField>
+              <ListOfBatch
+               onClick={setSelectedBatch}
+               defaultValue={selectedBatch}
+              />
               </Grid>
             </Grid>
             <Button

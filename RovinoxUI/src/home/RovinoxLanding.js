@@ -110,7 +110,7 @@ export default function RovinoxLanding() {
           </Paper>
         ))}
       </Box>
-      <CourseTable />
+      <CourseTable  tableAction="apply"/>
       <FAQ />
       <Footer />
 

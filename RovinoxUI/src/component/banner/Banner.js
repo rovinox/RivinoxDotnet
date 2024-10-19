@@ -42,18 +42,18 @@ export default function Banner({ bannerTitle, page }) {
           opacity: 0.2,
         }}
       />
-      <Box
-        sx={{
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          height: 200,
-        }}
-      >
-        <Typography sx={{ p: 5 }} variant="h4">
-          {bannerTitle}
-        </Typography>
-      </Box>
+    { bannerTitle && <Box
+      sx={{
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        height: 200,
+      }}
+    >
+      <Typography sx={{ p: 5 }} variant="h4">
+        {bannerTitle}
+      </Typography>
+    </Box>}
     </div>
   );
 }

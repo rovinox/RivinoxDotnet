@@ -17,9 +17,10 @@ namespace RovinoxDotnet.Controllers
 {
     [Route("api/account")]
     [ApiController]
-    public class AccountController(UserManager<AppUser> userManager, ITokenService tokenService, SignInManager<AppUser> signInManager, IBatchRepository batchRepository, IEnrollmentRepository enrollmentRepository, ApplicationDBContext dbContext) : ControllerBase
+    public class AccountController(UserManager<AppUser> userManager, RoleManager<IdentityRole> roleManager, ITokenService tokenService, SignInManager<AppUser> signInManager, IBatchRepository batchRepository, IEnrollmentRepository enrollmentRepository, ApplicationDBContext dbContext) : ControllerBase
     {
         private readonly UserManager<AppUser> _userManager = userManager;
+        private readonly RoleManager<IdentityRole> _roleManager = roleManager;
         private readonly ITokenService _tokenService = tokenService;
         private readonly SignInManager<AppUser> _signInManager = signInManager;
         private readonly IBatchRepository _batchRepository = batchRepository;
@@ -126,9 +127,17 @@ namespace RovinoxDotnet.Controllers
                 return StatusCode(500, e);
             }
         }
+         [HttpGet("roles")]
+        // [Authorize(Roles =Roles.Admin )]
+        public IActionResult GetAllRoles()
+        {
+            var roles = _roleManager.Roles.ToArray();
+            return Ok(roles);
+
+        }
         [HttpGet("users")]
         // [Authorize(Roles =Roles.Admin )]
-        public IActionResult GetAll()
+        public IActionResult GetAllUsers()
         {
 
             var AllUsers = from cols in _userManager.Users
@@ -136,7 +145,7 @@ namespace RovinoxDotnet.Controllers
                            from b in _dbContext.Batches
                            from ur in _dbContext.UserRoles
                            from r in _dbContext.Roles
-                           where cols.Id == e.UserId && b.Id == e.BatchId && cols.Id  == ur.UserId && r.Id == ur.RoleId
+                         //  where cols.Id == e.UserId && b.Id == e.BatchId && cols.Id  == ur.UserId && r.Id == ur.RoleId
                            select new
                            {
                                FirstName = cols.FirstName,
