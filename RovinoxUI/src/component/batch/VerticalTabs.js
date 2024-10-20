@@ -9,6 +9,7 @@ import RemoveBatch from "./RemoveBatch";
 import AddBatch from "./AddBatch";
 import AddCurriculum from "../batchCurriculum/AddCurriculum";
 import StartBatch from "./StartBatch";
+import BatchStudent from "./BatchStudent";
 
 // const useStyles = makeStyles({
 //     root: {
@@ -86,7 +87,8 @@ export default function VerticalTabs({ batch }) {
         <Tab label="Start Batch" {...a11yProps(0)} />
         <Tab label="Add Batch" {...a11yProps(1)} />
         <Tab label="Remove Batch" {...a11yProps(2)} />
-        <Tab label="Add Curriculum" {...a11yProps(3)} />
+        <Tab label="Batch Students" {...a11yProps(3)} />
+        <Tab label="Add Curriculum" {...a11yProps(4)} />
       </Tabs>
       <TabPanel value={value} index={0}>
         <StartBatch />
@@ -98,6 +100,9 @@ export default function VerticalTabs({ batch }) {
         <RemoveBatch />
       </TabPanel>
       <TabPanel value={value} index={3}>
+        <BatchStudent />
+      </TabPanel>
+      <TabPanel value={value} index={4}>
         <AddCurriculum />
       </TabPanel>
     </Box>

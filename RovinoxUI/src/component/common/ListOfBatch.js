@@ -1,5 +1,5 @@
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, memo } from "react";
 import { apiService } from "../../api/axios.js";
 import TextField from "@mui/material/TextField";
 import MenuItem from "@mui/material/MenuItem";
@@ -8,7 +8,7 @@ import moment from "moment";
 
 
 
-export default function ListOfBatch({onClick, defaultValue}) {
+ const  ListOfBatch = ({value,onClick, defaultValue}) => {
 
     const [batch, setBatch] = useState([]);
     useEffect(() => {
@@ -39,10 +39,10 @@ export default function ListOfBatch({onClick, defaultValue}) {
     <div> <TextField
     required
     fullWidth
-    name="course"
+    name="batch"
     select
-    label="Course"
-    // value={selectedBatch}
+    label="Please select a batch"
+    value={value}
     defaultValue={defaultValue}
   >
     {batchList.length > 0 &&
@@ -59,3 +59,4 @@ export default function ListOfBatch({onClick, defaultValue}) {
   </TextField></div>
   )
 }
+export default memo(ListOfBatch);

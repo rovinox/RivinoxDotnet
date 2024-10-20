@@ -7,16 +7,15 @@ import TextField from "@mui/material/TextField";
 import MenuItem from "@mui/material/MenuItem";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
-import moment from "moment";
 import { toast } from "react-toastify";
-import ReactToastify from "../component/ReactToastify.js";
+import ReactToastify from "../ReactToastify.js";
 import { PieChart, Pie, Cell, Legend } from "recharts";
-import HomeworkView from "./HomeworkView.js";
+import HomeworkView from "../../admin/HomeworkView.js";
 import Rating from "@mui/material/Rating";
 import { Typography } from "@mui/material";
-import { apiService } from "../api/axios.js";
-import { useSelector } from "react-redux";
-import ListOfBatch from "../component/common/ListOfBatch.js";
+import { apiService } from "../../api/axios.js";
+import ListOfBatch from "../common/ListOfBatch.js";
+import ConfirmationModal from "../common/ConfirmationModal.js";
 const labels = {
   0: "Not Rated",
   0.5: "Useless",
@@ -31,123 +30,132 @@ const labels = {
   5: "Excellent+",
 };
 const columns = [
-  {
-    field: "course",
-    headerName: "Batch Name",
-    width: 250,
-    // renderCell: (props) => {
-    //   console.log("line", props);
-    // },
-  },
-  {
-    field: "batch",
-    headerName: "Batch Dates",
-    width: 250,
-    // renderCell: (props) => {
-    //   console.log("line", props);
-    // },
-  },
+  //   {
+  //     field: "course",
+  //     headerName: "Batch Name",
+  //     width: 250,
+  //     renderCell: (props) => {
+  //       console.log("line", props);
+  //     },
+  //   },
+  //   {
+  //     field: "batch",
+  //     headerName: "Batch Dates",
+  //     width: 250,
+  //     // renderCell: (props) => {
+  //     //   console.log("line", props);
+  //     // },
+  //   },
   { field: "firstName", headerName: "First name", width: 180 },
   { field: "lastName", headerName: "last name", width: 180 },
   { field: "email", headerName: "Email", width: 320 },
   { field: "phoneNumber", headerName: "Phone Number", width: 130 },
-  { field: "active", headerName: "Enabled", width: 100 },
+  {
+    field: "enabled",
+    renderCell: (props) => {
+      return props.value ? "Yes" : "No";
+    },
+    headerName: "Enabled",
+    width: 100,
+  },
   { field: "role", headerName: "Role", width: 100 },
   { field: "balance", headerName: "Balance", width: 100 },
 ];
 
-export default function StudentList() {
-  const batches = useSelector(
-    (state) => state.batches
-  );
-  const user = JSON.parse(localStorage.getItem("user"));
+export default function BatchStudent() {
   const [users, setUsers] = useState([]);
   const [roles, setRoles] = useState([]);
-  console.log('users: ', users);
+  const [role, setRole] = useState(null);
+  const [tableBatchId, setTableBatchId] = useState(null);
+  const [openModal, setOpenModal] = useState(false);
   const [loading, setLoading] = useState(true);
-  const [selectedStudent, setSelectedStudent] = useState(null);
-  console.log('selectedStudent: ', selectedStudent);
+  const [selectedUser, setSelectedUser] = useState(null);
+  console.log("selectedUser: ", selectedUser);
   const [homeworkCount, setHomeWorkCount] = useState(null);
   const [homeworkList, setHomeWorkList] = useState(null);
-  const [batchId, setBatchId] = useState(selectedStudent?.batchId);
+  const [batchId, setBatchId] = useState(selectedUser?.batchId);
   const [overallRating, setOverAllRating] = useState(0);
-  const [enabled, setEnabled] = useState(selectedStudent?.enabled);
-  const [balance, setBalance] = useState(selectedStudent?.balance);
+  const [enabled, setEnabled] = useState(selectedUser?.enabled);
+  //const [balance, setBalance] = useState(selectedUser?.balance);
 
-  const getUsers = async () => {
+  const getTableData = async (batchId) => {
+    console.log("from ay", batchId);
+    setLoading(true);
+    setTableBatchId(batchId);
+
     try {
-      const usersResponse = await apiService.get("http://localhost:5122/api/account/users");
-      const rolesResponse = await apiService.get("http://localhost:5122/api/account/roles");
-      if(rolesResponse?.data){
+      const usersByBatchResponse = await apiService.get(
+        `http://localhost:5122/api/account/users/batchId/${batchId}`
+      );
+      console.log("usersByBatchResponse: ", usersByBatchResponse);
+      if (usersByBatchResponse?.data) {
+        setUsers(usersByBatchResponse?.data);
+      }
+
+      setLoading(false);
+    } catch (err) {
+      toast.error(`${err?.message}`);
+      setLoading(false);
+    }
+  };
+
+  const getRoles = async () => {
+    try {
+      const rolesResponse = await apiService.get(
+        "http://localhost:5122/api/account/roles"
+      );
+      if (rolesResponse?.data) {
         setRoles(rolesResponse.data);
       }
-      console.log('usersResponse: ', usersResponse, rolesResponse);
-      if (usersResponse?.data) {
-        usersResponse.data.forEach((item, index) => {
-        
-          item.batch = `${moment(item?.startDate).format(
-            "MMM Do YY"
-          )} - ${moment(item?.endDate).format("MMM Do YY")}`;
-          item.active = item.enabled ? "Yes" : "No";
-        });
-        setLoading(false);
-      }
-
-      setUsers(usersResponse.data);
-      console.log("usersResponse.data.users: ", usersResponse.data);
     } catch (err) {
-      console.log(err);
+      toast.error(`${err?.message}`);
+      setLoading(false);
     }
   };
   useEffect(() => {
-    getUsers();
+    getRoles();
   }, []);
   const COLORS = ["#00C49F", "#FF8042", "#FFBB28", "#FF8042"];
   const data = [
     { name: "Completed", value: homeworkCount },
     { name: "Total Number of Homework", value: 30 },
   ];
-  const roleList = roles.map((role) => ({value: role.id,  label: role.name}))
-  console.log('roleList: ', roleList);
-
+  const roleList = roles.map((role) => ({ value: role.id, label: role.name }));
 
   const enableList = [
     { value: false, label: "No" },
     { value: true, label: "Yes" },
   ];
-  const batchList = batches?.map((option) => {
-    return {
-      value: option.batchId,
-      label: `${moment(option.startDate).format("MMM Do YY")} - ${moment(
-        option.endDate
-      ).format("MMM Do YY")}`,
-    };
-  });
-  console.log("sdgsgzsdg", batchList);
+
   const handleSubmit = async (e) => {
-    const id = selectedStudent.studentId;
-    console.log("id: ", id);
+    const userId = selectedUser.id;
     e.preventDefault();
-    
+    setOpenModal(false);
+    setLoading(true);
+    const foundRole = roles.find((r) => r.name === role);
+    console.log("foundRole: ", foundRole);
+    const bodyPayload = {
+      batchId,
+      role,
+      enabled,
+      userId,
+      roleId: foundRole.id,
+    };
 
     try {
-      if (user.role === "admin") {
-        const result = await axios.put("/updatestudent", {
-          batchId,
-         // role,
-          enabled,
-          id,
-          balance,
-        });
-        if (result?.data?.message) {
-          toast.success(`${result?.data?.message}`);
-          getUsers();
-        }
-      } else {
-        toast.error(`you don't have access to modify student`);
+      const result = await apiService.post(
+        "http://localhost:5122/api/account/update/user",
+        bodyPayload
+      );
+      console.log("result: update ", result);
+
+      if (result?.data) {
+        toast.success(`${result?.data?.message}`);
       }
+      getTableData(tableBatchId);
     } catch (err) {
       toast.error(`${err?.message}`);
+      setLoading(false);
     }
   };
   const formatRating = (number) => {
@@ -163,6 +171,7 @@ export default function StudentList() {
   };
 
   const handleProgress = async (studentId, batchId) => {
+    return;
     console.log("studentId", studentId);
     try {
       const result = await axios.post("/getprogress", {
@@ -207,31 +216,46 @@ export default function StudentList() {
   console.log("labels[overallRating", labels[overallRating], overallRating);
   return (
     <div style={{ height: 540, width: "100%" }}>
-      <ReactToastify />
-      <DataGrid
-        rows={users}
-        columns={columns}
-        pageSize={8}
-        rowsPerPageOptions={[8]}
-        checkboxSelection={false}
-        disableSelectionOnClick={true}
-        experimentalFeatures={{ newEditingApi: true }}
-        editMode={"row"}
-        onCellClick={(props) => {
-          handleProgress(props.row.studentId, props.row.batchId);
-         // setRole(props.row.role);
-          setSelectedStudent(props.row);
-          setEnabled(props.row.enabled);
-          setBatchId(props.row.batchId);
-          setBalance(props.row.balance);
-          console.log(props.row);
-        }}
-        components={{
-          LoadingOverlay: LinearProgress,
-        }}
-        loading={loading}
+      <ListOfBatch
+        value={tableBatchId}
+        onClick={getTableData}
+        defaultValue={tableBatchId}
       />
-      {selectedStudent && (
+      <ReactToastify />
+      {openModal && (
+        <ConfirmationModal
+          openModal={openModal}
+          setOpenModal={setOpenModal}
+          onConfirm={handleSubmit}
+          message={`Are you sure you want to update ${selectedUser.firstName} ${selectedUser.lastName}`}
+        />
+      )}
+      {tableBatchId && (
+        <DataGrid
+          rows={users}
+          columns={columns}
+          pageSize={8}
+          rowsPerPageOptions={[8]}
+          checkboxSelection={false}
+          disableSelectionOnClick={true}
+          experimentalFeatures={{ newEditingApi: true }}
+          editMode={"row"}
+          onCellClick={(props) => {
+            handleProgress(props.row.studentId, props.row.batchId);
+            setRole(props.row.role);
+            setSelectedUser(props.row);
+            setEnabled(props.row.enabled);
+            setBatchId(props.row.batchId);
+            // setBalance(props.row.balance);
+            console.log(props.row);
+          }}
+          components={{
+            LoadingOverlay: LinearProgress,
+          }}
+          loading={loading}
+        />
+      )}
+      {selectedUser && (
         <div>
           <Box
             sx={{
@@ -282,9 +306,7 @@ export default function StudentList() {
             )}
             <HomeworkView homeworkList={homeworkList} />
             <Box
-              component="form"
-              Validate
-              onSubmit={handleSubmit}
+              //  onSubmit={handleSubmit}
               sx={{ mt: 3 }}
             >
               <Grid container spacing={2}>
@@ -294,7 +316,7 @@ export default function StudentList() {
                     fullWidth
                     id="firstName"
                     disabled
-                    value={selectedStudent.firstName}
+                    value={selectedUser.firstName}
                   />
                 </Grid>
                 <Grid item xs={12} sm={6}>
@@ -303,15 +325,17 @@ export default function StudentList() {
                     id="lastName"
                     name="lastName"
                     disabled
-                    value={selectedStudent.lastName}
+                    value={selectedUser.lastName}
                   />
                 </Grid>
-                
-                  <Grid item xs={12} sm={6}>
-                    <ListOfBatch defaultValue={selectedStudent.batchId} />
-                    
-                  </Grid>
-               
+
+                <Grid item xs={12} sm={6}>
+                  <ListOfBatch
+                    value={batchId}
+                    onClick={setBatchId}
+                    defaultValue={batchId}
+                  />
+                </Grid>
 
                 <Grid item xs={12} sm={6}>
                   <TextField
@@ -319,8 +343,8 @@ export default function StudentList() {
                     name="role"
                     select
                     label="Role"
-                    defaultValue={selectedStudent.roleId}
-                   // onChange={(e) => setRole(e.target.value)}
+                    defaultValue={selectedUser.roleId}
+                    onChange={(e) => setRole(e.target.value)}
                   >
                     {roleList.map((option, index) => (
                       <MenuItem key={index} value={option.value}>
@@ -351,9 +375,9 @@ export default function StudentList() {
                     fullWidth
                     id="balance"
                     label="Balance"
-                    value={balance}
+                    value={selectedUser.balance}
                     disabled
-                    onChange={(e) => setBalance(e.target.value)}
+                    // onChange={(e) => setBalance(e.target.value)}
                   />
                 </Grid>
               </Grid>
@@ -362,7 +386,8 @@ export default function StudentList() {
                 fullWidth
                 variant="contained"
                 sx={{ mt: 3 }}
-                // onClick={handleSubmit}
+                onClick={() => setOpenModal(true)}
+                disabled={loading}
               >
                 submit
               </Button>
@@ -372,7 +397,7 @@ export default function StudentList() {
                 variant="contained"
                 color="secondary"
                 sx={{ mt: 3, mb: 2 }}
-                onClick={() => setSelectedStudent("")}
+                onClick={() => setSelectedUser("")}
               >
                 cancel
               </Button>

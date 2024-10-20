@@ -237,6 +237,7 @@ export default function Apply() {
               </Grid>
               <Grid item xs={12}>
               <ListOfBatch
+              value={selectedBatch}
                onClick={setSelectedBatch}
                defaultValue={selectedBatch}
               />

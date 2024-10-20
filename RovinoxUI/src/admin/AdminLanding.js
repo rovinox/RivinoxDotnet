@@ -4,16 +4,14 @@ import Tabs from "@mui/material/Tabs";
 import Tab from "@mui/material/Tab";
 import Typography from "@mui/material/Typography";
 import Box from "@mui/material/Box";
-import StudentList from "./StudentList";
-import AddBatch from "../component/batch/AddBatch";
+
 import Header from "../component/Header";
 import GradeHomework from "./GradeHomework";
-import axios from "axios";
+
 import { useNavigate } from "react-router-dom";
-import RemoveBatch from "../component/batch/RemoveBatch";
-import { apiService } from "../api/axios";
+
 import VerticalTabs from "../component/batch/VerticalTabs";
-import { useSelector, useDispatch } from "react-redux";
+import { useDispatch } from "react-redux";
 import { getBatch } from "../duck/batchSlice";
 
 function TabPanel(props) {
@@ -50,7 +48,7 @@ function a11yProps(index) {
 }
 
 export default function AdminLanding() {
-  const dispatch = useDispatch()
+  const dispatch = useDispatch();
   const [value, setValue] = useState(0);
   const navigate = useNavigate();
   const [batch, setBatch] = useState([]);
@@ -72,19 +70,19 @@ export default function AdminLanding() {
           <Tabs value={value} onChange={handleChange} centered>
             <Tab label="Student List" {...a11yProps(0)} />
             <Tab label="Batch" {...a11yProps(1)} />
-            <Tab label="Grade Homework" {...a11yProps(3)} />
+            <Tab label="Grade Homework" {...a11yProps(2)} />
           </Tabs>
         </Box>
 
         <TabPanel value={value} index={0}>
-          <StudentList />
+          <h1>list</h1>
         </TabPanel>
         <TabPanel value={value} index={1}>
-          <VerticalTabs  />
+          <VerticalTabs />
         </TabPanel>
-    
+
         <TabPanel value={value} index={2}>
-          <GradeHomework  />
+          <GradeHomework />
         </TabPanel>
       </Box>
       {/* <Test /> */}

@@ -19,7 +19,7 @@ import { updateBatchId } from "../../duck/batchSlice";
 import { apiService } from "../../api/axios";
 export default function CourseDropdown() {
   const [enrollments, setEnrollments] = useState([]);
-  console.log('enrollments: ', enrollments);
+  console.log("enrollments: ", enrollments);
   const user = JSON.parse(localStorage.getItem("user"));
   const dispatch = useDispatch();
   const [anchorElNav, setAnchorElNav] = useState(null);
@@ -28,21 +28,20 @@ export default function CourseDropdown() {
   const location = useLocation();
 
   useEffect(() => {
- 
-    const getEnrollments = async() =>{
-
+    const getEnrollments = async () => {
       try {
-        
-        const response = await apiService.get("http://localhost:5122/api/enrollment")
-        console.log('response: ', response);
-        if(response.data){
-          setEnrollments(response.data)
+        const response = await apiService.get(
+          "http://localhost:5122/api/enrollment"
+        );
+        console.log("response: ", response);
+        if (response.data) {
+          setEnrollments(response.data);
         }
       } catch (error) {
         console.log(error);
       }
-    }
-    getEnrollments()
+    };
+    getEnrollments();
   }, []);
 
   const handleOpenNavMenu = (event) => {
@@ -87,14 +86,19 @@ export default function CourseDropdown() {
           open={Boolean(anchorElUser)}
           onClose={handleCloseUserMenu}
         >
+          {enrollments?.length === 0 && (
+            <MenuItem>
+              <Typography textAlign="center">No enrollment</Typography>
+            </MenuItem>
+          )}
           {enrollments?.length > 0 &&
             enrollments.map((item) => (
               <MenuItem
                 onClick={() => {
-                    const payload =  { batchId: item.batchId }
-                dispatch(updateBatchId(payload));
-                dispatch(openDrawer());
-                handleCloseUserMenu();
+                  const payload = { batchId: item.batchId };
+                  dispatch(updateBatchId(payload));
+                  dispatch(openDrawer());
+                  handleCloseUserMenu();
                 }}
                 key={item.id}
               >

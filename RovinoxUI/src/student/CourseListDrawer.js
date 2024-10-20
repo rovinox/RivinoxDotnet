@@ -49,6 +49,7 @@ export default function CourseListDrawer() {
       onKeyDown={() => dispatch(closeDrawer())}
     >
       <List>
+  
         {courseList.map((course, index) => (
           <ListItemButton key={index} sx={{ height: 35 }}>
             <ListItem
@@ -67,12 +68,14 @@ export default function CourseListDrawer() {
   );
 
   return (
+   
     <Drawer
       anchor={"left"}
       open={isDrawer}
       onClose={() => dispatch(closeDrawer())}
     >
-      {list()}
+      {courseList.length === 0 ? <Typography  sx={{ width: 300, mt:10 }} textAlign="center">No Curriculum</Typography> : list()}
+
     </Drawer>
   );
 }

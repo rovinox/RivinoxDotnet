@@ -11,13 +11,9 @@ namespace RovinoxDotnet.Controllers
 {
     [Route("api/enrollment")]
     [ApiController]
-    public class EnrollmentsController : ControllerBase
+    public class EnrollmentsController(IEnrollmentRepository enrollmentRepository) : ControllerBase
     {
-        private readonly IEnrollmentRepository _enrollmentRepository;
-        public EnrollmentsController(IEnrollmentRepository enrollmentRepository)
-        {
-            _enrollmentRepository = enrollmentRepository;
-        }
+        private readonly IEnrollmentRepository _enrollmentRepository = enrollmentRepository;
 
         [HttpPost("create")]
         //[Authorize]

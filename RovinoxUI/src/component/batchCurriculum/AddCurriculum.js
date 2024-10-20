@@ -14,9 +14,7 @@ import ListOfBatch from '../common/ListOfBatch';
 
 export default function AddCurriculum() {
 
-  const batches = useSelector(
-    (state) => state.batch.batches
-  );
+
   const [selectedBatchId, setSelectedBatchId] = useState('');
   const [file, setFile] = useState([])
   const [loading, setLoading] = useState(false);
@@ -45,16 +43,7 @@ export default function AddCurriculum() {
       toast.error(`${err?.message}`);
     }
   };
-  const batchList =
-  batches?.length > 0 &&
-  batches.map((option) => {
-    console.log(option);
-    return {
-      value: option.id,
-      label: ` ${option.course} / ${moment(option.startDate).format("MMM Do YY")} -
-                        ${moment(option.endDate).format("MMM Do YY")}`,
-    };
-  });
+
   return (
     <div style={{minWidth:"500px"}}> 
         <ReactToastify />
@@ -62,7 +51,7 @@ export default function AddCurriculum() {
 
      
          <Grid item xs={12}>
-          <ListOfBatch  onClick={setSelectedBatchId} />
+          <ListOfBatch value={selectedBatchId} onClick={setSelectedBatchId} />
       <DropzoneFileUploader   acceptedFilesArray={['.xlsx']} onChange={setFile} />
               </Grid>
               </Grid>

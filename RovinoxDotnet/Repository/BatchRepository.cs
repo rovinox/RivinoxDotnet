@@ -39,6 +39,7 @@ namespace RovinoxDotnet.Repository
             return await _dbContext.Batches.Select(x => x).ToListAsync();
             // return await _dbContext.Batches.ToListAsync();
         }
+       
 
         public Task<Batch?> GetByIdAsync(int id)
         {
