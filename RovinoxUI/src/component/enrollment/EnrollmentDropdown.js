@@ -17,7 +17,8 @@ import { useDispatch } from "react-redux";
 import { openDrawer } from "../../duck/drawerSlice";
 import { updateBatchId } from "../../duck/batchSlice";
 import { apiService } from "../../api/axios";
-export default function CourseDropdown() {
+
+export default function EnrollmentDropdown() {
   const [enrollments, setEnrollments] = useState([]);
   console.log("enrollments: ", enrollments);
   const user = JSON.parse(localStorage.getItem("user"));

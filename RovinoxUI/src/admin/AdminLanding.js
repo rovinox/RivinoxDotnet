@@ -5,7 +5,7 @@ import Tab from "@mui/material/Tab";
 import Typography from "@mui/material/Typography";
 import Box from "@mui/material/Box";
 
-import Header from "../component/Header";
+import Header from "../component/header/Header";
 import GradeHomework from "./GradeHomework";
 
 import { useNavigate } from "react-router-dom";

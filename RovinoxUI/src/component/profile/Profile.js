@@ -1,8 +1,8 @@
 import React from "react";
-import Header from "../Header";
+import Header from "../header/Header";
 import { AccountProfileDetails } from "./AccountDetails";
 import { AccountInfo } from "./AccountInfo";
-import { Grid, Typography } from "@mui/material";
+import { Grid } from "@mui/material";
 import Banner from "../banner/Banner";
 
 export default function Profile() {

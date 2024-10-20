@@ -1,16 +1,14 @@
-import axios from "axios";
+
 import { useEffect, useState } from "react";
-import CourseContent from "./CourseContent";
-import CourseListDrawer from "./CourseListDrawer";
+
 import NoCourse from "./NoCourse";
 import { useNavigate, useLocation } from "react-router-dom";
-import Header from "../component/Header";
+import Header from "../component/header/Header";
 import { useSelector, useDispatch } from "react-redux";
 import { changeGradeHomeView } from "../duck/GradeHomeViewSlice";
-import { apiService } from "../api/axios";
+
 
 export default function StudentLanding(...prop) {
-  const [currentCourse, setCurrentCourse] = useState(0);
   const [isAdmin, setIsAdmin] = useState(false);
   const [activeStudent, setActiveStudent] = useState(false);
 
@@ -58,13 +56,7 @@ export default function StudentLanding(...prop) {
       {activeStudent ? (
         <>
           <Header  />
-          {/* <CourseContent
-            isAdmin={isAdmin}
-            batchId={batchId}
-            day={currentCourse}
-          /> */}
           < div  style={{textAlign: "center", padding: 500}} > Main student page</ div>
-          {/* <CourseListDrawer setCurrentCourse={setCurrentCourse} /> */}
         </>
       ) : (
         <NoCourse />

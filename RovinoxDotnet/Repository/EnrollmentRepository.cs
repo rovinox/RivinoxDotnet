@@ -14,21 +14,13 @@ using RovinoxDotnet.Models;
 
 namespace RovinoxDotnet.Repository
 {
-    public class EnrollmentRepository : IEnrollmentRepository
+    public class EnrollmentRepository(ApplicationDBContext dbContext, UserManager<AppUser> userManager, IBatchRepository batchRepository, IHttpContextAccessor httpContextAccessor, IAuthenticatedUserService authenticatedUserService) : IEnrollmentRepository
     {
-         private readonly ApplicationDBContext _dbContext;
-        private readonly UserManager<AppUser> _userManager;
-        private readonly IBatchRepository _batchRepository;
-        private readonly IHttpContextAccessor _httpContextAccessor;
-        private readonly IAuthenticatedUserService _authenticatedUserService;
-        public EnrollmentRepository(ApplicationDBContext dbContext, UserManager<AppUser> userManager, IBatchRepository batchRepository, IHttpContextAccessor httpContextAccessor, IAuthenticatedUserService authenticatedUserService)
-        {
-             _dbContext = dbContext;
-             _userManager = userManager;
-             _batchRepository = batchRepository;
-             _httpContextAccessor = httpContextAccessor;
-             _authenticatedUserService = authenticatedUserService;
-        }
+         private readonly ApplicationDBContext _dbContext = dbContext;
+        private readonly UserManager<AppUser> _userManager = userManager;
+        private readonly IBatchRepository _batchRepository = batchRepository;
+        private readonly IHttpContextAccessor _httpContextAccessor = httpContextAccessor;
+        private readonly IAuthenticatedUserService _authenticatedUserService = authenticatedUserService;
 
         public async Task<Enrollment> CreateAsync(CreateEnrollmentDto enrollmentModel)
         {

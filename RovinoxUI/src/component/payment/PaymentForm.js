@@ -7,10 +7,12 @@ import Button from "@mui/material/Button";
 import MenuItem from "@mui/material/MenuItem";
 import axios from "axios";
 import Card from "./Card";
-import Header from "../../component/Header";
+import Header from "../../component/header/Header";
 import Payment from "payment";
 import ReactToastify from "../../component/ReactToastify.js";
+import AutocompleteInput from "../../component/autocompleteInput/Index.js";
 import { toast } from "react-toastify";
+import { apiService } from "../../api/axios.js";
 
 
 export default function PaymentForm() {
@@ -27,32 +29,38 @@ export default function PaymentForm() {
   const [paymentType, setPaymentType] = useState([]);
   const [amex, setAmex] = useState(false);
   const [customAmount, setCustomAmount] = useState(false);
+  const [isCash, setIsCash] = useState(false);
   const handleInputFocus = ({ target }) => {
     setFocused(target.id);
   };
   const getUser = useCallback(async () => {
     try {
-      const result = await axios.post("/user", {
-        email: user.email,
-      });
+      const result = await apiService.get(
+        "http://localhost:5122/api/account/signed/user"
+      );
       console.log("result: ", result);
-      setPaymentType([
-        {
-          value: result?.data?.users?.balance,
-          label: "Full Amount",
-        },
-        {
-          value: "custom",
-          label: "Custom Amount",
-        },
-      ]);
+      console.log("result: ", result);
+      if (result?.data) {
+        setPaymentType([
+          {
+            value: result?.data?.balance,
+            label: "Pay in Full ",
+          },
+          {
+            value: "custom",
+            label: "Custom Amount",
+          },
+          {
+            value: "cash",
+            label: "Cash",
+          },
+        ]);
+      }
     } catch (e) {
       console.log(e);
     }
-  }, [user]);
+  }, []);
   useEffect(() => {
-
-
     getUser();
   }, [getUser]);
 
@@ -129,19 +137,28 @@ export default function PaymentForm() {
                 select
                 fullWidth
                 label="Payment Type"
-                helperText="Please select your amount type"
+                helperText="Please select your payment type"
               >
                 {paymentType?.length > 0 &&
                   paymentType.map((option) => (
                     <MenuItem
                       onClick={() => {
                         console.log(option.value);
-                        if (option.value === "custom") {
+                        if (
+                          option.value === "custom" ||
+                          option.value === "cash"
+                        ) {
                           setAmount("");
                           setCustomAmount(true);
+                          if (option.value === "cash") {
+                            setIsCash(true);
+                          } else {
+                            setIsCash(false);
+                          }
                         } else {
                           setAmount(option.value);
                           setCustomAmount(false);
+                          setIsCash(false);
                         }
                       }}
                       key={option.value}
@@ -152,6 +169,7 @@ export default function PaymentForm() {
                   ))}
               </TextField>
             </Grid>
+
             <Grid item xs={12} sm={6}>
               <TextField
                 inputRef={amountInput}
@@ -168,95 +186,103 @@ export default function PaymentForm() {
                 onChange={(e) => setAmount(e.target.value)}
               />
             </Grid>
-            <Grid item xs={12}>
-              <InputMask
-                mask={amex ? "9999 999999 99999" : "9999 9999 9999 9999"}
-                value={number}
-                onChange={(e) => {
-                  const issuer = Payment.fns.cardType(e.target.value);
-                  setAmex(issuer === "amex");
-                  console.log("issuer", issuer);
-                  setNumber(e.target.value);
-                }}
-                disabled={false}
-                maskChar=" "
-              >
-                {() => (
+            {isCash ? (
+              <Grid item xs={12}>
+                <AutocompleteInput/>
+              </Grid>
+            ) : (
+              <>
+                <Grid item xs={12}>
+                  <InputMask
+                    mask={amex ? "9999 999999 99999" : "9999 9999 9999 9999"}
+                    value={number}
+                    onChange={(e) => {
+                      const issuer = Payment.fns.cardType(e.target.value);
+                      setAmex(issuer === "amex");
+                      console.log("issuer", issuer);
+                      setNumber(e.target.value);
+                    }}
+                    disabled={false}
+                    maskChar=" "
+                  >
+                    {() => (
+                      <TextField
+                        id="number"
+                        name="number"
+                        fullWidth
+                        required
+                        label="Card Number"
+                        onFocusCapture={handleInputFocus}
+                      />
+                    )}
+                  </InputMask>
+                </Grid>
+                <Grid item xs={12} sm={6}>
                   <TextField
-                    id="number"
-                    name="number"
+                    id="name"
+                    name="name"
                     fullWidth
                     required
-                    label="Card Number"
+                    label="Name on the card"
+                    value={name}
+                    onChange={(e) => setName(e.target.value)}
                     onFocusCapture={handleInputFocus}
                   />
-                )}
-              </InputMask>
-            </Grid>
-            <Grid item xs={12} sm={6}>
-              <TextField
-                id="name"
-                name="name"
-                fullWidth
-                required
-                label="Name on the card"
-                value={name}
-                onChange={(e) => setName(e.target.value)}
-                onFocusCapture={handleInputFocus}
-              />
-            </Grid>
-            <Grid item xs={12} sm={6}>
-              <TextField
-                id="zipcode"
-                name="zipcode"
-                fullWidth
-                required
-                label="Zip code"
-                value={zipCode}
-                onChange={(e) => setZipCode(e.target.value)}
-                onFocusCapture={handleInputFocus}
-              />
-            </Grid>
-            <Grid item xs={12} sm={6}>
-              <InputMask
-                mask="99/99"
-                value={expiry}
-                onChange={(e) => setExpiry(e.target.value)}
-                disabled={false}
-                maskChar=" "
-              >
-                {() => (
+                </Grid>
+                <Grid item xs={12} sm={6}>
                   <TextField
-                    id="expiry"
-                    name="expiry"
+                    id="zipcode"
+                    name="zipcode"
                     fullWidth
                     required
-                    label="Expiration"
+                    label="Zip code"
+                    value={zipCode}
+                    onChange={(e) => setZipCode(e.target.value)}
                     onFocusCapture={handleInputFocus}
                   />
-                )}
-              </InputMask>
-            </Grid>
-            <Grid item xs={12} sm={6}>
-              <InputMask
-                mask={amex ? "9999" : "999"}
-                value={cvc}
-                onChange={(e) => setCvc(e.target.value)}
-                disabled={false}
-                maskChar=" "
-              >
-                {() => (
-                  <TextField
-                    id="cvc"
-                    name="cvc"
-                    fullWidth
-                    required
-                    label="CVC"
-                    onFocusCapture={handleInputFocus}
-                  />
-                )}
-              </InputMask>
-            </Grid>
+                </Grid>
+                <Grid item xs={12} sm={6}>
+                  <InputMask
+                    mask="99/99"
+                    value={expiry}
+                    onChange={(e) => setExpiry(e.target.value)}
+                    disabled={false}
+                    maskChar=" "
+                  >
+                    {() => (
+                      <TextField
+                        id="expiry"
+                        name="expiry"
+                        fullWidth
+                        required
+                        label="Expiration"
+                        onFocusCapture={handleInputFocus}
+                      />
+                    )}
+                  </InputMask>
+                </Grid>
+                <Grid item xs={12} sm={6}>
+                  <InputMask
+                    mask={amex ? "9999" : "999"}
+                    value={cvc}
+                    onChange={(e) => setCvc(e.target.value)}
+                    disabled={false}
+                    maskChar=" "
+                  >
+                    {() => (
+                      <TextField
+                        id="cvc"
+                        name="cvc"
+                        fullWidth
+                        required
+                        label="CVC"
+                        onFocusCapture={handleInputFocus}
+                      />
+                    )}
+                  </InputMask>
+                </Grid>{" "}
+              </>
+            )}
           </Grid>
           <Button
             type="submit"
