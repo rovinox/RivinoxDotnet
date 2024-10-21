@@ -16,7 +16,8 @@ namespace RovinoxDotnet.Models
         public AppUser? Approver { get; set; }
         public string? CashReceiverId { get; set; }
         public AppUser? CashReceiver { get; set; }
-        public DateTime ProcessDate { get; set; }
+        public DateTime ProcessDate { get; set; } = DateTime.Now;
+        public decimal Amount { get; set; }
         public List<Notification>? Notification { get; set; }
 
 

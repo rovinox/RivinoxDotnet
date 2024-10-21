@@ -3,7 +3,7 @@ import TextField from '@mui/material/TextField';
 import Autocomplete from '@mui/material/Autocomplete';
 import { apiService } from '../../api/axios';
 
-export default function Index() {
+export default function Index({onChange}) {
     const [options, setOptions] = useState([]);
 const previousController = useRef();
 
@@ -76,6 +76,9 @@ const onInputChange = (event, value, reason) => {
     onInputChange={onInputChange}
     getOptionLabel={(option) => option.label}
     style={{ width: '100%' }}
+    onChange={(event, option) =>{
+      onChange(option.value)
+    }}
     renderInput={(params) => (
       <TextField {...params} label="Select an Approver"  fullWidth />
     )}

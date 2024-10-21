@@ -13,16 +13,10 @@ using Microsoft.AspNetCore.Identity;
 
 namespace RovinoxDotnet.Repository
 {
-    public class BatchRepository : IBatchRepository
+    public class BatchRepository(ApplicationDBContext dbContext, UserManager<AppUser> userManager) : IBatchRepository
     {
-        private readonly ApplicationDBContext _dbContext;
-        private readonly UserManager<AppUser> _userManager;
-        public BatchRepository(ApplicationDBContext dbContext, UserManager<AppUser> userManager)
-        {
-            _dbContext = dbContext;
-            _userManager = userManager;
-
-        }
+        private readonly ApplicationDBContext _dbContext = dbContext;
+        private readonly UserManager<AppUser> _userManager = userManager;
 
         public async Task<Batch> CreateAsync(CreateBatchDto batchModel)
         {

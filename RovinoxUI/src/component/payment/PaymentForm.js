@@ -19,6 +19,7 @@ export default function PaymentForm() {
   const amountInput = useRef();
   const user = JSON.parse(localStorage.getItem("user"));
   console.log("user: ", user);
+  const [receiverId, setReceiverId] = useState(null);
   const [cvc, setCvc] = useState("");
   const [expiry, setExpiry] = useState("");
   const [focused, setFocused] = useState("");
@@ -44,7 +45,7 @@ export default function PaymentForm() {
         setPaymentType([
           {
             value: result?.data?.balance,
-            label: "Pay in Full ",
+            label: "Pay in Full",
           },
           {
             value: "custom",
@@ -66,6 +67,7 @@ export default function PaymentForm() {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
+    let payLoad = {amount}
     const cardInfo = {
       cvc,
       expiry,
@@ -74,10 +76,21 @@ export default function PaymentForm() {
       name,
       zipCode,
       email: user.email,
+      paymentType
     };
+    if(isCash){
+      payLoad.paymentType = "cash"
+      payLoad.receiverId = receiverId
+
+    }
+
+    
+
+    console.log('payLoad: ', {payLoad, cardInfo, receiverId});
+    
 
     try {
-      const result = await axios.post("/payment", cardInfo);
+      const result = await apiService.post("http://localhost:5122/api/payment/process", payLoad);
       if (result.status === 200) {
         console.log(result);
         toast.success("Your payment has been sent successfully");
@@ -188,7 +201,7 @@ export default function PaymentForm() {
             </Grid>
             {isCash ? (
               <Grid item xs={12}>
-                <AutocompleteInput/>
+                <AutocompleteInput onChange={setReceiverId} />
               </Grid>
             ) : (
               <>

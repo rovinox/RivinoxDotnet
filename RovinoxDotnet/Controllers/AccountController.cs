@@ -42,7 +42,8 @@ namespace RovinoxDotnet.Controllers
             if (user == null) return Unauthorized("Invalid Email!");
 
             // var userData = await _userManager.FindByIdAsync(user.Id);
-            var roles = await _userManager.GetRolesAsync(user);
+            // var roles = await _userManager.GetRolesAsync(user);
+            var defaultRole = Roles.Admin;
 
             var result = await _signInManager.CheckPasswordSignInAsync(user, loginDto.Password, false);
 
@@ -50,7 +51,8 @@ namespace RovinoxDotnet.Controllers
             return Ok(
                 new NewUserDto
                 {
-                    Roles = Convert.ToString(roles[0]),
+                    // Roles = Convert.ToString(roles[0]),
+                    Roles = defaultRole,
                     Email = user.Email,
                     Token = _tokenService.CreateToken(user),
                     FirstName = user.FirstName,
@@ -135,16 +137,17 @@ namespace RovinoxDotnet.Controllers
         {
             var userId = _authenticatedUserService.UserId;
             var user = await _userManager.Users.FirstOrDefaultAsync(x => x.Id == userId);
+            var appData = new AppUserDTO
+            {
+                FirstName = user.FirstName,
+                LastName = user.LastName,
+                Email = user.Email,
+                Enabled = true,
+                Balance = user.Balance,
+                Id = user.Id
+            };
             return Ok(
-                      new AppUserDTO
-                      {
-                          FirstName = user.FirstName,
-                          LastName = user.LastName,
-                          Email = user.Email,
-                          Enabled = true,
-                          Balance = user.Balance,
-                          Id = user.Id
-                      }
+                      appData
                   );
         }
         [HttpGet("search/users")]
@@ -152,13 +155,21 @@ namespace RovinoxDotnet.Controllers
         public IActionResult GetSearchedUserAsync([FromQuery] string searchTerm)
         {
 
-            var users = _userManager.Users.Where(x => x.FirstName.Contains(searchTerm) || x.LastName.Contains(searchTerm ) ||  x.Email.Contains(searchTerm ) && x.Enabled == true).ToList().Select(user => new AppUserDTO
-            {
-                FirstName = user.FirstName,
-                LastName = user.LastName,
-                Email = user.Email,
-                Id = user.Id
-            });
+            var users = _userManager.Users
+     .Where(x =>
+         (x.FirstName.ToLower().Contains(searchTerm.ToLower()) ||
+         x.LastName.ToLower().Contains(searchTerm.ToLower()) ||
+         x.Email.ToLower().Contains(searchTerm.ToLower())) &&
+         x.Enabled)
+     .Select(user => new AppUserDTO
+     {
+         FirstName = user.FirstName,
+         LastName = user.LastName,
+         Email = user.Email,
+         Id = user.Id
+     })
+     .ToList();
+
             return Ok(
                      users
                   );
