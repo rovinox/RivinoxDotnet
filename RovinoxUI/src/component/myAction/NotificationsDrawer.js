@@ -3,7 +3,7 @@ import Box from "@mui/material/Box";
 import Drawer from "@mui/material/Drawer";
 import List from "@mui/material/List";
 import ListItem from "@mui/material/ListItem";
-import ListItemText from "@mui/material/ListItemText";
+import Paper from "@mui/material/Paper";
 import Typography from "@mui/material/Typography";
 import ListItemButton from "@mui/material/ListItemButton";
 import { useSelector, useDispatch } from "react-redux";
@@ -37,18 +37,19 @@ export default function NotificationsDrawer() {
     getEnrollments()
   }, [batchId]);
 
-  const navigateToEnrollments = (curriculumId) => {
-     navigate(`/student/curriculumId/${curriculumId}/batchId/${batchId}`)
+  const navigateToNotification = (notificationId) => {
+    console.log('notificationId: ', notificationId);
+     //navigate(`/myAction?notificationId=${notificationId}`)
   }
 
   const list = () => (
     <Box
-      sx={{ width: 300}}
+      sx={{ width: 400 }}
       role="presentation"
       onClick={() => dispatch(closeNotificationDrawer())}
       onKeyDown={() => dispatch(closeNotificationDrawer())}
     >
-      <NotificationsList notifications={notifications}/>
+      <NotificationsList navigateToNotification={navigateToNotification} notifications={notifications}/>
     </Box>
   );
 
@@ -59,7 +60,10 @@ export default function NotificationsDrawer() {
       open={isNotificationDrawer}
       onClose={() => dispatch(closeNotificationDrawer())}
     >
-      {notifications?.length === 0 ? <Typography  sx={{ width: 300, mt:10 }} textAlign="center">No Notifications</Typography> : list()}
+     
+
+      {notifications?.length === 0 ? <Typography  sx={{ mt:10 }} textAlign="center">No Notifications</Typography> : list()}
+     
 
     </Drawer>
   );

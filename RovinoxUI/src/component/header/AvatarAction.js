@@ -1,17 +1,12 @@
-import { useState, useEffect } from "react";
-import AppBar from "@mui/material/AppBar";
+import { useState } from "react";
 import Box from "@mui/material/Box";
-import Toolbar from "@mui/material/Toolbar";
 import IconButton from "@mui/material/IconButton";
 import Typography from "@mui/material/Typography";
 import Menu from "@mui/material/Menu";
-import MenuIcon from "@mui/icons-material/Menu";
-import Container from "@mui/material/Container";
-import Avatar from "@mui/material/Avatar";
-import Button from "@mui/material/Button";
 import Tooltip from "@mui/material/Tooltip";
 import MenuItem from "@mui/material/MenuItem";
 import { useNavigate } from "react-router-dom";
+import AvatarPicture from "../common/AvatarPicture";
 
 
 export default function AvatarAction() {
@@ -48,44 +43,12 @@ export default function AvatarAction() {
       console.error(error?.message);
     }
   };
-  function stringToColor(string) {
-    let hash = 0;
-    let i;
 
-    /* eslint-disable no-bitwise */
-    for (i = 0; i < string.length; i += 1) {
-      hash = string.charCodeAt(i) + ((hash << 5) - hash);
-    }
-
-    let color = "#";
-
-    for (i = 0; i < 3; i += 1) {
-      const value = (hash >> (i * 8)) & 0xff;
-      color += `00${value.toString(16)}`.slice(-2);
-    }
-    /* eslint-enable no-bitwise */
-
-    return color;
-  }
-  function stringAvatar(name) {
-    return {
-      sx: {
-        bgcolor: stringToColor(name),
-      },
-      children: `${name.split(" ")[0][0]}${name.split(" ")[1][0]}`,
-    };
-  }
   return (
     <div>  <Box sx={{ flexGrow: 0 }}>
     <Tooltip title="Open settings">
       <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-        <Avatar
-          {...stringAvatar(
-            `${user?.firstName.charAt(0).toUpperCase()} ${user?.lastName
-              .charAt(0)
-              .toUpperCase()}`
-          )}
-        />
+        <AvatarPicture firstName={user.firstName} lastName={user.lastName}/>
       </IconButton>
     </Tooltip>
     <Menu

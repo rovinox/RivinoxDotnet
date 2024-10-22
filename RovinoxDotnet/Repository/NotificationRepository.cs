@@ -24,7 +24,8 @@ namespace RovinoxDotnet.Repository
 
         public async Task<List<Notification>> GetAllAsync(string userId)
         {
-           return await _dbContext.Notifications.Where(x => x.ReceiverId == userId).ToListAsync(); 
+           return await _dbContext.Notifications.Include(u => u.Sender ).Where(x => x.ReceiverId == userId).ToListAsync(); 
+           //return await _dbContext.Notifications.Where(x => x.ReceiverId == userId).ToListAsync(); 
         }
     }
 }
