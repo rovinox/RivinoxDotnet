@@ -10,10 +10,12 @@ import { useSelector, useDispatch } from "react-redux";
 import { closeNotificationDrawer } from "../../duck/drawerSlice";
 import { apiService } from "../../api/axios";
 import { useNavigate } from "react-router-dom";
+import NotificationsList from "./NotificationsList";
 
 export default function NotificationsDrawer() {
   const navigate = useNavigate();
   const isNotificationDrawer = useSelector((state) => state.drawer.isNotificationDrawer);
+  const notifications = useSelector((state) => state.drawer.notifications);
   const batchId = 5
   const [courseList, setCourseList] = useState([]);
   const dispatch = useDispatch();
@@ -41,27 +43,12 @@ export default function NotificationsDrawer() {
 
   const list = () => (
     <Box
-      sx={{ width: 300 }}
+      sx={{ width: 300}}
       role="presentation"
       onClick={() => dispatch(closeNotificationDrawer())}
       onKeyDown={() => dispatch(closeNotificationDrawer())}
     >
-      <List>
-  
-        {courseList.map((course, index) => (
-          <ListItemButton key={index} sx={{ height: 35 }}>
-            <ListItem
-              onClick={() => navigateToEnrollments(course.id)}
-              sx={{
-                height: 35,
-              }}
-            >
-              <Typography>Day {course.order}&nbsp;-&nbsp; </Typography>
-              <ListItemText primary={course.title} />
-            </ListItem>
-          </ListItemButton>
-        ))}
-      </List>
+      <NotificationsList notifications={notifications}/>
     </Box>
   );
 
@@ -72,7 +59,7 @@ export default function NotificationsDrawer() {
       open={isNotificationDrawer}
       onClose={() => dispatch(closeNotificationDrawer())}
     >
-      {courseList.length === 0 ? <Typography  sx={{ width: 300, mt:10 }} textAlign="center">No Curriculum</Typography> : list()}
+      {notifications?.length === 0 ? <Typography  sx={{ width: 300, mt:10 }} textAlign="center">No Notifications</Typography> : list()}
 
     </Drawer>
   );

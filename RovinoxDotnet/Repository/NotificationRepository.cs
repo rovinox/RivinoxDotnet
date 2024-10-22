@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
 using RovinoxDotnet.Data;
 using RovinoxDotnet.DTOs.NotificationDto;
 using RovinoxDotnet.Interfaces;
@@ -19,6 +20,11 @@ namespace RovinoxDotnet.Repository
             await _dbContext.Notifications.AddAsync(formattedNotificationData);
             await _dbContext.SaveChangesAsync();
             return formattedNotificationData;
+        }
+
+        public async Task<List<Notification>> GetAllAsync(string userId)
+        {
+           return await _dbContext.Notifications.Where(x => x.ReceiverId == userId).ToListAsync(); 
         }
     }
 }

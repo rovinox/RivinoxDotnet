@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -10,6 +11,7 @@ namespace RovinoxDotnet.DTOs.Payment
         public int? Cvc { get; set; }
         public int? Expiry { get; set; }
         public int? Number { get; set; }
+        [Required]
         public decimal Amount { get; set; }
         public string? Name { get; set; } 
         public int? ZipCode { get; set; }

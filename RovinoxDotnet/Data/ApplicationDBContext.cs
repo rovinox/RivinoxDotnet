@@ -38,14 +38,48 @@ namespace RovinoxDotnet.Data
             ];
 
             builder.Entity<IdentityRole>().HasData(roles);
-            
-            builder.Entity<Notification>().HasKey(x => new {x.ReceiverId, x.SenderId});
-            builder.Entity<Notification>().HasOne(e=>e.Sender).WithMany(z=> z.Sender).HasForeignKey(x=>x.SenderId).OnDelete(DeleteBehavior.ClientSetNull);
-            builder.Entity<Notification>().HasOne(e=>e.Receiver).WithMany(z=> z.Receiver).HasForeignKey(x=>x.ReceiverId).OnDelete(DeleteBehavior.ClientSetNull);
+            builder.Entity<Payment>(entity =>
+      {
+    entity.HasOne(d => d.Approver)
+        .WithMany(p => p.Approvers)
+        .HasForeignKey(d => d.ApproverId)
+        .OnDelete(DeleteBehavior.SetNull)
+        .HasConstraintName("ApproverId");
 
-            builder.Entity<Payment>().HasKey(x => new {x.ApproverId, x.CashReceiverId});
-            builder.Entity<Payment>().HasOne(e=>e.Approver).WithMany(z=> z.Approver).HasForeignKey(x=>x.ApproverId).OnDelete(DeleteBehavior.ClientSetNull);
-            builder.Entity<Payment>().HasOne(e=>e.CashReceiver).WithMany(z=> z.CashReceiver).HasForeignKey(x=>x.CashReceiverId).OnDelete(DeleteBehavior.ClientSetNull);
+    entity.HasOne(d => d.CashReceiver)
+        .WithMany(p => p.CashReceivers)
+        .HasForeignKey(d => d.CashReceiverId)
+        .OnDelete(DeleteBehavior.SetNull)
+        .HasConstraintName("CashReceiverId");
+
+    entity.HasOne(d => d.User)
+       .WithMany(p => p.Users)
+       .HasForeignKey(d => d.UserId)
+       .OnDelete(DeleteBehavior.SetNull)
+       .HasConstraintName("UserId");
+});
+
+    builder.Entity<Notification>(entity =>
+    {
+    entity.HasOne(d => d.Receiver)
+        .WithMany(p => p.Receivers)
+        .HasForeignKey(d => d.ReceiverId)
+        .OnDelete(DeleteBehavior.SetNull)
+        .HasConstraintName("ReceiverId");
+
+    entity.HasOne(d => d.Sender)
+        .WithMany(p => p.Senders)
+        .HasForeignKey(d => d.SenderId)
+        .OnDelete(DeleteBehavior.SetNull)
+        .HasConstraintName("SenderId");
+
+    // entity.HasOne(d => d.Payment)
+    //     .WithMany(p => p.Notification)
+    //     .HasForeignKey(d => d.PaymentId)
+    //     .OnDelete(DeleteBehavior.SetNull)
+    //     .HasConstraintName("PaymentId");
+
+});
 
         }
 

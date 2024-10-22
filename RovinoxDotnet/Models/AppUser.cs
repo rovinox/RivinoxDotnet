@@ -6,17 +6,17 @@ using Microsoft.AspNetCore.Identity;
 
 namespace RovinoxDotnet.Models
 {
+    
     public class AppUser : IdentityUser
     {
         public string FirstName { get; set; } = string.Empty;
         public string LastName { get; set; } = string.Empty;
-        public List<Enrollment>? Enrollment { get; set; } 
-        public List<Notification>? Notification { get; set; } 
-        public List<Notification>? Receiver { get; set; } 
-        public List<Notification>? Sender { get; set; } 
-        public List<Payment>? Payment { get; set; } 
-        public List<Payment>? Approver { get; set; } 
-        public List<Payment>? CashReceiver { get; set; } 
+        public List<Enrollment>? Enrollments { get; set; } 
+        public List<Notification>? Receivers { get; set; } 
+        public List<Notification>? Senders { get; set; } 
+        public List<Payment>? Users { get; set; } 
+        public List<Payment>? Approvers { get; set; } 
+        public List<Payment>? CashReceivers { get; set; } 
         public decimal Balance { get; set; } 
         public bool Enabled { get; set; }
     }

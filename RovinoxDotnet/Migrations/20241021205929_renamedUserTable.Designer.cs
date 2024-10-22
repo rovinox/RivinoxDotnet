@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using RovinoxDotnet.Data;
@@ -11,9 +12,11 @@ using RovinoxDotnet.Data;
 namespace RovinoxDotnet.Migrations
 {
     [DbContext(typeof(ApplicationDBContext))]
-    partial class ApplicationDBContextModelSnapshot : ModelSnapshot
+    [Migration("20241021205929_renamedUserTable")]
+    partial class renamedUserTable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -50,13 +53,13 @@ namespace RovinoxDotnet.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "363c9697-ccb1-46fa-b5bc-410d60da0b33",
+                            Id = "3b1fe233-3523-47ea-a52b-de3151cf9fa6",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         },
                         new
                         {
-                            Id = "9f8f6c13-1935-4916-a1ea-343c14f2e805",
+                            Id = "690803ff-e1d0-49d6-a96c-55318feb514a",
                             Name = "User",
                             NormalizedName = "USER"
                         });
@@ -416,11 +419,14 @@ namespace RovinoxDotnet.Migrations
 
             modelBuilder.Entity("RovinoxDotnet.Models.Notification", b =>
                 {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
+                    b.Property<string>("ReceiverId")
+                        .HasColumnType("text");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+                    b.Property<string>("SenderId")
+                        .HasColumnType("text");
+
+                    b.Property<string>("AppUserId")
+                        .HasColumnType("text");
 
                     b.Property<bool>("Completed")
                         .HasColumnType("boolean");
@@ -434,51 +440,53 @@ namespace RovinoxDotnet.Migrations
                     b.Property<bool>("Enabled")
                         .HasColumnType("boolean");
 
+                    b.Property<int>("Id")
+                        .HasColumnType("integer");
+
                     b.Property<string>("Name")
                         .HasColumnType("text");
 
-                    b.Property<int?>("PaymentId")
-                        .HasColumnType("integer");
-
-                    b.Property<string>("ReceiverId")
+                    b.Property<string>("PaymentApproverId")
+                        .IsRequired()
                         .HasColumnType("text");
+
+                    b.Property<string>("PaymentCashReceiverId")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<int>("PaymentId")
+                        .HasColumnType("integer");
 
                     b.Property<bool>("Seen")
                         .HasColumnType("boolean");
 
-                    b.Property<string>("SenderId")
-                        .HasColumnType("text");
-
                     b.Property<string>("Type")
                         .HasColumnType("text");
 
-                    b.HasKey("Id");
+                    b.HasKey("ReceiverId", "SenderId");
 
-                    b.HasIndex("PaymentId");
-
-                    b.HasIndex("ReceiverId");
+                    b.HasIndex("AppUserId");
 
                     b.HasIndex("SenderId");
+
+                    b.HasIndex("PaymentApproverId", "PaymentCashReceiverId");
 
                     b.ToTable("Notifications");
                 });
 
             modelBuilder.Entity("RovinoxDotnet.Models.Payment", b =>
                 {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
-
-                    b.Property<decimal>("Amount")
-                        .HasColumnType("numeric");
-
                     b.Property<string>("ApproverId")
                         .HasColumnType("text");
 
                     b.Property<string>("CashReceiverId")
                         .HasColumnType("text");
+
+                    b.Property<decimal>("Amount")
+                        .HasColumnType("numeric");
+
+                    b.Property<int>("Id")
+                        .HasColumnType("integer");
 
                     b.Property<string>("PaymentType")
                         .HasColumnType("text");
@@ -492,9 +500,7 @@ namespace RovinoxDotnet.Migrations
                     b.Property<string>("UserId")
                         .HasColumnType("text");
 
-                    b.HasKey("Id");
-
-                    b.HasIndex("ApproverId");
+                    b.HasKey("ApproverId", "CashReceiverId");
 
                     b.HasIndex("CashReceiverId");
 
@@ -591,7 +597,7 @@ namespace RovinoxDotnet.Migrations
                         .HasForeignKey("BatchId");
 
                     b.HasOne("RovinoxDotnet.Models.AppUser", "User")
-                        .WithMany("Enrollments")
+                        .WithMany("Enrollment")
                         .HasForeignKey("UserId");
 
                     b.Navigation("Batches");
@@ -618,21 +624,25 @@ namespace RovinoxDotnet.Migrations
 
             modelBuilder.Entity("RovinoxDotnet.Models.Notification", b =>
                 {
-                    b.HasOne("RovinoxDotnet.Models.Payment", "Payment")
+                    b.HasOne("RovinoxDotnet.Models.AppUser", null)
                         .WithMany("Notification")
-                        .HasForeignKey("PaymentId");
+                        .HasForeignKey("AppUserId");
 
                     b.HasOne("RovinoxDotnet.Models.AppUser", "Receiver")
-                        .WithMany("Receivers")
+                        .WithMany("Receiver")
                         .HasForeignKey("ReceiverId")
-                        .OnDelete(DeleteBehavior.SetNull)
-                        .HasConstraintName("ReceiverId");
+                        .IsRequired();
 
                     b.HasOne("RovinoxDotnet.Models.AppUser", "Sender")
-                        .WithMany("Senders")
+                        .WithMany("Sender")
                         .HasForeignKey("SenderId")
-                        .OnDelete(DeleteBehavior.SetNull)
-                        .HasConstraintName("SenderId");
+                        .IsRequired();
+
+                    b.HasOne("RovinoxDotnet.Models.Payment", "Payment")
+                        .WithMany("Notification")
+                        .HasForeignKey("PaymentApproverId", "PaymentCashReceiverId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("Payment");
 
@@ -644,22 +654,18 @@ namespace RovinoxDotnet.Migrations
             modelBuilder.Entity("RovinoxDotnet.Models.Payment", b =>
                 {
                     b.HasOne("RovinoxDotnet.Models.AppUser", "Approver")
-                        .WithMany("Approvers")
+                        .WithMany("Approver")
                         .HasForeignKey("ApproverId")
-                        .OnDelete(DeleteBehavior.SetNull)
-                        .HasConstraintName("ApproverId");
+                        .IsRequired();
 
                     b.HasOne("RovinoxDotnet.Models.AppUser", "CashReceiver")
-                        .WithMany("CashReceivers")
+                        .WithMany("CashReceiver")
                         .HasForeignKey("CashReceiverId")
-                        .OnDelete(DeleteBehavior.SetNull)
-                        .HasConstraintName("CashReceiverId");
+                        .IsRequired();
 
                     b.HasOne("RovinoxDotnet.Models.AppUser", "User")
-                        .WithMany("Users")
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.SetNull)
-                        .HasConstraintName("UserId");
+                        .WithMany("Payment")
+                        .HasForeignKey("UserId");
 
                     b.Navigation("Approver");
 
@@ -670,17 +676,19 @@ namespace RovinoxDotnet.Migrations
 
             modelBuilder.Entity("RovinoxDotnet.Models.AppUser", b =>
                 {
-                    b.Navigation("Approvers");
+                    b.Navigation("Approver");
 
-                    b.Navigation("CashReceivers");
+                    b.Navigation("CashReceiver");
 
-                    b.Navigation("Enrollments");
+                    b.Navigation("Enrollment");
 
-                    b.Navigation("Receivers");
+                    b.Navigation("Notification");
 
-                    b.Navigation("Senders");
+                    b.Navigation("Payment");
 
-                    b.Navigation("Users");
+                    b.Navigation("Receiver");
+
+                    b.Navigation("Sender");
                 });
 
             modelBuilder.Entity("RovinoxDotnet.Models.Batch", b =>

@@ -10,5 +10,6 @@ namespace RovinoxDotnet.Interfaces
     public interface INotificationRepository
     {
         Task<Notification> CreateAsync(CreateNotificationDto notificationDto);
+        Task <List<Notification>> GetAllAsync(string userId);
     }
 }

@@ -27,6 +27,7 @@ namespace RovinoxDotnet.Controllers
         private readonly IBatchRepository _batchRepository = batchRepository;
         private readonly IEnrollmentRepository _enrollmentRepository = enrollmentRepository;
         private readonly ApplicationDBContext _dbContext = dbContext;
+        private readonly string defaultRole = Roles.Admin;
 
         [HttpPost("login")]
         public async Task<IActionResult> Login(LoginDto loginDto)
@@ -43,7 +44,6 @@ namespace RovinoxDotnet.Controllers
 
             // var userData = await _userManager.FindByIdAsync(user.Id);
             // var roles = await _userManager.GetRolesAsync(user);
-            var defaultRole = Roles.Admin;
 
             var result = await _signInManager.CheckPasswordSignInAsync(user, loginDto.Password, false);
 
@@ -89,7 +89,7 @@ namespace RovinoxDotnet.Controllers
                 if (createdUser.Succeeded)
                 {
                     //  var user = await _userManager.FindByEmailAsync(registerDto.Email);
-                    var defaultRole = Roles.Admin;
+    
 
 
                     var enrollmentDto = new CreateEnrollmentDto

@@ -80,7 +80,7 @@ export default function PaymentForm() {
     };
     if(isCash){
       payLoad.paymentType = "cash"
-      payLoad.receiverId = receiverId
+      payLoad.cashReceiverId = receiverId
 
     }
 

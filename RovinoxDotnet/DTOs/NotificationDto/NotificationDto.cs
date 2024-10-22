@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using RovinoxDotnet.Models;
 
 namespace RovinoxDotnet.DTOs.NotificationDto
 {
@@ -15,5 +16,7 @@ namespace RovinoxDotnet.DTOs.NotificationDto
         public string Description  { get; set; }
         public bool Seen { get; set; }
         public bool Enabled { get; set; }
+
+        
     }
 }

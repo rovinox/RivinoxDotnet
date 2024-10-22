@@ -1,8 +1,17 @@
-import { createSlice } from "@reduxjs/toolkit";
+import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
+import { apiService } from "../api/axios";
 const initialState = {
   open: false,
   isNotificationDrawer: false,
+  notifications:[],
+  notSeenCount: 0,
 };
+
+
+export const getNotification = createAsyncThunk("getNotification", async () => {
+  const result = await apiService.get("http://localhost:5122/api/notification");
+  return result.data;
+})
 
 export const drawerSlicer = createSlice({
   name: "drawer",
@@ -21,6 +30,16 @@ export const drawerSlicer = createSlice({
     },
     closeNotificationDrawer: (state) => {
       state.isNotificationDrawer = false;
+    },
+  },
+  extraReducers: {
+    // updateBatchId: (state, action) => {
+    //   const { batchId } = action.payload;
+    //   state.batchId = batchId;
+    // },
+    [getNotification.fulfilled]: (state, action) => {
+      state.notifications = action.payload?.notifications;
+      state.notSeenCount = action.payload?.notSeenCount;
     },
   },
 });

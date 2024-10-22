@@ -43,7 +43,7 @@ namespace RovinoxDotnet.Controllers
 
             return Ok(payment);
              } else {
-                return Ok();
+                return Ok(new {message = "Cash payment has been updated successfully"});
              }
 
              }

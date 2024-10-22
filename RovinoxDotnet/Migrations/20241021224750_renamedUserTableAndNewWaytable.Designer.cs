@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using RovinoxDotnet.Data;
@@ -11,9 +12,11 @@ using RovinoxDotnet.Data;
 namespace RovinoxDotnet.Migrations
 {
     [DbContext(typeof(ApplicationDBContext))]
-    partial class ApplicationDBContextModelSnapshot : ModelSnapshot
+    [Migration("20241021224750_renamedUserTableAndNewWaytable")]
+    partial class renamedUserTableAndNewWaytable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -50,13 +53,13 @@ namespace RovinoxDotnet.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "363c9697-ccb1-46fa-b5bc-410d60da0b33",
+                            Id = "0f629a56-699f-4052-b996-600dfc408225",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         },
                         new
                         {
-                            Id = "9f8f6c13-1935-4916-a1ea-343c14f2e805",
+                            Id = "93c5f33f-40ee-4456-be84-3eb11e87fa81",
                             Name = "User",
                             NormalizedName = "USER"
                         });
@@ -437,7 +440,7 @@ namespace RovinoxDotnet.Migrations
                     b.Property<string>("Name")
                         .HasColumnType("text");
 
-                    b.Property<int?>("PaymentId")
+                    b.Property<int>("PaymentId")
                         .HasColumnType("integer");
 
                     b.Property<string>("ReceiverId")
@@ -620,7 +623,9 @@ namespace RovinoxDotnet.Migrations
                 {
                     b.HasOne("RovinoxDotnet.Models.Payment", "Payment")
                         .WithMany("Notification")
-                        .HasForeignKey("PaymentId");
+                        .HasForeignKey("PaymentId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.HasOne("RovinoxDotnet.Models.AppUser", "Receiver")
                         .WithMany("Receivers")
