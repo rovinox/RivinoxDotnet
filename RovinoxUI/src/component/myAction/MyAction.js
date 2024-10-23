@@ -13,10 +13,6 @@ export default function MyAction() {
             lastName: "Mahmud"
           },
           receiverId: "7ee6cf1a-2f18-4edd-b353-cb77b945c998",
-          receiver: {
-            firstName: "Sam",
-            lastName: "Smith"
-          },
           seen: false,
           enabled: true,
           completed: false,
@@ -35,10 +31,6 @@ export default function MyAction() {
             lastName: "Mahmud"
           },
           receiverId: "ee640120-b0fa-4c35-8c27-620cebe62880",
-          receiver: {
-            firstName: "Sam",
-            lastName: "Smith"
-          },
           seen: true,
           enabled: true,
           completed: true,
@@ -57,10 +49,6 @@ export default function MyAction() {
             lastName: "Mahmud"
           },
           receiverId: "aefd026a-a50b-4d49-8aa8-d2be2b9cbe96",
-          receiver: {
-            firstName: "Sam",
-            lastName: "Smith"
-          },
           seen: true,
           enabled: true,
           completed: false,
@@ -79,10 +67,6 @@ export default function MyAction() {
             lastName: "Mahmud"
           },
           receiverId: "471faed7-0529-4028-9cd3-324b5613de63",
-          receiver: {
-            firstName: "Sam",
-            lastName: "Smith"
-          },
           seen: false,
           enabled: true,
           completed: true,
