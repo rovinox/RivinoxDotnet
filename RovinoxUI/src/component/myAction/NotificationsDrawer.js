@@ -39,7 +39,7 @@ export default function NotificationsDrawer() {
 
   const navigateToNotification = (notificationId) => {
     console.log('notificationId: ', notificationId);
-     //navigate(`/myAction?notificationId=${notificationId}`)
+     navigate(`/myAction?notificationId=${notificationId}`)
   }
 
   const list = () => (

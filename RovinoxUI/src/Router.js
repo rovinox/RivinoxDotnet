@@ -17,6 +17,7 @@ import NotFound from "./component/NotFound.js";
 import PaymentForm from "./component/payment/PaymentForm.js";
 import Profile from "./component/profile/Profile.js";
 import CurriculumContent from "./component/curriculum/CurriculumContent.js";
+import MyAction from "./component/myAction/MyAction.js";
 
 const getDesignTokens = (mode) => ({
   palette: {
@@ -80,6 +81,7 @@ export default function Router() {
           <Route path="/meeting" element={<OneAndOne />} />
           <Route path="/contactus" element={<ContactUS />} />
           <Route path="/payment" element={<PaymentForm />} />
+          <Route path="/myAction" element={<MyAction/>} />
           <Route path="/profile" element={<Profile />} />
           <Route path="*" element={<NotFound />} />
         </Routes>

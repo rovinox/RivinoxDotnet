@@ -20,7 +20,7 @@ import logoRvinox from "../../asset/logoRvinox.svg";
 import EnrollmentDropdown from "../enrollment/EnrollmentDropdown";
 import CourseListDrawer from "../../student/CourseListDrawer";
 import AvatarAction from "./AvatarAction";
-import MyAction from "../myAction/MyAction"
+import MyActionBadge from "../myAction/MyActionBadge"
 import NotificationsDrawer from "../myAction/NotificationsDrawer";
 
 const Header = () => {
@@ -157,7 +157,7 @@ const Header = () => {
             )}
           </Box>
           <AvatarAction/>
-          <MyAction/>
+          <MyActionBadge/>
         </Toolbar>
       </Container>
     </AppBar>
