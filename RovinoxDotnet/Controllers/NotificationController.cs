@@ -31,15 +31,15 @@ namespace RovinoxDotnet.Controllers
         public async Task<IActionResult> GetAllAsync()
         {
             // var userId = _authenticatedUserService.UserId;
-            var userId = "25eb8ff1-ceb3-417d-a82f-5de587bc6e29";
+            var userId = "cc0b19a6-90bc-4a39-959b-7826bdaeafc2";
 
             var result = await _notificationRepository.GetAllAsync(userId);
-            List<Notification> Notifications = [];
+            List<NotificationDto> notifications = [];
             int notificationsWithNotSeenCount = 0;
 
             foreach (var notification in result)
             {
-                Notifications.Add(new Notification
+                notifications.Add(new NotificationDto
                 {
                     Id = notification.Id,
                     SenderId = notification.SenderId,
@@ -49,11 +49,12 @@ namespace RovinoxDotnet.Controllers
                     Description = notification.Description,
                     Seen = notification.Seen,
                     Enabled = notification.Enabled,
-                    PaymentId = notification.PaymentId,
-                    Sender = new AppUser
+                    PaymentId = (int)notification.PaymentId,
+                    Sender = new AppUserDTO
                     {
                         FirstName = notification.Sender.FirstName,
-                        LastName = notification.Sender.LastName
+                        LastName = notification.Sender.LastName,
+                         Enabled = notification.Sender.Enabled,
                     }
                 });
                 if (!notification.Seen)
@@ -64,7 +65,7 @@ namespace RovinoxDotnet.Controllers
 
             return Ok(new ResponseNotificationDto
             {
-                Notifications = Notifications,
+                Notifications = notifications,
                 NotSeenCount = notificationsWithNotSeenCount
             });
         }

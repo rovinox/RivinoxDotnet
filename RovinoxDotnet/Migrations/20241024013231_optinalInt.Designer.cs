@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using RovinoxDotnet.Data;
@@ -11,9 +12,11 @@ using RovinoxDotnet.Data;
 namespace RovinoxDotnet.Migrations
 {
     [DbContext(typeof(ApplicationDBContext))]
-    partial class ApplicationDBContextModelSnapshot : ModelSnapshot
+    [Migration("20241024013231_optinalInt")]
+    partial class optinalInt
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -50,13 +53,13 @@ namespace RovinoxDotnet.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "899fbdde-9a55-4f55-a2f2-425ebed472fe",
+                            Id = "193e3252-da84-45aa-89d0-6c0e68b1c613",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         },
                         new
                         {
-                            Id = "cac4105c-b084-47e2-8f50-8762b27dda33",
+                            Id = "3f2aa010-ef1f-47e9-8882-2192be123a44",
                             Name = "User",
                             NormalizedName = "USER"
                         });
@@ -620,9 +623,7 @@ namespace RovinoxDotnet.Migrations
                 {
                     b.HasOne("RovinoxDotnet.Models.Payment", "Payment")
                         .WithMany("Notification")
-                        .HasForeignKey("PaymentId")
-                        .OnDelete(DeleteBehavior.SetNull)
-                        .HasConstraintName("PaymentId");
+                        .HasForeignKey("PaymentId");
 
                     b.HasOne("RovinoxDotnet.Models.AppUser", "Receiver")
                         .WithMany("Receivers")
