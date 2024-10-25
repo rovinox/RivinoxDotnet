@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using RovinoxDotnet.common;
 using RovinoxDotnet.DTOs.Account;
 using RovinoxDotnet.DTOs.NotificationDto;
 using RovinoxDotnet.Interfaces;
@@ -13,9 +14,10 @@ namespace RovinoxDotnet.Controllers
 {
     [ApiController]
     [Route("api/notification")]
-    public class NotificationController(INotificationRepository _notificationRepository, IAuthenticatedUserService _authenticatedUserService) : ControllerBase
+    public class NotificationController(INotificationRepository _notificationRepository, IAuthenticatedUserService _authenticatedUserService, IPaymentRepository _paymentRepository) : ControllerBase
     {
         [HttpPost]
+        //[Authorize]
         public async Task<IActionResult> CreateAsync([FromBody] CreateNotificationDto notificationDto)
         {
             if (!ModelState.IsValid)
@@ -25,6 +27,73 @@ namespace RovinoxDotnet.Controllers
 
             var result = await _notificationRepository.CreateAsync(notificationDto);
             return Ok(result);
+        }
+        [HttpPost("payment/notificationId/{notificationId:int}")]
+        //[Authorize]
+        public async Task<IActionResult> UpdateAndCreateAsync([FromRoute] int notificationId, [FromBody] UpdateNotificationByPaymentIdDto updateNotificationByPaymentIdDto)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            try
+            {
+                if (updateNotificationByPaymentIdDto.Type.Equals(NotificationType.ApprovedPayment))
+                {
+
+
+                    var updatedNT = await _notificationRepository.MarkCompleted(notificationId);
+                    var payment = await _paymentRepository.GetByIdAsync(updateNotificationByPaymentIdDto.PaymentId);
+
+
+                    if (updatedNT != null)
+                    {
+
+
+                        var isBalanceUpdated = await _paymentRepository.UpdateUserAfterPaymentAsync(updatedNT.SenderId, payment.Amount);
+                        if (isBalanceUpdated)
+                        {
+
+                            var notificationDto = new CreateNotificationDto
+                            {
+                                Type = NotificationType.ApprovedPayment,
+                                SenderId = updatedNT.ReceiverId,
+                                ReceiverId = updatedNT.SenderId,
+                                Name = NotificationType.ApprovedPaymentName,
+                                Description = NotificationType.ApprovedPaymentDescription
+                            };
+
+                            var newNT = await _notificationRepository.CreateAsync(notificationDto);
+
+                            return Ok(new {message= "Updated successfully"});
+                        }
+                        else
+                        {
+                            return NotFound();
+                        }
+
+                    }
+                    else
+                    {
+                        return NotFound();
+                    }
+
+                }
+                else
+                {
+                    return StatusCode(400, "Invalid payment type");
+                }
+
+
+
+            }
+            catch (Exception e)
+            {
+                return StatusCode(500, e);
+            }
+
+
         }
         [HttpGet]
         //[Authorize]
@@ -54,7 +123,7 @@ namespace RovinoxDotnet.Controllers
                     {
                         FirstName = notification.Sender.FirstName,
                         LastName = notification.Sender.LastName,
-                         Enabled = notification.Sender.Enabled,
+                        Enabled = notification.Sender.Enabled,
                     }
                 });
                 if (!notification.Seen)

@@ -33,8 +33,8 @@ namespace RovinoxDotnet.Controllers
                     {   Type = NotificationType.CashPayment,
                         SenderId = payment.UserId,
                         ReceiverId = payment.CashReceiverId,
-                        Name = "Accept Payment",
-                        Description = "please approve this if you have received the payment",
+                        Name = NotificationType.CardPayment,
+                        Description = NotificationType.CashPaymentDescription,
                         PaymentId = payment.Id
                     };
                     var notification = await _notificationRepository.CreateAsync(notificationDto);

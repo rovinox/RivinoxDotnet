@@ -16,8 +16,6 @@ namespace RovinoxDotnet.Mappers
                 Type = notificationDto.Type,
                 Name = notificationDto.Name,
                 Description = notificationDto.Description,
-                Seen = notificationDto.Seen,
-                Enabled = notificationDto.Enabled,
                 PaymentId = notificationDto.PaymentId
             };
 
