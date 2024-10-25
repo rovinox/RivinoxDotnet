@@ -8,7 +8,7 @@ namespace RovinoxDotnet.DTOs.NotificationDto
 {
     public class ResponseNotificationDto
     {
-        public  List<Notification> Notifications { get; set; }
+        public  List<NotificationDto> Notifications { get; set; }
          public int NotSeenCount { get; set; }
     }
 }

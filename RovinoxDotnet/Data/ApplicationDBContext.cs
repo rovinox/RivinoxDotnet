@@ -73,11 +73,11 @@ namespace RovinoxDotnet.Data
         .OnDelete(DeleteBehavior.SetNull)
         .HasConstraintName("SenderId");
 
-    // entity.HasOne(d => d.Payment)
-    //     .WithMany(p => p.Notification)
-    //     .HasForeignKey(d => d.PaymentId)
-    //     .OnDelete(DeleteBehavior.SetNull)
-    //     .HasConstraintName("PaymentId");
+    entity.HasOne(d => d.Payment)
+        .WithMany(p => p.Notification)
+        .HasForeignKey(d => d.PaymentId)
+        .OnDelete(DeleteBehavior.SetNull)
+        .HasConstraintName("PaymentId");
 
 });
 

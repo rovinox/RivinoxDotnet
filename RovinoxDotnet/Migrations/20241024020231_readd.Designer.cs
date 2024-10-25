@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using RovinoxDotnet.Data;
@@ -11,9 +12,11 @@ using RovinoxDotnet.Data;
 namespace RovinoxDotnet.Migrations
 {
     [DbContext(typeof(ApplicationDBContext))]
-    partial class ApplicationDBContextModelSnapshot : ModelSnapshot
+    [Migration("20241024020231_readd")]
+    partial class readd
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -50,13 +53,13 @@ namespace RovinoxDotnet.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "334eef34-aaad-4dba-b46c-291965ebc91d",
+                            Id = "899fbdde-9a55-4f55-a2f2-425ebed472fe",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         },
                         new
                         {
-                            Id = "ef3208d6-45ea-4a16-874a-9eb73c995e70",
+                            Id = "cac4105c-b084-47e2-8f50-8762b27dda33",
                             Name = "User",
                             NormalizedName = "USER"
                         });
@@ -426,9 +429,6 @@ namespace RovinoxDotnet.Migrations
                         .HasColumnType("boolean");
 
                     b.Property<DateTime>("CompletedOn")
-                        .HasColumnType("timestamp without time zone");
-
-                    b.Property<DateTime>("CreatedOn")
                         .HasColumnType("timestamp without time zone");
 
                     b.Property<string>("Description")

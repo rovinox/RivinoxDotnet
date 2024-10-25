@@ -10,5 +10,7 @@ namespace RovinoxDotnet.Interfaces
     public interface IPaymentRepository
     {
         Task<Payment> ProcessCashPaymentAsync(CreatePaymentDto paymentDto);
+        Task<Payment> GetByIdAsync(int PaymentId);
+        Task<bool> UpdateUserAfterPaymentAsync(string userId, decimal amount);
     }
 }

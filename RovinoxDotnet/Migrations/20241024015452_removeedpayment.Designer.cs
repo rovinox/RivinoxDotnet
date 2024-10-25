@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using RovinoxDotnet.Data;
@@ -11,9 +12,11 @@ using RovinoxDotnet.Data;
 namespace RovinoxDotnet.Migrations
 {
     [DbContext(typeof(ApplicationDBContext))]
-    partial class ApplicationDBContextModelSnapshot : ModelSnapshot
+    [Migration("20241024015452_removeedpayment")]
+    partial class removeedpayment
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -50,13 +53,13 @@ namespace RovinoxDotnet.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "334eef34-aaad-4dba-b46c-291965ebc91d",
+                            Id = "0ca68e52-f65c-4acf-9821-be2d77bb65d7",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         },
                         new
                         {
-                            Id = "ef3208d6-45ea-4a16-874a-9eb73c995e70",
+                            Id = "ff1c65e9-825f-45ca-a2f7-d693a7b5e5e0",
                             Name = "User",
                             NormalizedName = "USER"
                         });
@@ -428,9 +431,6 @@ namespace RovinoxDotnet.Migrations
                     b.Property<DateTime>("CompletedOn")
                         .HasColumnType("timestamp without time zone");
 
-                    b.Property<DateTime>("CreatedOn")
-                        .HasColumnType("timestamp without time zone");
-
                     b.Property<string>("Description")
                         .HasColumnType("text");
 
@@ -456,8 +456,6 @@ namespace RovinoxDotnet.Migrations
                         .HasColumnType("text");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("PaymentId");
 
                     b.HasIndex("ReceiverId");
 
@@ -621,12 +619,6 @@ namespace RovinoxDotnet.Migrations
 
             modelBuilder.Entity("RovinoxDotnet.Models.Notification", b =>
                 {
-                    b.HasOne("RovinoxDotnet.Models.Payment", "Payment")
-                        .WithMany("Notification")
-                        .HasForeignKey("PaymentId")
-                        .OnDelete(DeleteBehavior.SetNull)
-                        .HasConstraintName("PaymentId");
-
                     b.HasOne("RovinoxDotnet.Models.AppUser", "Receiver")
                         .WithMany("Receivers")
                         .HasForeignKey("ReceiverId")
@@ -638,8 +630,6 @@ namespace RovinoxDotnet.Migrations
                         .HasForeignKey("SenderId")
                         .OnDelete(DeleteBehavior.SetNull)
                         .HasConstraintName("SenderId");
-
-                    b.Navigation("Payment");
 
                     b.Navigation("Receiver");
 
@@ -703,11 +693,6 @@ namespace RovinoxDotnet.Migrations
             modelBuilder.Entity("RovinoxDotnet.Models.HomeWork", b =>
                 {
                     b.Navigation("Comments");
-                });
-
-            modelBuilder.Entity("RovinoxDotnet.Models.Payment", b =>
-                {
-                    b.Navigation("Notification");
                 });
 #pragma warning restore 612, 618
         }
