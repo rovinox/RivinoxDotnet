@@ -142,7 +142,7 @@ namespace RovinoxDotnet.Controllers
                 FirstName = user.FirstName,
                 LastName = user.LastName,
                 Email = user.Email,
-                Enabled = true,
+                Enabled = user.Enabled,
                 Balance = user.Balance,
                 Id = user.Id
             };

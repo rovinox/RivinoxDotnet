@@ -33,7 +33,10 @@ export default function CourseListDrawer() {
         console.log(error);
       }
     }
-    getEnrollments()
+    if(batchId){
+
+      getEnrollments()
+    }
   }, [batchId]);
 
   const navigateToEnrollments = (curriculumId) => {
