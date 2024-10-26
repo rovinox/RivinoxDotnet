@@ -61,7 +61,8 @@ namespace RovinoxDotnet.Controllers
                                 SenderId = updatedNT.ReceiverId,
                                 ReceiverId = updatedNT.SenderId,
                                 Name = NotificationType.ApprovedPaymentName,
-                                Description = NotificationType.ApprovedPaymentDescription
+                                Description = NotificationType.ApprovedPaymentDescription,
+                               // PaymentId = payment.Id,
                             };
 
                             var newNT = await _notificationRepository.CreateAsync(notificationDto);
@@ -96,18 +97,23 @@ namespace RovinoxDotnet.Controllers
 
         }
         [HttpGet]
-        //[Authorize]
+        [Authorize]
         public async Task<IActionResult> GetAllAsync()
         {
-            // var userId = _authenticatedUserService.UserId;
-            var userId = "cc0b19a6-90bc-4a39-959b-7826bdaeafc2";
+            var userId = _authenticatedUserService.UserId;
+            //var userId = "cc0b19a6-90bc-4a39-959b-7826bdaeafc2";
+        //   if (String.IsNullOrEmpty(userId)) {
+        //     return StatusCode(401);
+        //     }
 
             var result = await _notificationRepository.GetAllAsync(userId);
             List<NotificationDto> notifications = [];
             int notificationsWithNotSeenCount = 0;
 
-            foreach (var notification in result)
+            foreach (var  notification in result)
             {
+                int paymentId = (int)(notification.PaymentId == null ? notification.PaymentId : 0);
+
                 notifications.Add(new NotificationDto
                 {
                     Id = notification.Id,
@@ -117,14 +123,10 @@ namespace RovinoxDotnet.Controllers
                     Name = notification.Name,
                     Description = notification.Description,
                     Seen = notification.Seen,
-                    Enabled = notification.Enabled,
-                    PaymentId = (int)notification.PaymentId,
-                    Sender = new AppUserDTO
-                    {
-                        FirstName = notification.Sender.FirstName,
-                        LastName = notification.Sender.LastName,
-                        Enabled = notification.Sender.Enabled,
-                    }
+                    PaymentId = paymentId,
+                    SenderFirstName =  notification.Sender.FirstName,
+                    SenderLastName = notification.Sender.LastName,
+
                 });
                 if (!notification.Seen)
                 {

@@ -16,8 +16,8 @@ namespace RovinoxDotnet.DTOs.NotificationDto
         public string Type { get; set; }
         public string Name { get; set; }
         public string Description  { get; set; }
-        public AppUserDTO Sender { get; set; }
-        public bool Enabled { get; set; }
+        public string SenderFirstName { get; set; }
+        public string SenderLastName { get; set; }
         public bool Seen { get; set; }
 
         

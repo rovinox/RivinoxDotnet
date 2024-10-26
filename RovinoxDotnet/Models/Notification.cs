@@ -23,7 +23,8 @@ namespace RovinoxDotnet.Models
         public bool Completed { get; set; } = false;
         public DateTime CreatedOn { get; set; } = DateTime.Now;
         public DateTime CompletedOn { get; set; } 
-        public int? PaymentId { get; set; }
-        public Payment? Payment { get; set; }
+        public int? PaymentId { get; set; } = null;
+         [ForeignKey("PaymentId")]
+        public List<Payment> Payments { get; set; }
     }
 }
