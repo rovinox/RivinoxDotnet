@@ -62,7 +62,7 @@ namespace RovinoxDotnet.Controllers
                                 ReceiverId = updatedNT.SenderId,
                                 Name = NotificationType.ApprovedPaymentName,
                                 Description = NotificationType.ApprovedPaymentDescription,
-                               // PaymentId = payment.Id,
+                                PaymentId = payment.Id,
                             };
 
                             var newNT = await _notificationRepository.CreateAsync(notificationDto);
@@ -112,7 +112,6 @@ namespace RovinoxDotnet.Controllers
 
             foreach (var  notification in result)
             {
-                int paymentId = (int)(notification.PaymentId == null ? notification.PaymentId : 0);
 
                 notifications.Add(new NotificationDto
                 {
@@ -123,9 +122,11 @@ namespace RovinoxDotnet.Controllers
                     Name = notification.Name,
                     Description = notification.Description,
                     Seen = notification.Seen,
-                    PaymentId = paymentId,
-                    SenderFirstName =  notification.Sender.FirstName,
-                    SenderLastName = notification.Sender.LastName,
+                    PaymentId = notification.PaymentId,
+                    Sender = new AppUserDTO {
+                    FirstName =  notification.Sender.FirstName,
+                    LastName = notification.Sender.LastName,
+                    },
 
                 });
                 if (!notification.Seen)

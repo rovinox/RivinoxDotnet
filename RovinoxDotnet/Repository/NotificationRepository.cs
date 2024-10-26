@@ -40,9 +40,6 @@ namespace RovinoxDotnet.Repository
             {
                 found.Completed = true;
                 found.CompletedOn = DateTime.Now;
-
-
-
                 await _dbContext.SaveChangesAsync();
                 return found;
             }
