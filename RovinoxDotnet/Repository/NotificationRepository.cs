@@ -52,5 +52,19 @@ namespace RovinoxDotnet.Repository
 
 
         }
+        public async Task<Notification> MarkAsSeenAsync(int notificationId)
+        {
+            if (await _dbContext.Notifications.FindAsync(notificationId) is Notification found)
+            {
+                found.Seen = true;
+                
+                await _dbContext.SaveChangesAsync();
+                return found;
+            }
+            else
+            {
+                return null;
+            }
+        }
     }
 }

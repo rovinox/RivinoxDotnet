@@ -28,6 +28,24 @@ namespace RovinoxDotnet.Controllers
             var result = await _notificationRepository.CreateAsync(notificationDto);
             return Ok(result);
         }
+        [HttpGet("notificationId/{notificationId:int}")]
+        //[Authorize]
+        public async Task<IActionResult> GetById([FromRoute] int notificationId, [FromQuery] bool markAsSeen )
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+            if(markAsSeen){
+                  var result = await _notificationRepository.MarkAsSeenAsync(notificationId);
+                          return Ok(result);
+            } else{
+                   var result = await _notificationRepository.GetByIdAsync(notificationId);
+            return Ok(result);
+            }
+
+        
+        }
         [HttpPost("payment/notificationId/{notificationId:int}")]
         //[Authorize]
         public async Task<IActionResult> UpdateAndCreateAsync([FromRoute] int notificationId, [FromBody] UpdateNotificationByPaymentIdDto updateNotificationByPaymentIdDto)
@@ -85,9 +103,6 @@ namespace RovinoxDotnet.Controllers
                 {
                     return StatusCode(400, "Invalid payment type");
                 }
-
-
-
             }
             catch (Exception e)
             {
