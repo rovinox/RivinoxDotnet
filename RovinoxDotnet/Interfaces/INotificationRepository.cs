@@ -13,5 +13,6 @@ namespace RovinoxDotnet.Interfaces
         Task <List<Notification>> GetAllAsync(string userId);
         Task <Notification> GetByIdAsync(int notificationId);
         Task <Notification> MarkCompleted(int notificationId);
+        Task <Notification> MarkAsSeenAsync(int notificationId);
     }
 }

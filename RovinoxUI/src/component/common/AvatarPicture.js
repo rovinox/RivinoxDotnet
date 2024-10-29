@@ -28,6 +28,8 @@ export default function AvatarPicture({ firstName, lastName, profilePicture }) {
       children: `${name.split(" ")[0][0]}${name.split(" ")[1][0]}`,
     };
   }
+  if(!firstName || !lastName) return
+
   return profilePicture ? (
     <Avatar alt={`${firstName} ${firstName}`} src={profilePicture} />
   ) : (

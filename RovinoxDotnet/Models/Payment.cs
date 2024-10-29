@@ -20,7 +20,7 @@ namespace RovinoxDotnet.Models
         public AppUser? CashReceiver { get; set; }
         public DateTime ProcessDate { get; set; } = DateTime.Now;
         public decimal Amount { get; set; }
-        public List<Notification>? Notification { get; set; }
+        public List<Notification> Notifications { get; set; }
 
 
 

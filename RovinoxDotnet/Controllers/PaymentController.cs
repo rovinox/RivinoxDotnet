@@ -33,7 +33,7 @@ namespace RovinoxDotnet.Controllers
                     {   Type = NotificationType.CashPayment,
                         SenderId = payment.UserId,
                         ReceiverId = payment.CashReceiverId,
-                        Name = NotificationType.CardPayment,
+                        Name = NotificationType.CashPayment,
                         Description = NotificationType.CashPaymentDescription,
                         PaymentId = payment.Id
                     };

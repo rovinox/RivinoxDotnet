@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import AppBar from "@mui/material/AppBar";
 import Box from "@mui/material/Box";
 import Toolbar from "@mui/material/Toolbar";
@@ -7,7 +7,7 @@ import Typography from "@mui/material/Typography";
 import Menu from "@mui/material/Menu";
 import MenuIcon from "@mui/icons-material/Menu";
 import Container from "@mui/material/Container";
-
+import { apiService } from "../../api/axios.js";
 import Button from "@mui/material/Button";
 
 import MenuItem from "@mui/material/MenuItem";
@@ -62,6 +62,23 @@ const Header = () => {
 
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
+  const getUser = useCallback(async () => {
+    try {
+      const result = await apiService.get(
+        "http://localhost:5122/api/account/signed/user"
+      );
+      console.log("result: ", result);
+      console.log("result: ", result);
+      if (!result?.data) {
+        navigate("/login");
+      }
+    } catch (e) {
+      console.log(e);
+    }
+  }, []);
+  useEffect(() => {
+    getUser();
+  }, [getUser]);
 
   return (
     <div>

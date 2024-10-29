@@ -3,10 +3,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using RovinoxDotnet.common;
 using RovinoxDotnet.DTOs.Account;
 using RovinoxDotnet.DTOs.NotificationDto;
+using RovinoxDotnet.DTOs.Payment;
 using RovinoxDotnet.Interfaces;
 using RovinoxDotnet.Models;
 
@@ -14,7 +17,7 @@ namespace RovinoxDotnet.Controllers
 {
     [ApiController]
     [Route("api/notification")]
-    public class NotificationController(INotificationRepository _notificationRepository, IAuthenticatedUserService _authenticatedUserService, IPaymentRepository _paymentRepository) : ControllerBase
+    public class NotificationController(UserManager<AppUser> _userManager,INotificationRepository _notificationRepository, IAuthenticatedUserService _authenticatedUserService, IPaymentRepository _paymentRepository) : ControllerBase
     {
         [HttpPost]
         //[Authorize]
@@ -27,6 +30,93 @@ namespace RovinoxDotnet.Controllers
 
             var result = await _notificationRepository.CreateAsync(notificationDto);
             return Ok(result);
+        }
+        [HttpGet("notificationId/{notificationId:int}")]
+        //[Authorize]
+        public async Task<IActionResult> GetById([FromRoute] int notificationId, [FromQuery] bool markAsSeen )
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+            if(markAsSeen){
+                  var notification = await _notificationRepository.MarkAsSeenAsync(notificationId);
+                  var sender = await _userManager.Users.FirstOrDefaultAsync(x => x.Id == notification.SenderId);
+                 var payment = await _paymentRepository.GetByIdAsync((int)notification.PaymentId);
+
+                    var limitSender = new  {
+                        FirstName =  notification.Sender.FirstName,
+                        LastName = notification.Sender.LastName,
+                    };
+                    var limitNt = new  {
+                       Completed = notification.Completed,
+                       CompletedOn = notification.CompletedOn,
+                       CreatedOn = notification.CreatedOn,
+                       Description = notification.Description,
+                    Id = notification.Id,
+                    SenderId = notification.SenderId,
+                    ReceiverId = notification.ReceiverId,
+                    Type = notification.Type,
+                    Name = notification.Name,
+                    Seen = notification.Seen,
+                    };
+                    var limitPay = new  {
+                        Amount = payment.Amount,
+                        Id = payment.Id,
+                        PaymentType = payment.PaymentType,
+                        ProcessDate = payment.ProcessDate
+                    };
+                    var result = new {
+                        Payment = limitPay,
+                        Notification = limitNt,
+                        Sender = limitSender,
+                        
+
+                    };
+      
+
+                          return Ok(result);
+            } else{
+                   var notification = await _notificationRepository.GetByIdAsync(notificationId);
+                     var sender = await _userManager.Users.FirstOrDefaultAsync(x => x.Id == notification.SenderId);
+                 var payment = await _paymentRepository.GetByIdAsync((int)notification.PaymentId);
+
+                                        var limitSender = new  {
+                        FirstName =  notification.Sender.FirstName,
+                        LastName = notification.Sender.LastName,
+                    };
+                    var limitNt = new  {
+                       Completed = notification.Completed,
+                       CompletedOn = notification.CompletedOn,
+                       CreatedOn = notification.CreatedOn,
+                       Description = notification.Description,
+                    Id = notification.Id,
+                    SenderId = notification.SenderId,
+                    ReceiverId = notification.ReceiverId,
+                    Type = notification.Type,
+                    Name = notification.Name,
+                    Seen = notification.Seen,
+                    };
+                    var limitPay = new  {
+                        Amount = payment.Amount,
+                        Id = payment.Id,
+                        PaymentType = payment.PaymentType,
+                        ProcessDate = payment.ProcessDate
+                    };
+                    var result = new {
+                        Payment = limitPay,
+                        Notification = limitNt,
+                        Sender = limitSender,
+                        
+
+                    };
+      
+
+                          return Ok(result);
+        
+            }
+
+        
         }
         [HttpPost("payment/notificationId/{notificationId:int}")]
         //[Authorize]
@@ -61,7 +151,8 @@ namespace RovinoxDotnet.Controllers
                                 SenderId = updatedNT.ReceiverId,
                                 ReceiverId = updatedNT.SenderId,
                                 Name = NotificationType.ApprovedPaymentName,
-                                Description = NotificationType.ApprovedPaymentDescription
+                                Description = NotificationType.ApprovedPaymentDescription,
+                                PaymentId = payment.Id,
                             };
 
                             var newNT = await _notificationRepository.CreateAsync(notificationDto);
@@ -84,9 +175,6 @@ namespace RovinoxDotnet.Controllers
                 {
                     return StatusCode(400, "Invalid payment type");
                 }
-
-
-
             }
             catch (Exception e)
             {
@@ -96,18 +184,22 @@ namespace RovinoxDotnet.Controllers
 
         }
         [HttpGet]
-        //[Authorize]
+        [Authorize]
         public async Task<IActionResult> GetAllAsync()
         {
-            // var userId = _authenticatedUserService.UserId;
-            var userId = "cc0b19a6-90bc-4a39-959b-7826bdaeafc2";
+            var userId = _authenticatedUserService.UserId;
+            //var userId = "cc0b19a6-90bc-4a39-959b-7826bdaeafc2";
+        //   if (String.IsNullOrEmpty(userId)) {
+        //     return StatusCode(401);
+        //     }
 
             var result = await _notificationRepository.GetAllAsync(userId);
             List<NotificationDto> notifications = [];
             int notificationsWithNotSeenCount = 0;
 
-            foreach (var notification in result)
+            foreach (var  notification in result)
             {
+
                 notifications.Add(new NotificationDto
                 {
                     Id = notification.Id,
@@ -117,14 +209,11 @@ namespace RovinoxDotnet.Controllers
                     Name = notification.Name,
                     Description = notification.Description,
                     Seen = notification.Seen,
-                    Enabled = notification.Enabled,
-                    PaymentId = (int)notification.PaymentId,
-                    Sender = new AppUserDTO
-                    {
-                        FirstName = notification.Sender.FirstName,
-                        LastName = notification.Sender.LastName,
-                        Enabled = notification.Sender.Enabled,
-                    }
+                    PaymentId = notification.PaymentId,
+                    Sender = new AppUserDTO {
+                    FirstName =  notification.Sender.FirstName,
+                    LastName = notification.Sender.LastName,
+                    },
                 });
                 if (!notification.Seen)
                 {
