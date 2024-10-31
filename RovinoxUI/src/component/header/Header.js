@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, memo } from "react";
 import AppBar from "@mui/material/AppBar";
 import Box from "@mui/material/Box";
 import Toolbar from "@mui/material/Toolbar";
@@ -62,23 +62,24 @@ const Header = () => {
 
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
-  const getUser = useCallback(async () => {
-    try {
-      const result = await apiService.get(
-        "http://localhost:5122/api/account/signed/user"
-      );
-      console.log("result: ", result);
-      console.log("result: ", result);
-      if (!result?.data) {
-        navigate("/login");
-      }
-    } catch (e) {
-      console.log(e);
-    }
-  }, []);
+ 
   useEffect(() => {
+    const abortController = new AbortController();
+    const getUser =async () => {
+      try {
+        const result = await apiService.get(
+          "http://localhost:5122/api/account/signed/user"
+        );
+        if (!result?.data) {
+          navigate("/login");
+        }
+      } catch (e) {
+        console.log(e);
+      }
+    }
     getUser();
-  }, [getUser]);
+    return () => abortController.abort();
+  }, [navigate]);
 
   return (
     <div>
@@ -183,4 +184,4 @@ const Header = () => {
     </div>
   );
 };
-export default Header;
+export default memo(Header);

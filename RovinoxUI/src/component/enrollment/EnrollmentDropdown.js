@@ -1,38 +1,26 @@
-import { useState, useEffect } from "react";
-import AppBar from "@mui/material/AppBar";
+import { useState, useEffect, memo } from "react";
 import Box from "@mui/material/Box";
-import Toolbar from "@mui/material/Toolbar";
-import IconButton from "@mui/material/IconButton";
 import Typography from "@mui/material/Typography";
 import Menu from "@mui/material/Menu";
-import MenuIcon from "@mui/icons-material/Menu";
-import Container from "@mui/material/Container";
-import Avatar from "@mui/material/Avatar";
 import Button from "@mui/material/Button";
 import Tooltip from "@mui/material/Tooltip";
 import MenuItem from "@mui/material/MenuItem";
-import axios from "axios";
-import { useNavigate, useLocation } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { openDrawer } from "../../duck/drawerSlice";
 import { updateBatchId } from "../../duck/batchSlice";
 import { apiService } from "../../api/axios";
 
-export default function EnrollmentDropdown() {
+ function EnrollmentDropdown() {
   const [enrollments, setEnrollments] = useState([]);
-  console.log("enrollments: ", enrollments);
-  const user = JSON.parse(localStorage.getItem("user"));
   const dispatch = useDispatch();
-  const [anchorElNav, setAnchorElNav] = useState(null);
   const [anchorElUser, setAnchorElUser] = useState(null);
-  const navigate = useNavigate();
-  const location = useLocation();
 
   useEffect(() => {
+    const abortController = new AbortController();
     const getEnrollments = async () => {
       try {
         const response = await apiService.get(
-          "http://localhost:5122/api/enrollment"
+          "http://localhost:5122/api/enrollment",{signal: abortController.signal}
         );
         console.log("response: ", response);
         if (response.data) {
@@ -43,17 +31,11 @@ export default function EnrollmentDropdown() {
       }
     };
     getEnrollments();
+    return () => abortController.abort();
   }, []);
 
-  const handleOpenNavMenu = (event) => {
-    setAnchorElNav(event.currentTarget);
-  };
   const handleOpenUserMenu = (event) => {
     setAnchorElUser(event.currentTarget);
-  };
-
-  const handleCloseNavMenu = () => {
-    setAnchorElNav(null);
   };
 
   const handleCloseUserMenu = () => {
@@ -111,3 +93,4 @@ export default function EnrollmentDropdown() {
     </div>
   );
 }
+export default memo(EnrollmentDropdown);
