@@ -132,7 +132,7 @@ namespace RovinoxDotnet.Controllers
             }
         }
         [HttpGet("signed/user")]
-        // [Authorize]
+        [Authorize]
         public async Task<IActionResult> GetUserAsync()
         {
             var userId = _authenticatedUserService.UserId;

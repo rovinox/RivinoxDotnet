@@ -10,7 +10,7 @@ import Box from "@mui/material/Box";
 import Grid from "@mui/material/Grid";
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import Typography from "@mui/material/Typography";
-import axios from "axios";
+import { apiService } from "../api/axios";
 import { toast } from "react-toastify";
 import ReactToastify from "../component/ReactToastify";
 import HeaderLanding from "../home/HeaderLanding";
@@ -27,16 +27,15 @@ export default function Login() {
     e.preventDefault();
 
     try {
-      const response = await axios.post(
+      const response = await apiService.post(
         LOGIN_URL,
-        JSON.stringify({ email, password: pwd }),
-        {
-          headers: { "Content-Type": "application/json" },
-          // withCredentials: true,
-        }
+        { email, password: pwd }
+   
       );
-      console.log(JSON.stringify("vv9", response));
-      localStorage.setItem("user", JSON.stringify(response.data));
+      console.log('response?.data', response?.data);
+      if (response?.data){
+        localStorage.setItem("user", JSON.stringify(response.data));
+      }
       setEmail("");
       setPwd("");
       navigate("/student");
