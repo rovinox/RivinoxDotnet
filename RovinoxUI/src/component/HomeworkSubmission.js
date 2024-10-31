@@ -11,7 +11,7 @@ export default function HomeworkSubmission({ selectedDay }) {
   const [loading, setLoading] = useState(false);
   console.log("selectedDay", selectedDay);
 
-  const user = JSON.parse(localStorage.getItem("user"));
+  const user = {}
   const submitHomework = async (event) => {
     const data = new FormData(event.currentTarget);
     event.preventDefault();

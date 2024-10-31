@@ -20,6 +20,7 @@ namespace RovinoxDotnet.DTOs.NotificationDto
         public AppUserDTO Sender { get; set; }
         public PaymentDto Payment { get; set; }
         public bool Seen { get; set; }
+    
         
 
         

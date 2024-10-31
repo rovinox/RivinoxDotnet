@@ -5,7 +5,6 @@ import Button from "@mui/material/Button";
 import TextField from "@mui/material/TextField";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import Checkbox from "@mui/material/Checkbox";
-import Paper from "@mui/material/Paper";
 import Box from "@mui/material/Box";
 import Grid from "@mui/material/Grid";
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
@@ -15,13 +14,17 @@ import { toast } from "react-toastify";
 import ReactToastify from "../component/ReactToastify";
 import HeaderLanding from "../home/HeaderLanding";
 import codingAnimation from "../asset/codingAnimation.svg";
+import { setUser } from "../duck/accountSlice";
+import { useDispatch } from "react-redux";
 const LOGIN_URL = "http://localhost:5122/api/account/login";
+
 
 export default function Login() {
   const [email, setEmail] = useState("");
   const [pwd, setPwd] = useState("");
   const navigate = useNavigate();
   const emailRef = useRef();
+  const dispatch = useDispatch();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -33,9 +36,13 @@ export default function Login() {
    
       );
       console.log('response?.data', response?.data);
+
       if (response?.data){
-        localStorage.setItem("user", JSON.stringify(response.data));
+        localStorage.setItem("token", JSON.stringify(response.data.token));
+        delete response.data.token;
+        dispatch(setUser({user:response.data}))
       }
+        
       setEmail("");
       setPwd("");
       navigate("/student");

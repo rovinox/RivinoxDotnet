@@ -11,6 +11,7 @@ namespace RovinoxDotnet.Models
     {
         public string FirstName { get; set; } = string.Empty;
         public string LastName { get; set; } = string.Empty;
+        public string? Image { get; set; } = string.Empty;
         public List<Enrollment>? Enrollments { get; set; } 
         public List<Notification>? Receivers { get; set; } 
         public List<Notification>? Senders { get; set; } 

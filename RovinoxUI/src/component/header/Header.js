@@ -9,9 +9,9 @@ import MenuIcon from "@mui/icons-material/Menu";
 import Container from "@mui/material/Container";
 import { apiService } from "../../api/axios.js";
 import Button from "@mui/material/Button";
-
+import { useSelector, useDispatch } from "react-redux";
 import MenuItem from "@mui/material/MenuItem";
-
+import { setUser } from "../../duck/accountSlice.js";
 import { useNavigate, useLocation } from "react-router-dom";
 
 
@@ -24,11 +24,15 @@ import MyActionBadge from "../myAction/MyActionBadge"
 import NotificationsDrawer from "../myAction/NotificationsDrawer";
 
 const Header = () => {
-  const user = JSON.parse(localStorage.getItem("user"));
+  const user = useSelector((state) => state.account.user);
+  console.log('userkk: ', user);
+
+
 
   const [anchorElNav, setAnchorElNav] = useState(null);
   const navigate = useNavigate();
   const location = useLocation();
+  const dispatch = useDispatch();
 
 
   const handleAdmin = () => {
@@ -45,7 +49,6 @@ const Header = () => {
     setAnchorElNav(null);
   };
 
- 
 
   const [scrolled, setScrolled] = useState(false);
 
@@ -66,6 +69,9 @@ const Header = () => {
   useEffect(() => {
     const abortController = new AbortController();
     const getUser =async () => {
+      if(user){
+        return
+      }
       try {
         const result = await apiService.get(
           "http://localhost:5122/api/account/signed/user"
@@ -73,13 +79,16 @@ const Header = () => {
         if (!result?.data) {
           navigate("/login");
         }
+         if(!user){
+          dispatch(setUser({user:result.data}))
+        }
       } catch (e) {
         console.log(e);
       }
     }
     getUser();
     return () => abortController.abort();
-  }, [navigate]);
+  }, [dispatch, navigate, user]);
 
   return (
     <div>
@@ -134,7 +143,7 @@ const Header = () => {
                 <Typography textAlign="center">
                   {" "}
                   {location.pathname !== "/admin" &&
-                    user?.roles !== "User" && (
+                    user?.role !== "User" && (
                       <Button onClick={handleAdmin}> Admin</Button>
                     )}
                 </Typography>
@@ -165,7 +174,7 @@ const Header = () => {
          
                 <EnrollmentDropdown  />
 
-            { user.roles !== "User" && location.pathname !== "/admin" && (
+            { user?.role !== "User" && location.pathname !== "/admin" && (
               <Button
                 onClick={handleAdmin}
                 sx={{ my: 2, color: "white", display: "block" }}
@@ -174,7 +183,7 @@ const Header = () => {
               </Button>
             )}
           </Box>
-          <AvatarAction/>
+          <AvatarAction  />
           <MyActionBadge/>
         </Toolbar>
       </Container>
