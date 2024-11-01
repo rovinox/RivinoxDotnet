@@ -1,5 +1,4 @@
 import React from 'react'
-import NotificationsList from './NotificationsList'
 
 export default function MyAction() {
     const  notifications  = [
@@ -95,14 +94,7 @@ export default function MyAction() {
           payment: null
         }
       ]
- const handleViewNotification = ( id ) =>{
-  // make API call to get more data related to the notification Id 
-
- }     
   return (
-    <div>
-      <NotificationsList navigateToNotification={handleViewNotification} notifications={notifications}  
-      />
-    </div>
+    <div>MyAction</div>
   )
 }

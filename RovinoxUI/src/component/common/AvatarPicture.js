@@ -1,6 +1,6 @@
 import Avatar from "@mui/material/Avatar";
 
-export default function AvatarPicture({ firstName, lastName, image }) {
+export default function AvatarPicture({ firstName, lastName, image, sx }) {
   function stringToColor(string) {
     let hash = 0;
     let i;
@@ -31,7 +31,7 @@ export default function AvatarPicture({ firstName, lastName, image }) {
   if(!firstName || !lastName) return
 
   return image ? (
-    <Avatar alt={`${firstName} ${firstName}`} src={image} />
+    <Avatar {...(sx ? {sx} : {})} alt={`${firstName} ${firstName}`} src={image} />
   ) : (
     <Avatar
       {...stringAvatar(

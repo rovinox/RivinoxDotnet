@@ -25,7 +25,7 @@ import NotificationsDrawer from "../myAction/NotificationsDrawer";
 
 const Header = () => {
   const user = useSelector((state) => state.account.user);
-  console.log('userkk: ', user);
+
 
 
 
