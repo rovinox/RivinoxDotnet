@@ -18,8 +18,7 @@ export default function CurriculumContent() {
 
       <ThemeProvider theme={theme}>
         <CssBaseline/>
-      <AllCOmments windowW={windowW} />
-      {/* <Day4/>       */}
+      <AllCOmments windowW={windowW} />     
       </ThemeProvider>
 
   )

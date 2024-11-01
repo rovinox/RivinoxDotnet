@@ -1,13 +1,13 @@
 const { createTheme } = require("@mui/material");
 
 const _ = {
-  clr500: 'hsl(212, 24%, 26%)',
-  clr400:'hsl(211, 10%, 45%)',
-  clr300:'hsl(223, 19%, 93%)',
-  clr200:'hsl(228, 33%, 97%)',
-  clr100:'hsl(0, 0%, 100%)',
+  clr500: '#fff',
+  clr400:'#fff',
+  clr300:'#fff',
+  clr200:'#212242',
+  clr100:'#212242',
   primary: {
-    main: 'hsl(238, 40%, 52%)',
+    main: "#0DA8DB",
     light: 'hsl(239, 57%, 85%)'
   },
   secondary: {
@@ -28,8 +28,8 @@ const theme = createTheme({
   palette: {
     ..._,
     background: {
-      default: _.clr200,
-      paper: _.clr100
+      default: "#191A3A",
+      paper: "#212242",
     },
   },
   typography: {
