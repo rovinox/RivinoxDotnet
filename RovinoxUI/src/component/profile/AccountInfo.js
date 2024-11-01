@@ -72,7 +72,7 @@ export const AccountInfo = (props) => {
                 height: 300,
                 mb: 2,
                 width: 300,
-              }} firstName={user?.firstName} lastName={user?.lastName} image={user?.image} />
+              }} firstName={user?.firstName} lastName={user?.lastName} image={user?.image? user.image : selectedImageUrl} />
             {/* <Avatar
               src={selectedImageUrl}
               sx={{
