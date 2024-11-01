@@ -12,7 +12,7 @@ function ScoreButton(props) {
         sx={{
           height: (direction === 'row') ? '40px' : '100px', 
           width: (direction === 'row') ? '100px': '40px',
-         // bgcolor: theme.palette.clr200,
+          bgcolor: theme.palette.clr200,
           borderRadius: '4px',
           alignItems: 'center',
           justifyContent: 'space-between',

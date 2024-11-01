@@ -54,7 +54,7 @@ function CommentInputBox(props) {
           display: {laptop: 'flex', mobile: 'block'},
           width: '100%', 
           minHeight: '150px',
-         // bgcolor: theme.palette.clr100,
+         bgcolor: theme.palette.clr100,
           borderRadius: "4px",
           p: 3,
         }}
