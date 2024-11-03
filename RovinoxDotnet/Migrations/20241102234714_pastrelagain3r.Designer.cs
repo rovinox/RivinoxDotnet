@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using RovinoxDotnet.Data;
@@ -11,9 +12,11 @@ using RovinoxDotnet.Data;
 namespace RovinoxDotnet.Migrations
 {
     [DbContext(typeof(ApplicationDBContext))]
-    partial class ApplicationDBContextModelSnapshot : ModelSnapshot
+    [Migration("20241102234714_pastrelagain3r")]
+    partial class pastrelagain3r
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -50,13 +53,13 @@ namespace RovinoxDotnet.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "d800fbc9-2b54-4d57-a8ea-6c51d35b407f",
+                            Id = "89e3bbc0-f513-4c31-9fa7-7735bec2efd1",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         },
                         new
                         {
-                            Id = "5a0429e9-3353-4fd5-98d6-8a0f9c76d073",
+                            Id = "311d927f-fd01-4033-838b-02e4c0e9665f",
                             Name = "User",
                             NormalizedName = "USER"
                         });
@@ -595,7 +598,8 @@ namespace RovinoxDotnet.Migrations
 
                     b.HasIndex("CreatedById");
 
-                    b.HasIndex("PostId");
+                    b.HasIndex("PostId")
+                        .IsUnique();
 
                     b.HasIndex("ReplyingToId");
 
@@ -845,8 +849,8 @@ namespace RovinoxDotnet.Migrations
                         .HasConstraintName("CreatedById");
 
                     b.HasOne("RovinoxDotnet.Models.Post", "Post")
-                        .WithMany("Repliers")
-                        .HasForeignKey("PostId")
+                        .WithOne("Repliers")
+                        .HasForeignKey("RovinoxDotnet.Models.Replier", "PostId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -929,7 +933,8 @@ namespace RovinoxDotnet.Migrations
 
             modelBuilder.Entity("RovinoxDotnet.Models.Post", b =>
                 {
-                    b.Navigation("Repliers");
+                    b.Navigation("Repliers")
+                        .IsRequired();
                 });
 #pragma warning restore 612, 618
         }

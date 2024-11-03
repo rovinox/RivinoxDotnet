@@ -18,6 +18,10 @@ namespace RovinoxDotnet.Models
         public List<Payment>? Users { get; set; } 
         public List<Payment>? Approvers { get; set; } 
         public List<Payment>? CashReceivers { get; set; } 
+        public List<Replier> CreatedBy { get; set; } 
+        public List<Replier> ReplyingTo { get; set; } 
+        public List<Post> PostedBy { get; set; } 
+        public List<Vote> VotedBy { get; set; } 
         public decimal Balance { get; set; } 
         public bool Enabled { get; set; }
     }

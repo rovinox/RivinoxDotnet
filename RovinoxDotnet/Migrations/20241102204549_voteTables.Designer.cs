@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using RovinoxDotnet.Data;
@@ -11,9 +12,11 @@ using RovinoxDotnet.Data;
 namespace RovinoxDotnet.Migrations
 {
     [DbContext(typeof(ApplicationDBContext))]
-    partial class ApplicationDBContextModelSnapshot : ModelSnapshot
+    [Migration("20241102204549_voteTables")]
+    partial class voteTables
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -50,13 +53,13 @@ namespace RovinoxDotnet.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "d800fbc9-2b54-4d57-a8ea-6c51d35b407f",
+                            Id = "99304bf7-2c00-4a22-bb89-2da6c8fd4612",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         },
                         new
                         {
-                            Id = "5a0429e9-3353-4fd5-98d6-8a0f9c76d073",
+                            Id = "a64f5318-7b3e-4c08-a29b-131fe9bb8e71",
                             Name = "User",
                             NormalizedName = "USER"
                         });
@@ -181,6 +184,21 @@ namespace RovinoxDotnet.Migrations
                     b.HasIndex("PaymentsId");
 
                     b.ToTable("NotificationPayment");
+                });
+
+            modelBuilder.Entity("PostReplier", b =>
+                {
+                    b.Property<int>("PostsId")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("RepliersId")
+                        .HasColumnType("integer");
+
+                    b.HasKey("PostsId", "RepliersId");
+
+                    b.HasIndex("RepliersId");
+
+                    b.ToTable("PostReplier");
                 });
 
             modelBuilder.Entity("RovinoxDotnet.Models.AppUser", b =>
@@ -595,8 +613,6 @@ namespace RovinoxDotnet.Migrations
 
                     b.HasIndex("CreatedById");
 
-                    b.HasIndex("PostId");
-
                     b.HasIndex("ReplyingToId");
 
                     b.ToTable("Repliers");
@@ -704,6 +720,21 @@ namespace RovinoxDotnet.Migrations
                     b.HasOne("RovinoxDotnet.Models.Payment", null)
                         .WithMany()
                         .HasForeignKey("PaymentsId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("PostReplier", b =>
+                {
+                    b.HasOne("RovinoxDotnet.Models.Post", null)
+                        .WithMany()
+                        .HasForeignKey("PostsId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("RovinoxDotnet.Models.Replier", null)
+                        .WithMany()
+                        .HasForeignKey("RepliersId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
@@ -844,12 +875,6 @@ namespace RovinoxDotnet.Migrations
                         .IsRequired()
                         .HasConstraintName("CreatedById");
 
-                    b.HasOne("RovinoxDotnet.Models.Post", "Post")
-                        .WithMany("Repliers")
-                        .HasForeignKey("PostId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.HasOne("RovinoxDotnet.Models.AppUser", "ReplyingTo")
                         .WithMany("ReplyingTo")
                         .HasForeignKey("ReplyingToId")
@@ -858,8 +883,6 @@ namespace RovinoxDotnet.Migrations
                         .HasConstraintName("ReplyingToId");
 
                     b.Navigation("CreatedBy");
-
-                    b.Navigation("Post");
 
                     b.Navigation("ReplyingTo");
                 });
@@ -925,11 +948,6 @@ namespace RovinoxDotnet.Migrations
             modelBuilder.Entity("RovinoxDotnet.Models.HomeWork", b =>
                 {
                     b.Navigation("Comments");
-                });
-
-            modelBuilder.Entity("RovinoxDotnet.Models.Post", b =>
-                {
-                    b.Navigation("Repliers");
                 });
 #pragma warning restore 612, 618
         }

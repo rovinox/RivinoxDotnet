@@ -3,14 +3,17 @@ import React, {useState, useEffect} from 'react'
 import CommentBox from './CommentBox';
 import CommentInputBox from './CommentInputBox';
 import { dummyState } from './dummyState';
+import {  useParams } from "react-router-dom";
+import { apiService } from '../../api/axios';
 
 function Main(props) {
   const [state,setState] = useState(dummyState);
+  const [windowW,setWindowW] = useState(window.innerWidth);
   const {comments} = state;
-  const {windowW} = props
 
   const [selected,setSelected] = useState(0); //0 for none, -id for edit, id for reply
   const [reorderedComments,setReorderedComments] = useState(comments);
+  const { curriculumId } = useParams();
 
   useEffect(()=> {
     ['click','keydown'].forEach(event => 
@@ -20,6 +23,31 @@ function Main(props) {
         }
       })
     )
+  },[])
+
+  useEffect(() => {
+    const abortController = new AbortController();
+    const getUser = async () => {
+      try {
+        const result = await apiService.get(
+          `http://localhost:5122/api/post/curriculumId/${curriculumId}`
+        );
+        if (result?.data) {
+          
+        }
+       
+      } catch (e) {
+        console.log(e);
+      }
+    };
+    getUser();
+    return () => abortController.abort();
+  }, [curriculumId]);
+
+  useEffect(()=>{
+    window.addEventListener('resize', ()=>{
+      setWindowW(window.innerWidth)
+    })
   },[])
 
   // useEffect(()=> {

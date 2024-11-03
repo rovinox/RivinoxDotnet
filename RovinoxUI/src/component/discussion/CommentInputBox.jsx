@@ -3,16 +3,18 @@ import React, { useEffect, useState, useRef } from 'react'
 import theme from '../discussion/theme';
 import { dummyState } from './dummyState';
 import InputField from './InputField'
-//import selectAvatar from 'utils/resolveAvatarPath'
+import { apiService } from '../../api/axios';
+import {  useParams } from "react-router-dom";
 
 function CommentInputBox(props) {
   const [state,setState] = useState(dummyState);
+  const { curriculumId } = useParams();
   const {users,currentUser, newId,comments} = state;
-  const {type, replyingTo,insertAt,setSelected,windowW} = props;
+  const {type, replyingTo,insertAt,setSelected,windowW, } = props;
   const [text,setText] = useState("");
   const inputField = useRef(null);
 
-  function handleSubmit(){
+  const  handleSubmit = async() =>{
     if (text.trim().length === 0) return;
     if (type === 'comment') {
       const newComment = {
@@ -22,6 +24,19 @@ function CommentInputBox(props) {
         score: 0,
         user: currentUser,
         replies: []
+      }
+      try {
+       const payload  = {
+        content: text,
+        curriculumId,
+       }
+        const result = await apiService.post(`http://localhost:5122/api/post`, payload);
+        console.log(result);
+        if (result?.data) {
+         
+        }
+      } catch (err) {
+        console.log(err);
       }
       setState(prev=> {return {...prev, newId: newId+1, comments: [...prev.comments, newComment]}})
       inputField.current.value = '';

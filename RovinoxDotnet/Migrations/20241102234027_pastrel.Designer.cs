@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using RovinoxDotnet.Data;
@@ -11,9 +12,11 @@ using RovinoxDotnet.Data;
 namespace RovinoxDotnet.Migrations
 {
     [DbContext(typeof(ApplicationDBContext))]
-    partial class ApplicationDBContextModelSnapshot : ModelSnapshot
+    [Migration("20241102234027_pastrel")]
+    partial class pastrel
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -50,13 +53,13 @@ namespace RovinoxDotnet.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "d800fbc9-2b54-4d57-a8ea-6c51d35b407f",
+                            Id = "b34e5e26-33ec-4436-a8c0-5264bf267b64",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         },
                         new
                         {
-                            Id = "5a0429e9-3353-4fd5-98d6-8a0f9c76d073",
+                            Id = "ed545374-943a-487a-b121-97eeeb477fa6",
                             Name = "User",
                             NormalizedName = "USER"
                         });
@@ -844,7 +847,7 @@ namespace RovinoxDotnet.Migrations
                         .IsRequired()
                         .HasConstraintName("CreatedById");
 
-                    b.HasOne("RovinoxDotnet.Models.Post", "Post")
+                    b.HasOne("RovinoxDotnet.Models.Post", "Posts")
                         .WithMany("Repliers")
                         .HasForeignKey("PostId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -859,7 +862,7 @@ namespace RovinoxDotnet.Migrations
 
                     b.Navigation("CreatedBy");
 
-                    b.Navigation("Post");
+                    b.Navigation("Posts");
 
                     b.Navigation("ReplyingTo");
                 });

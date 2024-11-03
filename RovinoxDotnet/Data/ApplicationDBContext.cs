@@ -22,6 +22,9 @@ namespace RovinoxDotnet.Data
         public DbSet<Comment> Comments { get; set; }
         public DbSet<Payment> Payments { get; set; }
         public DbSet<Notification> Notifications { get; set; }
+        public DbSet<Post> Posts { get; set; }
+        public DbSet<Replier> Repliers { get; set; }
+        public DbSet<Vote> Votes { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
@@ -75,7 +78,20 @@ namespace RovinoxDotnet.Data
         
         entity.Property(e => e.PaymentId).IsRequired(false);
 });
+    builder.Entity<Replier>(entity =>
+    {
+    entity.HasOne(d => d.CreatedBy)
+        .WithMany(p => p.CreatedBy)
+        .HasForeignKey(d => d.CreatedById)
+        .OnDelete(DeleteBehavior.SetNull)
+        .HasConstraintName("CreatedById");
 
+    entity.HasOne(d => d.ReplyingTo)
+        .WithMany(p => p.ReplyingTo)
+        .HasForeignKey(d => d.ReplyingToId)
+        .OnDelete(DeleteBehavior.SetNull)
+        .HasConstraintName("ReplyingToId");
+});
         }
 
     }

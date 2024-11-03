@@ -13,6 +13,7 @@ import ScoreButton from './ScoreButton';
 
 function CommentBox(props) {
   const [state,setState] = useState(dummyState);
+  console.log('ccstate: ', state);
   const {users,currentUser, comments} = state;
 
   const {id, content, createdAt, score,user,replies, replyingTo, selected,setSelected,windowW} = props;

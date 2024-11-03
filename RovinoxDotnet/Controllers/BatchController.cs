@@ -14,14 +14,11 @@ namespace RovinoxDotnet.Controllers
     [Route("api/batch")]
     [ApiController]
    
-    public class BatchController : ControllerBase
+    public class BatchController(IBatchRepository batchRepository) : ControllerBase
 
     {
-        private readonly IBatchRepository _batchRepository;
-        public BatchController(IBatchRepository batchRepository)
-        {
-             _batchRepository = batchRepository;
-        }
+        private readonly IBatchRepository _batchRepository = batchRepository;
+
         [HttpGet]        
         public async Task<IActionResult> GetAll(){
              if (!ModelState.IsValid) {

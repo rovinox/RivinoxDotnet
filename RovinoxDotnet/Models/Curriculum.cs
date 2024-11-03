@@ -16,6 +16,8 @@ namespace RovinoxDotnet.Models
         public int BatchId { get; set; }
         public Batch? Batch { get; set; }
        public  HomeWork? HomeWorks { get; set;}      
+       public  List<Vote> Vote { get; set;}      
+       public  List<Post> Posts { get; set;}           
 
     }
 }
