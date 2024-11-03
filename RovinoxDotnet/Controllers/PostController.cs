@@ -45,7 +45,7 @@ namespace RovinoxDotnet.Controllers
                   {
                      FirstName = items2.CreatedBy.FirstName,
                      LastName = items2.CreatedBy.LastName,
-                     Image = items2.CreatedBy.Image
+                     Image = items2.CreatedBy.Image,
                      Enabled = items.Enabled,
                   },
                   CreatedOn = items2.CreatedOn,
@@ -74,7 +74,7 @@ namespace RovinoxDotnet.Controllers
                {
                   FirstName = items.PostedBy.FirstName,
                   LastName = items.PostedBy.LastName,
-                  Image = items.PostedBy.Image
+                  Image = items.PostedBy.Image,
                   Enabled = items.Enabled,
                },
                Repliers = NewRepliers
