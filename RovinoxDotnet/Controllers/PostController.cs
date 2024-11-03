@@ -57,7 +57,7 @@ namespace RovinoxDotnet.Controllers
                   {
                      FirstName = items2.ReplyingTo.FirstName,
                      LastName = items2.ReplyingTo.LastName,
-                     Image = items2.ReplyingTo.Image
+                     Image = items2.ReplyingTo.Image,
                      Enabled = items.Enabled,
                   },
                });
