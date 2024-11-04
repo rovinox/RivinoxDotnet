@@ -1,6 +1,6 @@
 import React from 'react'
 import {Typography, Modal, Stack,Button,Box} from '@mui/material'
-import theme from '../discussion/theme';
+
 
 function DeleteDialog(props) {
   const {dialogOpen,setDialogOpen,handleConfirmDelete, windowW} = props;
@@ -17,9 +17,7 @@ function DeleteDialog(props) {
             top: '50%',
             left: '50%',
             transform: 'translate(-50%, -50%)',
-            width: {tablet: 400, mobile: windowW - 32},
             borderRadius: '8px',
-            bgcolor: theme.palette.clr100,
             p: 4,
             '& > * + *': {mt: "16px !important"}
           }}>
@@ -37,7 +35,7 @@ function DeleteDialog(props) {
                 size='large'
                 disableElevation
                 sx={{'&, &:hover':{flexGrow: 1,
-                  bgcolor: theme.palette.clr400
+                 
                 },
                   borderRadius: '8px',px: 0 }}
               >
@@ -50,7 +48,7 @@ function DeleteDialog(props) {
                 size='large'
                 disableElevation
                 sx={{'&, &:hover':{flexGrow: 1,
-                  bgcolor: theme.palette.secondary.main
+                 
                 },
                    ml: 1.5,borderRadius: '8px',px: 0 }}
               >

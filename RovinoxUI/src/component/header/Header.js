@@ -92,7 +92,7 @@ const Header = () => {
   return (
     <div>
       <AppBar
-        sx={{ boxShadow: "none", background: !scrolled ? "none" : "#252251" }}
+        sx={{ boxShadow: "none", background: !scrolled ? "none" : "#191A3A"}}
         position="fixed"
       >
         <Container maxWidth="xl">

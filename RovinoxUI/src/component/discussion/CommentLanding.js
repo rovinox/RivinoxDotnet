@@ -6,10 +6,9 @@ import theme from './theme';
 export default function CommentLanding() {
 
   return (
-      <ThemeProvider theme={theme}>
-        <CssBaseline/>
+      
       <AllCOmments  />     
-      </ThemeProvider>
+  
  
 
   )

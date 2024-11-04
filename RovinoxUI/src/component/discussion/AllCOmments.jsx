@@ -49,14 +49,13 @@ console.log(posts);
 
   return (
     <>
+    <Header/>
       <Stack 
         sx={{
           my: 6,
-          width: {laptop: "730px", mobile: "100%"},
-          p: {laptop: 0, mobile: 2},
+          width:730,
           mx: 'auto',
-          alignItems: 'center',
-          // border: '1px solid red',
+          alignItems: 'center',        
           '& > * + *': {
             mt: 2
           }

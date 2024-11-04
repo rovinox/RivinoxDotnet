@@ -1,6 +1,5 @@
 import { Avatar, Box, Button, TextField } from '@mui/material'
 import React, { useEffect, useState, useRef } from 'react'
-import theme from '../discussion/theme';
 import { dummyState } from './dummyState';
 import InputField from './InputField'
 import { apiService } from '../../api/axios';
@@ -64,10 +63,9 @@ function CommentInputBox(props) {
       <Box 
         id={type==='reply' ? 'replyBox' : ''} 
         sx={{
-          display: {laptop: 'flex', mobile: 'block'},
+          display: 'flex',
           width: '100%', 
           minHeight: '150px',
-         bgcolor: theme.palette.clr100,
           borderRadius: "4px",
           p: 3,
         }}
@@ -86,8 +84,8 @@ function CommentInputBox(props) {
               sx={{
                 width: 104, height: 48, ml:  2, borderRadius: '8px',
                  '&:hover': {
-                   bgcolor: theme.palette.primary.main, boxShadow: '0px 3px 1px -2px rgb(0 0 0 / 20%), 0px 2px 2px 0px rgb(0 0 0 / 14%), 0px 1px 5px 0px rgb(0 0 0 / 12%)'}, 
-                 '&:active': {bgcolor: theme.palette.primary.light}
+              boxShadow: '0px 3px 1px -2px rgb(0 0 0 / 20%), 0px 2px 2px 0px rgb(0 0 0 / 14%), 0px 1px 5px 0px rgb(0 0 0 / 12%)'}
+             
               }}
             >
               {type==='reply' ? 'Reply' : 'Send'}
@@ -109,8 +107,7 @@ function CommentInputBox(props) {
             onClick={handleSubmit}
             sx={{
               width: 104, height: 48, ml:  2, borderRadius: '8px',
-               '&:hover': {bgcolor: theme.palette.primary.main, boxShadow: '0px 3px 1px -2px rgb(0 0 0 / 20%), 0px 2px 2px 0px rgb(0 0 0 / 14%), 0px 1px 5px 0px rgb(0 0 0 / 12%)'}, 
-              '&:active': {bgcolor: theme.palette.primary.light}
+             
             }}
           >
             {type==='reply' ? 'Reply' : 'Send'}

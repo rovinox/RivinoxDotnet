@@ -1,6 +1,5 @@
 import React, { useEffect,useState } from 'react'
 import {Box,Avatar,Typography} from '@mui/material';
-import theme from '../discussion/theme';
 import CommentAction from './CommentAction';
 import RelativeTime from '@yaireo/relative-time'
 //import selectAvatar from 'utils/resolveAvatarPath';
@@ -30,18 +29,18 @@ function CommentHeader(props) {
         <Box className="header-left" sx={{flexGrow: 1, display: 'flex', alignItems: 'center'}}>
           <Avatar 
             alt="avatar"
-            src=''
+            src={createdBy.image}
             sx={{ width: 32, height: 32 }}   
           />
           <Typography variant="username" sx={{ml:2}}>{createdBy?.fullName}</Typography>
           {(createdBy?.id === currentUserObj?.id) && <Typography variant="you" sx={{ml:1, height: 18
-          ,bgcolor: theme.palette.primary.main
+          
          ,py:'2px',px:'6px', lineHeight:1, borderRadius: '3px'}}>you</Typography>}
           <Typography variant="body" sx={{ml:2}}>{date}</Typography>
         </Box>
         
         {!deleted
-       && (windowW > theme.breakpoints.values.laptop)
+       && (windowW > 1024)
          &&
           <CommentHeaderActions currentUserObj={currentUserObj} createdBy={createdBy} user={user} onDelete={onDelete} onEdit={onEdit} onReply={onReply} reply={reply} edit={edit}/>
         }

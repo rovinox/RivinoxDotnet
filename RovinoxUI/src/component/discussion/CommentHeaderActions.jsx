@@ -9,7 +9,7 @@ function CommentHeaderActions(props) {
   const {user,onDelete,onEdit,onReply, reply,edit, createdBy, currentUserObj} = props;
   console.log('CommentHeaderActions',props);
   return (
-    <Box className="header-right" sx={{ml: {laptop: 3, mobile: 0}, display: 'flex', alignItems: 'center'}}>
+    <Box className="header-right" sx={{ml: 3, display: 'flex', alignItems: 'center'}}>
       {(createdBy?.id === currentUserObj?.Id) ? 
         <>
           <CommentAction type='delete' onClick={onDelete}/> 
