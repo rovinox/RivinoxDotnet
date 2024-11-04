@@ -13,10 +13,10 @@ import ScoreButton from './ScoreButton';
 
 function CommentBox(props) {
   const [state,setState] = useState(dummyState);
-  console.log('ccstate: ', state);
   const {users,currentUser, comments} = state;
 
-  const {id, content, createdAt, score,user,replies, replyingTo, selected,setSelected,windowW} = props;
+  const {id, content, createdOn, score,user,currentUserObj, createdBy,repliers, replyingTo, replyingToId, selected,setSelected,windowW, type, selectedType,setSelectedType, postId} = props;
+  console.log('CommentBox: ', props);
   const [editText,setEditText] = useState(content);
   const [totalVotes,setTotalVotes] = useState(score);
   const [dialogOpen,setDialogOpen] = useState(false);
@@ -29,7 +29,7 @@ function CommentBox(props) {
     if (indices.c !== -1 && indices.r === -1) {
       updatedComments[indices.c] = {...updatedComments[indices.c], content: "\0"}
     } else if (indices.r !== -1 && indices.c !== -1) {
-      updatedComments[indices.c].replies[indices.r] = {...updatedComments[indices.c].replies[indices.r], content: "\0"}
+      updatedComments[indices.c].repliers[indices.r] = {...updatedComments[indices.c].repliers[indices.r], content: "\0"}
     }
 
     setState(prev => {return {
@@ -82,6 +82,7 @@ function CommentBox(props) {
   }
   function handleReply(){
     setSelected(id);
+    setSelectedType(type);
   }
 
   function handleEditTextChange(e) {
@@ -98,7 +99,7 @@ function CommentBox(props) {
         return; 
       }
 
-      indices.r = comment.replies.findIndex((r) => r.id === id);
+      indices.r = comment.repliers.findIndex((r) => r.id === id);
       if (indices.r !== -1) {
         indices.c = index;
         return;
@@ -113,7 +114,7 @@ function CommentBox(props) {
     if (indices.c !== -1 && indices.r === -1) {
       updatedComments[indices.c] = {...updatedComments[indices.c], content: editText}
     } else if (indices.r !== -1 && indices.c !== -1) {
-      updatedComments[indices.c].replies[indices.r] = {...updatedComments[indices.c].replies[indices.r], content: editText}
+      updatedComments[indices.c].repliers[indices.r] = {...updatedComments[indices.c].repliers[indices.r], content: editText}
     }
 
     setState(prev => {return {
@@ -155,7 +156,7 @@ function CommentBox(props) {
     else if (users[i].downvoted.includes(id)) setCurrUserVote(-1);
     else setCurrUserVote(0)
   }
-
+console.log({selected , id , selectedType , type});
   return (
     <>
       <Box 
@@ -170,7 +171,7 @@ function CommentBox(props) {
       >
         {content !== "\0" && (windowW > 1024) && <ScoreButton score={totalVotes} onPlus={handleUpvote} onMinus={handleDownvote} upvoted={currUserVote === 1} downvoted={currUserVote === -1}/>}
         <Box sx={{flexGrow: 1, ml: {laptop: 3, mobile: 0} }}>
-          <CommentHeader user={user} createdAt={createdAt} onDelete={handleDelete} onEdit={handleEdit} onReply={handleReply} reply={selected === id} edit={selected === -id} deleted={content === "\0"} windowW={windowW}/>
+          <CommentHeader  currentUserObj={currentUserObj} createdBy={createdBy} user={user} createdOn={createdOn} onDelete={handleDelete} onEdit={handleEdit} onReply={handleReply} reply={selected === id} edit={selected === -id} deleted={content === "\0"} windowW={windowW}/>
           {content !== "\0" ? 
             (selected === -id) ? 
               <EditField defaultValue={content} onChange={handleEditTextChange} onSubmit={handleEditSubmit}/>
@@ -178,7 +179,7 @@ function CommentBox(props) {
               <Typography variant='body' sx={{flexGrow: 1,
               '& > span': {...theme.typography.primaryAction} 
                }} component='p'>
-                {replyingTo && <span>{'@' + replyingTo + ' '}</span>}
+                {replyingToId && <span>{'@' + replyingTo?.fullName + ' '}</span>}
                 {content.split('\n').map((line,i) => {return (<React.Fragment key={i}>
                   {line}
                   <br/>
@@ -190,13 +191,13 @@ function CommentBox(props) {
           {(windowW <= 1024) && (content !== "\0") &&
             <Box sx={{display: 'flex', justifyContent: 'space-between', alignItems: 'center', mt: 2}}>
               <ScoreButton score={totalVotes} onPlus={handleUpvote} onMinus={handleDownvote} upvoted={currUserVote === 1} downvoted={currUserVote === -1} direction='row'/>
-              <CommentHeaderActions user={user} onDelete={handleDelete} onEdit={handleEdit} onReply={handleReply} reply={selected === id} edit={selected === -id}/>
+              <CommentHeaderActions currentUserObj={currentUserObj} createdBy={createdBy} user={user} onDelete={handleDelete} onEdit={handleEdit} onReply={handleReply} reply={selected === id} edit={selected === -id}/>
             </Box>
           }
         </Box>
       </Box>
-      {(selected === id) && <CommentInputBox type='reply' replyingTo={user} insertAt={findIndex(id).c} setSelected={setSelected} windowW={windowW}/>}
-      {replies && replies.length > 0 && 
+      {(selected === id && selectedType === type ) && <CommentInputBox postId={postId} type={type} createdBy={createdBy} replyingTo={replyingTo} insertAt={findIndex(id).c} setSelected={setSelected} selected={selected} windowW={windowW}/>}
+      {repliers && repliers.length > 0 && 
         <Box sx={{display: 'flex', width: '100%'}}>
           <Divider 
             orientation='vertical' 
@@ -209,9 +210,10 @@ function CommentBox(props) {
             flexItem  
           />
           <Box sx={{'& > * + *': {mt: 2}, width: '100%'}}>
-            {replies.map(reply => {
+            {repliers.map(reply => {
               return (
-                <CommentBox key={reply.id} {...reply} selected={selected} setSelected={setSelected} windowW={windowW}/>
+                <CommentBox  key={reply.id} {...reply}  selected={selected} setSelected={setSelected} windowW={windowW}  selectedType={selectedType}
+                setSelectedType={setSelectedType} />
               )
             }) }
           </Box>

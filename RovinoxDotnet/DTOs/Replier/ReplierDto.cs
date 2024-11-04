@@ -11,6 +11,7 @@ namespace RovinoxDotnet.DTOs.Replier
          public int Id { get; set; }
         public int Score { get; set; }
         public string Content { get; set; } 
+        public string Type  = "reply";
         public DateTime CreatedOn { get; set; }
         public int PostId { get; set; }
         public string CreatedById { get; set; }

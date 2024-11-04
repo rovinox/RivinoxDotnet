@@ -12,6 +12,7 @@ namespace RovinoxDotnet.DTOs.Post
          public int Id { get; set; }
         public int Score { get; set; }
         public string Content { get; set; } 
+        public string Type  = "comment";
         public DateTime CreatedOn { get; set; } 
         public int CurriculumId { get; set; }
         public string PostedById { get; set; }

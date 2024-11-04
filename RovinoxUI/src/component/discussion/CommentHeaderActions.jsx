@@ -6,10 +6,11 @@ import { dummyState } from './dummyState';
 function CommentHeaderActions(props) {
   const [state,setState] = useState(dummyState);
   const {currentUser} = state;
-  const {user,onDelete,onEdit,onReply, reply,edit} = props;
+  const {user,onDelete,onEdit,onReply, reply,edit, createdBy, currentUserObj} = props;
+  console.log('CommentHeaderActions',props);
   return (
     <Box className="header-right" sx={{ml: {laptop: 3, mobile: 0}, display: 'flex', alignItems: 'center'}}>
-      {(user === currentUser) ? 
+      {(createdBy?.id === currentUserObj?.Id) ? 
         <>
           <CommentAction type='delete' onClick={onDelete}/> 
           <CommentAction type='edit' sx={{ml: 3}} onClick={onEdit} edit={edit}/>

@@ -9,19 +9,20 @@ import { dummyState } from './dummyState';
 
 
 function CommentHeader(props) {
+  console.log('CommentHeader: ', props);
   const [state,setState] = useState(dummyState);
   const {users,currentUser} = state;
-  const {user,createdAt ,onDelete,onEdit,onReply, reply,edit, deleted,windowW} = props;
+  const {user,createdBy, currentUserObj, createdOn ,onDelete,onEdit,onReply, reply,edit, deleted,windowW} = props;
   const [date,setDate] = useState('');
 
   const relativeTime = new RelativeTime();
   useEffect(()=> {
-    setDate(relativeTime.from(new Date(createdAt)))
+    setDate(relativeTime.from(new Date(createdOn)))
     const interval = setInterval(()=> {
-      setDate(relativeTime.from(new Date(createdAt)))
+      setDate(relativeTime.from(new Date(createdOn)))
     },5000)
     return () => clearInterval(interval)
-  },[createdAt])
+  },[createdOn])
 
   return (
     <>
@@ -32,8 +33,8 @@ function CommentHeader(props) {
             src=''
             sx={{ width: 32, height: 32 }}   
           />
-          <Typography variant="username" sx={{ml:2}}>{user}</Typography>
-          {(user === currentUser) && <Typography variant="you" sx={{ml:1, height: 18
+          <Typography variant="username" sx={{ml:2}}>{createdBy?.fullName}</Typography>
+          {(createdBy?.id === currentUserObj?.id) && <Typography variant="you" sx={{ml:1, height: 18
           ,bgcolor: theme.palette.primary.main
          ,py:'2px',px:'6px', lineHeight:1, borderRadius: '3px'}}>you</Typography>}
           <Typography variant="body" sx={{ml:2}}>{date}</Typography>
@@ -42,7 +43,7 @@ function CommentHeader(props) {
         {!deleted
        && (windowW > theme.breakpoints.values.laptop)
          &&
-          <CommentHeaderActions user={user} onDelete={onDelete} onEdit={onEdit} onReply={onReply} reply={reply} edit={edit}/>
+          <CommentHeaderActions currentUserObj={currentUserObj} createdBy={createdBy} user={user} onDelete={onDelete} onEdit={onEdit} onReply={onReply} reply={reply} edit={edit}/>
         }
         
 

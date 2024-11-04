@@ -45,8 +45,10 @@ namespace RovinoxDotnet.Controllers
                   {
                      FirstName = items2.CreatedBy.FirstName,
                      LastName = items2.CreatedBy.LastName,
+                     FullName = items2.CreatedBy.FirstName + " " + items2.CreatedBy.LastName,
                      Image = items2.CreatedBy.Image,
-                     Enabled = items.Enabled,
+                     Enabled = items2.CreatedBy.Enabled,
+                     Id = items2.CreatedBy.Id,
                   },
                   CreatedOn = items2.CreatedOn,
                   Enabled = items2.Enabled,
@@ -57,14 +59,17 @@ namespace RovinoxDotnet.Controllers
                   {
                      FirstName = items2.ReplyingTo.FirstName,
                      LastName = items2.ReplyingTo.LastName,
+                      FullName = items2.ReplyingTo.FirstName + " " + items2.ReplyingTo.LastName,
                      Image = items2.ReplyingTo.Image,
-                     Enabled = items.Enabled,
+                     Enabled = items2.ReplyingTo.Enabled,
+                      Id = items2.ReplyingTo.Id,
                   },
                });
             }
             newPostDto.Add(new PostDto
             {
                Id = items.Id,
+               Content = items.Content,
                Score = items.Score,
                CreatedOn = items.CreatedOn,
                CurriculumId = items.CurriculumId, 
@@ -74,8 +79,10 @@ namespace RovinoxDotnet.Controllers
                {
                   FirstName = items.PostedBy.FirstName,
                   LastName = items.PostedBy.LastName,
+                   FullName = items.PostedBy.FirstName + " " + items.PostedBy.LastName,
                   Image = items.PostedBy.Image,
-                  Enabled = items.Enabled,
+                  Enabled = items.PostedBy.Enabled,
+                  Id = items.PostedBy.Id,
                },
                Repliers = NewRepliers
             });

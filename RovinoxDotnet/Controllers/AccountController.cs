@@ -177,7 +177,8 @@ namespace RovinoxDotnet.Controllers
                 Enabled = user.Enabled,
                 Balance = user.Balance,
                 Id = user.Id,
-                Image = user.Image
+                Image = user.Image,
+                FullName = user.FirstName + " " + user.LastName,
             };
             return Ok(
                       appData

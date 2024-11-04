@@ -5,56 +5,54 @@ import { dummyState } from './dummyState';
 import InputField from './InputField'
 import { apiService } from '../../api/axios';
 import {  useParams } from "react-router-dom";
+import { useSelector, useDispatch } from "react-redux";
+import { getPost } from '../../duck/discussionSlice';
 
 function CommentInputBox(props) {
+  const dispatch = useDispatch();
+  
   const [state,setState] = useState(dummyState);
   const { curriculumId } = useParams();
   const {users,currentUser, newId,comments} = state;
-  const {type, replyingTo,insertAt,setSelected,windowW, } = props;
+  const {type,insertAt,setSelected,windowW, selected, createdBy, postId} = props;
   const [text,setText] = useState("");
   const inputField = useRef(null);
 
   const  handleSubmit = async() =>{
     if (text.trim().length === 0) return;
+    let payload = {}
+    let apiUrl = ""
     if (type === 'comment') {
-      const newComment = {
-        id : newId,
-        content: text,
-        createdAt: new Date().toString(),
-        score: 0,
-        user: currentUser,
-        replies: []
-      }
-      try {
-       const payload  = {
+      const postPayload  = {
         content: text,
         curriculumId,
-       }
-        const result = await apiService.post(`http://localhost:5122/api/post`, payload);
+      } 
+      apiUrl ="http://localhost:5122/api/post"
+       payload = postPayload
+    } else if (type === 'reply') {
+      const replayPayload  = {
+        content: text,
+        postId,
+        replyingToId:createdBy.id
+
+      } 
+      apiUrl ="http://localhost:5122/api/replier"
+       payload = replayPayload
+    
+    }
+    
+    try {
+       
+        const result = await apiService.post(apiUrl, payload);
         console.log(result);
         if (result?.data) {
-         
+          dispatch(getPost(curriculumId))
         }
       } catch (err) {
         console.log(err);
       }
-      setState(prev=> {return {...prev, newId: newId+1, comments: [...prev.comments, newComment]}})
       inputField.current.value = '';
-      return;
-    } else if (type === 'reply') {
-      const updatedComments = state.comments;
-      const newReply = {
-        id : newId,
-        content: text,
-        createdAt: new Date().toString(),
-        score: 0,
-        user: currentUser,
-        replyingTo: replyingTo
-      }
-      updatedComments[insertAt].replies.push(newReply);
-      setState(prev=> {return {...prev, newId: newId+1, comments: updatedComments}})
       setSelected(0);
-    }
     
   }
   function handleTextChange(e) {
