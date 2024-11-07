@@ -13,6 +13,15 @@ export const getPost = createAsyncThunk("getPost", async (curriculumId) => {
 
   return result.data;
 });
+export const getVotes = createAsyncThunk("getVotes", async (curriculumId) => {
+  
+  const result = await apiService.get(`http://localhost:5122/api/vote/curriculumId/${curriculumId}`);
+
+  return result.data;
+});
+
+
+
 
 export const discussionSlice = createSlice({
   name: "discussion",
@@ -26,6 +35,10 @@ export const discussionSlice = createSlice({
     // },
     [getPost.fulfilled]: (state, action) => {
       state.posts = action.payload;
+    },
+    [getVotes.fulfilled]: (state, action) => {
+      //state.posts = action.payload;
+      console.log(action.payload);
     },
   },
 });

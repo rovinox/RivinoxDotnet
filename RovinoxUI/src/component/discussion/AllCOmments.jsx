@@ -4,7 +4,7 @@ import CommentBox from './CommentBox';
 import CommentInputBox from './CommentInputBox';
 import {  useParams } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
-import { getPost } from '../../duck/discussionSlice';
+import { getPost, getVotes } from '../../duck/discussionSlice';
 import Header from '../header/Header';
 
 
@@ -35,6 +35,7 @@ console.log(posts);
 
   useEffect(() => {
     dispatch(getPost(curriculumId))
+    dispatch(getVotes(curriculumId))
   }, [curriculumId, dispatch]);
 
   useEffect(() => {

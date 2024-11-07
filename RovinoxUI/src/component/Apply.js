@@ -62,7 +62,7 @@ export default function Apply() {
       firstName: data.get("firstName"),
       lastName: data.get("lastName"),
       password: data.get("password"),
-      batchId: selectedBatch,
+      batchId: selectedBatch ?? null,
     };
 
     const confirmPassword = data.get("confirmPassword");

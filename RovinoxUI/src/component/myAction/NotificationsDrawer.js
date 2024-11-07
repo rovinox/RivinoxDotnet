@@ -48,7 +48,9 @@ export default function NotificationsDrawer() {
           No Notifications
         </Typography>
       ) : (
-        list()
+        <Box sx={{ height: "100%", width: "100%", bgcolor: "#212242" }}>
+          {list()}
+        </Box>
       )}
     </Drawer>
   );
