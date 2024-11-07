@@ -12,8 +12,8 @@ using RovinoxDotnet.Data;
 namespace RovinoxDotnet.Migrations
 {
     [DbContext(typeof(ApplicationDBContext))]
-    [Migration("20241024015452_removeedpayment")]
-    partial class removeedpayment
+    [Migration("20241107190310_newbd")]
+    partial class newbd
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -53,13 +53,13 @@ namespace RovinoxDotnet.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "0ca68e52-f65c-4acf-9821-be2d77bb65d7",
+                            Id = "a11b0f80-bff6-4b14-8130-32fb3f739af3",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         },
                         new
                         {
-                            Id = "ff1c65e9-825f-45ca-a2f7-d693a7b5e5e0",
+                            Id = "59b8fbce-aae5-4a77-8a63-4bfacb279164",
                             Name = "User",
                             NormalizedName = "USER"
                         });
@@ -171,6 +171,21 @@ namespace RovinoxDotnet.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
+            modelBuilder.Entity("NotificationPayment", b =>
+                {
+                    b.Property<int>("PaymentId")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("PaymentsId")
+                        .HasColumnType("integer");
+
+                    b.HasKey("PaymentId", "PaymentsId");
+
+                    b.HasIndex("PaymentsId");
+
+                    b.ToTable("NotificationPayment");
+                });
+
             modelBuilder.Entity("RovinoxDotnet.Models.AppUser", b =>
                 {
                     b.Property<string>("Id")
@@ -198,6 +213,9 @@ namespace RovinoxDotnet.Migrations
 
                     b.Property<string>("FirstName")
                         .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("Image")
                         .HasColumnType("text");
 
                     b.Property<string>("LastName")
@@ -431,6 +449,9 @@ namespace RovinoxDotnet.Migrations
                     b.Property<DateTime>("CompletedOn")
                         .HasColumnType("timestamp without time zone");
 
+                    b.Property<DateTime>("CreatedOn")
+                        .HasColumnType("timestamp without time zone");
+
                     b.Property<string>("Description")
                         .HasColumnType("text");
 
@@ -504,6 +525,126 @@ namespace RovinoxDotnet.Migrations
                     b.ToTable("Payments");
                 });
 
+            modelBuilder.Entity("RovinoxDotnet.Models.Post", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Content")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<DateTime>("CreatedOn")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<int>("CurriculumId")
+                        .HasColumnType("integer");
+
+                    b.Property<bool>("Enabled")
+                        .HasColumnType("boolean");
+
+                    b.Property<string>("PostedById")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<int>("Score")
+                        .HasColumnType("integer");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CurriculumId");
+
+                    b.HasIndex("PostedById");
+
+                    b.ToTable("Posts");
+                });
+
+            modelBuilder.Entity("RovinoxDotnet.Models.Replier", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Content")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("CreatedById")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<DateTime>("CreatedOn")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<bool>("Enabled")
+                        .HasColumnType("boolean");
+
+                    b.Property<int>("PostId")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("ReplyingToId")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<int>("Score")
+                        .HasColumnType("integer");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CreatedById");
+
+                    b.HasIndex("PostId");
+
+                    b.HasIndex("ReplyingToId");
+
+                    b.ToTable("Repliers");
+                });
+
+            modelBuilder.Entity("RovinoxDotnet.Models.Vote", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("CurriculumId")
+                        .HasColumnType("integer");
+
+                    b.Property<int[]>("PostDownvoted")
+                        .IsRequired()
+                        .HasColumnType("integer[]");
+
+                    b.Property<int[]>("PostUpvoted")
+                        .IsRequired()
+                        .HasColumnType("integer[]");
+
+                    b.Property<int[]>("ReplayDownvoted")
+                        .IsRequired()
+                        .HasColumnType("integer[]");
+
+                    b.Property<int[]>("ReplayUpvoted")
+                        .IsRequired()
+                        .HasColumnType("integer[]");
+
+                    b.Property<string>("VotedById")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CurriculumId");
+
+                    b.HasIndex("VotedById");
+
+                    b.ToTable("Votes");
+                });
+
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
                 {
                     b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole", null)
@@ -551,6 +692,21 @@ namespace RovinoxDotnet.Migrations
                     b.HasOne("RovinoxDotnet.Models.AppUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("NotificationPayment", b =>
+                {
+                    b.HasOne("RovinoxDotnet.Models.Notification", null)
+                        .WithMany()
+                        .HasForeignKey("PaymentId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("RovinoxDotnet.Models.Payment", null)
+                        .WithMany()
+                        .HasForeignKey("PaymentsId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
@@ -663,19 +819,94 @@ namespace RovinoxDotnet.Migrations
                     b.Navigation("User");
                 });
 
+            modelBuilder.Entity("RovinoxDotnet.Models.Post", b =>
+                {
+                    b.HasOne("RovinoxDotnet.Models.Curriculum", "Curriculum")
+                        .WithMany("Posts")
+                        .HasForeignKey("CurriculumId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("RovinoxDotnet.Models.AppUser", "PostedBy")
+                        .WithMany("PostedBy")
+                        .HasForeignKey("PostedById")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Curriculum");
+
+                    b.Navigation("PostedBy");
+                });
+
+            modelBuilder.Entity("RovinoxDotnet.Models.Replier", b =>
+                {
+                    b.HasOne("RovinoxDotnet.Models.AppUser", "CreatedBy")
+                        .WithMany("CreatedBy")
+                        .HasForeignKey("CreatedById")
+                        .OnDelete(DeleteBehavior.SetNull)
+                        .IsRequired()
+                        .HasConstraintName("CreatedById");
+
+                    b.HasOne("RovinoxDotnet.Models.Post", "Post")
+                        .WithMany("Repliers")
+                        .HasForeignKey("PostId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("RovinoxDotnet.Models.AppUser", "ReplyingTo")
+                        .WithMany("ReplyingTo")
+                        .HasForeignKey("ReplyingToId")
+                        .OnDelete(DeleteBehavior.SetNull)
+                        .IsRequired()
+                        .HasConstraintName("ReplyingToId");
+
+                    b.Navigation("CreatedBy");
+
+                    b.Navigation("Post");
+
+                    b.Navigation("ReplyingTo");
+                });
+
+            modelBuilder.Entity("RovinoxDotnet.Models.Vote", b =>
+                {
+                    b.HasOne("RovinoxDotnet.Models.Curriculum", "Curriculum")
+                        .WithMany("Vote")
+                        .HasForeignKey("CurriculumId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("RovinoxDotnet.Models.AppUser", "VotedBy")
+                        .WithMany("VotedBy")
+                        .HasForeignKey("VotedById")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Curriculum");
+
+                    b.Navigation("VotedBy");
+                });
+
             modelBuilder.Entity("RovinoxDotnet.Models.AppUser", b =>
                 {
                     b.Navigation("Approvers");
 
                     b.Navigation("CashReceivers");
 
+                    b.Navigation("CreatedBy");
+
                     b.Navigation("Enrollments");
 
+                    b.Navigation("PostedBy");
+
                     b.Navigation("Receivers");
+
+                    b.Navigation("ReplyingTo");
 
                     b.Navigation("Senders");
 
                     b.Navigation("Users");
+
+                    b.Navigation("VotedBy");
                 });
 
             modelBuilder.Entity("RovinoxDotnet.Models.Batch", b =>
@@ -688,11 +919,20 @@ namespace RovinoxDotnet.Migrations
             modelBuilder.Entity("RovinoxDotnet.Models.Curriculum", b =>
                 {
                     b.Navigation("HomeWorks");
+
+                    b.Navigation("Posts");
+
+                    b.Navigation("Vote");
                 });
 
             modelBuilder.Entity("RovinoxDotnet.Models.HomeWork", b =>
                 {
                     b.Navigation("Comments");
+                });
+
+            modelBuilder.Entity("RovinoxDotnet.Models.Post", b =>
+                {
+                    b.Navigation("Repliers");
                 });
 #pragma warning restore 612, 618
         }

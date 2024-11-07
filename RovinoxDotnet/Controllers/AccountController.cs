@@ -88,7 +88,8 @@ namespace RovinoxDotnet.Controllers
                 };
                 if (registerDto.BatchId != null)
                 {
-                    Batch batch = await _batchRepository.GetByIdAsync(registerDto.BatchId);
+                    int batchId = (int)registerDto.BatchId;
+                    Batch batch = await _batchRepository.GetByIdAsync(batchId);
                     appUser.Balance = batch.Cost;
                     var enrollmentDto = new CreateEnrollmentDto
                     {

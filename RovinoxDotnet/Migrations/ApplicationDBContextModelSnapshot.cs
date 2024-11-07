@@ -50,13 +50,13 @@ namespace RovinoxDotnet.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "d800fbc9-2b54-4d57-a8ea-6c51d35b407f",
+                            Id = "a11b0f80-bff6-4b14-8130-32fb3f739af3",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         },
                         new
                         {
-                            Id = "5a0429e9-3353-4fd5-98d6-8a0f9c76d073",
+                            Id = "59b8fbce-aae5-4a77-8a63-4bfacb279164",
                             Name = "User",
                             NormalizedName = "USER"
                         });
