@@ -37,7 +37,6 @@ import moment from "moment";
       });
   return (
     <div> <TextField
-    required
     fullWidth
     name="batch"
     select

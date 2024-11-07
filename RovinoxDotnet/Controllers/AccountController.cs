@@ -17,10 +17,13 @@ namespace RovinoxDotnet.Controllers
 {
     [Route("api/account")]
     [ApiController]
-    public class AccountController(UserManager<AppUser> userManager, RoleManager<IdentityRole> roleManager, ITokenService tokenService, SignInManager<AppUser> signInManager, IBatchRepository batchRepository, IEnrollmentRepository enrollmentRepository, ApplicationDBContext dbContext, IAuthenticatedUserService authenticatedUserService) : ControllerBase
+    public class AccountController(UserManager<AppUser> userManager, RoleManager<IdentityRole> roleManager, ITokenService tokenService, SignInManager<AppUser> signInManager, IBatchRepository batchRepository, IEnrollmentRepository enrollmentRepository, ApplicationDBContext dbContext, IAuthenticatedUserService authenticatedUserService,
+    IImageRepository imageRepository
+    ) : ControllerBase
     {
         private readonly IAuthenticatedUserService _authenticatedUserService = authenticatedUserService;
         private readonly UserManager<AppUser> _userManager = userManager;
+        private readonly IImageRepository _imageRepository = imageRepository;
         private readonly RoleManager<IdentityRole> _roleManager = roleManager;
         private readonly ITokenService _tokenService = tokenService;
         private readonly SignInManager<AppUser> _signInManager = signInManager;
@@ -72,7 +75,7 @@ namespace RovinoxDotnet.Controllers
 
                     return BadRequest(ModelState);
                 }
-                Batch batch = await _batchRepository.GetByIdAsync(registerDto.BatchId);
+
                 var appUser = new AppUser
                 {
                     UserName = registerDto.Email,
@@ -80,18 +83,13 @@ namespace RovinoxDotnet.Controllers
                     FirstName = registerDto.FirstName,
                     LastName = registerDto.LastName,
                     PhoneNumber = registerDto.PhoneNumber,
-                    Balance = batch.Cost,
+                    Balance = 0,
                     Enabled = true
                 };
-
-                var createdUser = await _userManager.CreateAsync(appUser, registerDto.Password);
-
-                if (createdUser.Succeeded)
+                if (registerDto.BatchId != null)
                 {
-                    //  var user = await _userManager.FindByEmailAsync(registerDto.Email);
-    
-
-
+                    Batch batch = await _batchRepository.GetByIdAsync(registerDto.BatchId);
+                    appUser.Balance = batch.Cost;
                     var enrollmentDto = new CreateEnrollmentDto
                     {
                         FirstName = appUser.FirstName,
@@ -101,6 +99,11 @@ namespace RovinoxDotnet.Controllers
                         BatchId = batch.Id
                     };
                     var enrollment = await _enrollmentRepository.CreateAsync(enrollmentDto);
+                }
+                var createdUser = await _userManager.CreateAsync(appUser, registerDto.Password);
+
+                if (createdUser.Succeeded)
+                {
                     var roleResult = await _userManager.AddToRoleAsync(appUser, defaultRole);
                     if (roleResult.Succeeded)
                     {
@@ -112,7 +115,8 @@ namespace RovinoxDotnet.Controllers
                                 Roles = defaultRole,
                                 Email = appUser.Email,
                                 Token = _tokenService.CreateToken(appUser),
-                                Enabled = true
+                                Enabled = true,
+                                Image = appUser.Image
                             }
                         );
                     }
@@ -131,8 +135,45 @@ namespace RovinoxDotnet.Controllers
                 return StatusCode(500, e);
             }
         }
+        [HttpPost("upload/picture")]
+        // [Authorize]
+        public async Task<IActionResult> UploadProfilePictureAsync([FromForm] IFormFile imageFile)
+        {
+
+            try
+            {
+
+                var url = await _imageRepository.UploadAndGetImageUrlAsync(imageFile);
+                if (!String.IsNullOrEmpty(url))
+                {
+                    var userId = _authenticatedUserService.UserId;
+                    var user = await _userManager.Users.FirstOrDefaultAsync(x => x.Id == userId);
+                    user.Image = url;
+                    var result = await _userManager.UpdateAsync(user);
+
+                    if (result.Succeeded)
+                    {
+                        return Ok(result);
+                    }
+                    else
+                    {
+                        return NotFound();
+                    }
+
+                }
+                else
+                {
+                    return StatusCode(500, new { Message = "Could not upload profile" });
+                }
+
+            }
+            catch (Exception e)
+            {
+                return StatusCode(500, e);
+            }
+        }
         [HttpGet("signed/user")]
-        [Authorize]
+        // [Authorize]
         public async Task<IActionResult> GetUserAsync()
         {
             var userId = _authenticatedUserService.UserId;
@@ -144,7 +185,9 @@ namespace RovinoxDotnet.Controllers
                 Email = user.Email,
                 Enabled = user.Enabled,
                 Balance = user.Balance,
-                Id = user.Id
+                Id = user.Id,
+                Image = user.Image,
+                FullName = user.FirstName + " " + user.LastName,
             };
             return Ok(
                       appData

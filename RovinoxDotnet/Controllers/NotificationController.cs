@@ -213,6 +213,7 @@ namespace RovinoxDotnet.Controllers
                     Sender = new AppUserDTO {
                     FirstName =  notification.Sender.FirstName,
                     LastName = notification.Sender.LastName,
+                    Image = notification.Sender.Image
                     },
                 });
                 if (!notification.Seen)

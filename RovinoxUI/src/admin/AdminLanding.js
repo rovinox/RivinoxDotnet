@@ -52,7 +52,7 @@ export default function AdminLanding() {
   const [value, setValue] = useState(0);
   const navigate = useNavigate();
   const [batch, setBatch] = useState([]);
-  const user = JSON.parse(localStorage.getItem("user"));
+
 
   const handleChange = (event, newValue) => {
     setValue(newValue);

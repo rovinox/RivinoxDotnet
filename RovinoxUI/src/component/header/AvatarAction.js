@@ -7,14 +7,17 @@ import Tooltip from "@mui/material/Tooltip";
 import MenuItem from "@mui/material/MenuItem";
 import { useNavigate } from "react-router-dom";
 import AvatarPicture from "../common/AvatarPicture";
+import { useDispatch , useSelector} from "react-redux";
+import { setUser } from "../../duck/accountSlice";
 
 
 export default function AvatarAction() {
 
   const [anchorElUser, setAnchorElUser] = useState(null);
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
-  const user = JSON.parse(localStorage.getItem("user"));
+  const user = useSelector((state) => state.account.user);
  
   const handleOpenUserMenu = (event) => {
     setAnchorElUser(event.currentTarget);
@@ -37,7 +40,8 @@ export default function AvatarAction() {
       // const result = await axios.get("/logout");
       // console.log("vv2", result);
 
-      localStorage.setItem("user", JSON.stringify({}));
+      localStorage.setItem("token", JSON.stringify(""));
+      dispatch(setUser(null));
       navigate("/login");
     } catch (error) {
       console.error(error?.message);
@@ -48,7 +52,7 @@ export default function AvatarAction() {
     <div>  <Box sx={{ flexGrow: 0 }}>
     <Tooltip title="Open settings">
       <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-        <AvatarPicture firstName={user.firstName} lastName={user.lastName}/>
+        <AvatarPicture  image={user?.image} firstName={user?.firstName} lastName={user?.lastName}/>
       </IconButton>
     </Tooltip>
     <Menu

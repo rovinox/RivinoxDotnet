@@ -13,6 +13,7 @@ namespace RovinoxDotnet.DTOs.Account
         public string FirstName { get; set; } = string.Empty;
         public string LastName { get; set; } = string.Empty;
         public bool Enabled { get; set; }
+        public string Image { get; set; } = string.Empty;
 
     }
 }

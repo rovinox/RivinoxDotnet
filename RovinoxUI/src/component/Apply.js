@@ -17,10 +17,13 @@ import Group7 from "../asset/Group7.svg";
 import Footer from "../home/Footer.js";
 import { apiService } from "../api/axios.js";
 import ListOfBatch from "./common/ListOfBatch.js";
+import { useDispatch } from "react-redux";
+import { setUser } from "../duck/accountSlice.js";
 
 export default function Apply() {
   const { state } = useLocation();
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   const batchId = state?.id;
   const [selectedBatch, setSelectedBatch] = useState(batchId);
   console.log('selectedBatch: ', selectedBatch);
@@ -59,7 +62,7 @@ export default function Apply() {
       firstName: data.get("firstName"),
       lastName: data.get("lastName"),
       password: data.get("password"),
-      batchId: selectedBatch,
+      batchId: selectedBatch ?? null,
     };
 
     const confirmPassword = data.get("confirmPassword");
@@ -69,11 +72,13 @@ export default function Apply() {
     }
 
     try {
-      const result = await apiService.post("http://localhost:5122/api/account/register", user);
-      console.log("result: ", result);
+      const response = await apiService.post("http://localhost:5122/api/account/register", user);
+
       // await axios.post("/email", user);
-      if (result.status === 200) {
-        localStorage.setItem("user", JSON.stringify(result.data));
+      if (response.status === 200) {
+        localStorage.setItem("token", JSON.stringify(response.data.token));
+        delete response.data.token;
+        dispatch(setUser({user:response.data}))
         navigate("/student");
       }
     } catch (err) {

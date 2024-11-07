@@ -17,8 +17,8 @@ import { apiService } from "../../api/axios.js";
 
 export default function PaymentForm() {
   const amountInput = useRef();
-  const user = JSON.parse(localStorage.getItem("user"));
-  console.log("user: ", user);
+  const user = {}
+
   const [receiverId, setReceiverId] = useState(null);
   const [cvc, setCvc] = useState("");
   const [expiry, setExpiry] = useState("");
