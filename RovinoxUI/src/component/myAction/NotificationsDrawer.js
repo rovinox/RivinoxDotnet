@@ -44,7 +44,7 @@ export default function NotificationsDrawer() {
       onClose={() => dispatch(closeNotificationDrawer())}
     >
       {notifications?.length === 0 ? (
-        <Typography sx={{ mt: 10 }} textAlign="center">
+        <Typography sx={{ mt: 10, p:10 }} textAlign="center">
           No Notifications
         </Typography>
       ) : (

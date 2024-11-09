@@ -20,7 +20,6 @@ namespace RovinoxDotnet.DTOs.Account
         [Required]
         public string LastName { get; set; } = string.Empty;
         public string? PhoneNumber { get; set; }
-        [Required]
         public int? BatchId { get; set; }
     }
 }

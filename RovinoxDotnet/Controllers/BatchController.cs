@@ -27,6 +27,14 @@ namespace RovinoxDotnet.Controllers
              var batches = await _batchRepository.GetAllAsync();
               return Ok(batches);
         }
+        [HttpGet("batchId/{batchId:int}")]        
+        public async Task<IActionResult> GetAll([FromRoute] int batchId){
+             if (!ModelState.IsValid) {
+                return BadRequest(ModelState);
+             }
+             var batch = await _batchRepository.GetByIdAsync(batchId);
+              return Ok(batch);
+        }
           [HttpPost]    
           // [Authorize]   
            public async Task<IActionResult> Create([FromBody] CreateBatchDto batchDto){

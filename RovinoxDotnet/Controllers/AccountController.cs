@@ -319,17 +319,44 @@ namespace RovinoxDotnet.Controllers
 
 
         }
+       [HttpGet("user/userId/{UserId}")]
+        // [Authorize(Roles =Roles.Admin )]
+        public IActionResult GetUserById([FromRoute] string userId)
+        {
+            var AllUsers = from cols in _userManager.Users
+                           from ur in _dbContext.UserRoles
+                           from r in _dbContext.Roles
+                           where cols.Id == ur.UserId && r.Id == ur.RoleId && cols.Id == userId
+                           select new
+                           {
+                               FirstName = cols.FirstName,
+                               LastName = cols.LastName,
+                               Balance = cols.Balance,
+                               Enabled = cols.Enabled,
+                               Id = cols.Id,
+                               Email = cols.Email,
+                               PhoneNumber = cols.PhoneNumber,
+                               Role = r.Name,
+                               RoleId = r.Id
+                           };
+
+            return Ok(AllUsers);
+        }
+
         [HttpGet("users/batchId/{BatchId:int}")]
         // [Authorize(Roles =Roles.Admin )]
-        public IActionResult GetAllUsersByBatchId([FromRoute] int BatchId)
+        public IActionResult GetAllUsersByBatchId([FromRoute] int batchId)
         {
+
+
+
 
             var AllUsers = from cols in _userManager.Users
                            from e in _dbContext.Enrollments
                            from b in _dbContext.Batches
                            from ur in _dbContext.UserRoles
                            from r in _dbContext.Roles
-                           where cols.Id == e.UserId && b.Id == e.BatchId && e.BatchId == BatchId && cols.Id == ur.UserId && r.Id == ur.RoleId
+                           where cols.Id == e.UserId && b.Id == e.BatchId && e.BatchId == batchId && cols.Id == ur.UserId && r.Id == ur.RoleId
                            select new
                            {
                                FirstName = cols.FirstName,
@@ -347,6 +374,7 @@ namespace RovinoxDotnet.Controllers
                            };
 
             return Ok(AllUsers);
+
 
 
         }
