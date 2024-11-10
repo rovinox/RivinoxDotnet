@@ -9,7 +9,7 @@ namespace RovinoxDotnet.Interfaces
 {
     public interface ICommentRepository
     {
-           Task<Comment> CreateAsync(CerateCommentDto commentModel, string userId, string createdBy);     
+           Task<Comment> CreateAsync(CerateCommentDto commentModel);     
            Task <List<Comment>?> GetComments(int HomeWorkId);     
     }
 }

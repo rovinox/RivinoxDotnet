@@ -6,18 +6,27 @@ using System.Threading.Tasks;
 
 namespace RovinoxDotnet.Models
 {
-     [Table("Comments")]
+    [Table("Comments")]
     public class Comment
     {
-         public int Id { get; set; }
+        public int Id { get; set; }
         public string Content { get; set; } = string.Empty;
+        public int Score { get; set; }
         public DateTime CreatedOn { get; set; } = DateTime.Now;
-         [ForeignKey("HomeWorks")]
-        public int HomeWorkId { get; set; }
-        public HomeWork HomeWork { get; set; }
-        public string UserId { get; set; }
-        public AppUser User { get; set; }
-        public string CreatedBy { get; set; } = string.Empty; 
-          
+        [ForeignKey("Curriculums")]
+        public int CurriculumId { get; set; }
+        public Curriculum Curriculum { get; set; }
+        public string CreatedById { get; set; }
+        public AppUser CreatedBy { get; set; }
+        public bool Enabled { get; set; } = true;
+         public string? ReplyingToId { get; set; }
+        public AppUser ReplyingTo { get; set; }
+        public int? ParentId { get; set; }
+
+        [ForeignKey("ParentId")]
+        public Comment Parent { get; set; }
+
+        public List<Comment> Children { get; set; } 
+
     }
 }

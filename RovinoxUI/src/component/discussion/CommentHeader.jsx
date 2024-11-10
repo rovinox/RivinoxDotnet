@@ -12,6 +12,8 @@ function CommentHeader(props) {
   const [state,setState] = useState(dummyState);
   const {users,currentUser} = state;
   const {user,createdBy, currentUserObj, createdOn ,onDelete,onEdit,onReply, reply,edit, deleted,windowW} = props;
+  console.log('props: ', props);
+
   const [date,setDate] = useState('');
 
   const relativeTime = new RelativeTime();
@@ -29,7 +31,7 @@ function CommentHeader(props) {
         <Box className="header-left" sx={{flexGrow: 1, display: 'flex', alignItems: 'center'}}>
           <Avatar 
             alt="avatar"
-            src={createdBy.image}
+            src={createdBy?.image}
             sx={{ width: 32, height: 32 }}   
           />
           <Typography variant="username" sx={{ml:2}}>{createdBy?.fullName}</Typography>

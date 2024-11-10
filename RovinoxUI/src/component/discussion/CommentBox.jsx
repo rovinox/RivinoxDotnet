@@ -21,7 +21,7 @@ function CommentBox(props) {
     user,
     currentUserObj,
     createdBy,
-    repliers,
+    children,
     replyingTo,
     replyingToId,
     selected,
@@ -48,8 +48,8 @@ function CommentBox(props) {
         content: "\0",
       };
     } else if (indices.r !== -1 && indices.c !== -1) {
-      updatedComments[indices.c].repliers[indices.r] = {
-        ...updatedComments[indices.c].repliers[indices.r],
+      updatedComments[indices.c].children[indices.r] = {
+        ...updatedComments[indices.c].children[indices.r],
         content: "\0",
       };
     }
@@ -127,7 +127,7 @@ function CommentBox(props) {
         return;
       }
 
-      indices.r = comment.repliers.findIndex((r) => r.id === id);
+      indices.r = comment.children.findIndex((r) => r.id === id);
       if (indices.r !== -1) {
         indices.c = index;
         return;
@@ -146,8 +146,8 @@ function CommentBox(props) {
         content: editText,
       };
     } else if (indices.r !== -1 && indices.c !== -1) {
-      updatedComments[indices.c].repliers[indices.r] = {
-        ...updatedComments[indices.c].repliers[indices.r],
+      updatedComments[indices.c].children[indices.r] = {
+        ...updatedComments[indices.c].children[indices.r],
         content: editText,
       };
     }
@@ -301,7 +301,7 @@ function CommentBox(props) {
           windowW={windowW}
         />
       )}
-      {repliers && repliers.length > 0 && (
+      {children && children.length > 0 && (
         <Box sx={{ display: "flex", width: "100%" }}>
           <Divider
             orientation="vertical"
@@ -314,7 +314,7 @@ function CommentBox(props) {
             flexItem
           />
           <Box sx={{ "& > * + *": { mt: 2 }, width: "100%" }}>
-            {repliers.map((reply) => {
+            {children.map((reply) => {
               return (
                 // <div
                 //   style={{

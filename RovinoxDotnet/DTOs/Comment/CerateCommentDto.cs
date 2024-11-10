@@ -11,7 +11,10 @@ namespace RovinoxDotnet.DTOs.Comment
         [Required]
         public string Content { get; set; } = string.Empty;
         [Required]
-        public int HomeWorkId { get; set; }
+        public int CurriculumId { get; set; }
+        public string? CreatedById { get; set; }
+        public string? ReplyingToId { get; set; }
+        public int? ParentId { get; set; }
 
 
 

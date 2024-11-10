@@ -9,7 +9,7 @@ const initialState = {
 
 export const getPost = createAsyncThunk("getPost", async (curriculumId) => {
   
-  const result = await apiService.get(`http://localhost:5122/api/post/curriculumId/${curriculumId}`);
+  const result = await apiService.get(`http://localhost:5122/api/comment/curriculumId/${curriculumId}`);
 
   return result.data;
 });

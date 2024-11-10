@@ -69,7 +69,6 @@ console.log(posts);
             setSelected={setSelected}
             windowW={windowW}
             {...c}
-            createdBy={c.postedBy}
             currentUserObj={currentUserObj}
             selectedType={selectedType}
             setSelectedType={setSelectedType}

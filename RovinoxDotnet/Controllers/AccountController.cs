@@ -52,7 +52,7 @@ namespace RovinoxDotnet.Controllers
 
             if (!result.Succeeded) return Unauthorized("Email not found and/or password incorrect");
             return Ok(
-                new NewUserDto
+                new 
                 {
                     // Roles = Convert.ToString(roles[0]),
                     Roles = defaultRole,
@@ -60,7 +60,9 @@ namespace RovinoxDotnet.Controllers
                     Token = _tokenService.CreateToken(user),
                     FirstName = user.FirstName,
                     LastName = user.LastName,
-                    Enabled = user.Enabled
+                    Enabled = user.Enabled,
+                    Id = user.Id,
+                     FullName = user.FirstName + " " + user.LastName,
                 }
             );
         }
@@ -109,7 +111,7 @@ namespace RovinoxDotnet.Controllers
                     if (roleResult.Succeeded)
                     {
                         return Ok(
-                            new NewUserDto
+                            new
                             {
                                 FirstName = appUser.FirstName,
                                 LastName = appUser.LastName,
@@ -117,7 +119,9 @@ namespace RovinoxDotnet.Controllers
                                 Email = appUser.Email,
                                 Token = _tokenService.CreateToken(appUser),
                                 Enabled = true,
-                                Image = appUser.Image
+                                Image = appUser.Image,  
+                                Id= appUser.Id,
+                                 FullName = appUser.FirstName + " " + appUser.LastName,                          
                             }
                         );
                     }

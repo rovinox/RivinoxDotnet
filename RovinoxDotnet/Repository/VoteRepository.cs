@@ -33,18 +33,13 @@ namespace RovinoxDotnet.Repository
         {
              if (await _dbContext.Votes.FindAsync(updateVoteDto.Id) is Vote found)
             {
-                if (updateVoteDto.PostUpvoted != null ){
-                    found.PostUpvoted = updateVoteDto.PostUpvoted;
+                if (updateVoteDto.Upvoted != null ){
+                    found.Upvoted = updateVoteDto.Upvoted;
                 }
-                if (updateVoteDto.PostDownvoted != null ){
-                    found.PostDownvoted = updateVoteDto.PostDownvoted;
+                if (updateVoteDto.Downvoted != null ){
+                    found.Downvoted = updateVoteDto.Downvoted;
                 }
-                if (updateVoteDto.ReplayUpvoted != null ){
-                    found.ReplayUpvoted = updateVoteDto.ReplayUpvoted;
-                }
-                if (updateVoteDto.ReplayDownvoted != null ){
-                    found.ReplayDownvoted = updateVoteDto.ReplayDownvoted;
-                }
+
                 await _dbContext.SaveChangesAsync();
                 return found;
             }
