@@ -77,6 +77,10 @@ namespace RovinoxDotnet.Controllers
 
                     return BadRequest(ModelState);
                 }
+                  var user = await _userManager.Users.FirstOrDefaultAsync(x => x.Email == registerDto.Email);
+                  if (user != null){
+                    return BadRequest("User already registered");
+                  }
 
                 var appUser = new AppUser
                 {
@@ -88,7 +92,15 @@ namespace RovinoxDotnet.Controllers
                     Balance = 0,
                     Enabled = true
                 };
-                if (registerDto.BatchId != null)
+                
+                var createdUser = await _userManager.CreateAsync(appUser, registerDto.Password);
+
+                if (createdUser.Succeeded)
+                {
+                    var roleResult = await _userManager.AddToRoleAsync(appUser, defaultRole);
+                    if (roleResult.Succeeded)
+                    {
+                        if (registerDto.BatchId != null)
                 {
                     int batchId = (int)registerDto.BatchId;
                     Batch batch = await _batchRepository.GetByIdAsync(batchId);
@@ -103,13 +115,6 @@ namespace RovinoxDotnet.Controllers
                     };
                     var enrollment = await _enrollmentRepository.CreateAsync(enrollmentDto);
                 }
-                var createdUser = await _userManager.CreateAsync(appUser, registerDto.Password);
-
-                if (createdUser.Succeeded)
-                {
-                    var roleResult = await _userManager.AddToRoleAsync(appUser, defaultRole);
-                    if (roleResult.Succeeded)
-                    {
                         return Ok(
                             new
                             {

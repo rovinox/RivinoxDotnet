@@ -1,15 +1,6 @@
-import React from 'react';
-import AllCOmments from './AllCOmments'
-import { CssBaseline, ThemeProvider } from '@mui/material';
-import theme from './theme';
+import React from "react";
+import AllCOmments from "./AllCOmments";
 
 export default function CommentLanding() {
-
-  return (
-      
-      <AllCOmments  />     
-  
- 
-
-  )
+  return <AllCOmments />;
 }

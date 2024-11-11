@@ -10,9 +10,10 @@ namespace RovinoxDotnet.Controllers
 {
     [ApiController]
     [Route("api/vote")]
-    public class VoteController(IVoteRepository _voteRepository, IAuthenticatedUserService authenticatedUserService) : ControllerBase
+    public class VoteController(IVoteRepository _voteRepository, IAuthenticatedUserService authenticatedUserService, ICommentRepository _commentRepository) : ControllerBase
     {
         private readonly IAuthenticatedUserService _authenticatedUserService = authenticatedUserService;
+
 
 
 
@@ -37,8 +38,19 @@ namespace RovinoxDotnet.Controllers
             {
                 return BadRequest(ModelState);
             }
+            var userId = _authenticatedUserService.UserId;
+            createVoteDto.VotedById = userId;
 
             var result = await _voteRepository.AddAsync(createVoteDto);
+             if (createVoteDto.VoteType == "upvoted")
+            {
+                await _commentRepository.AddScoreByOne(createVoteDto.CommentId);
+            }
+            else
+            {
+
+                await _commentRepository.RemoveScoreByOne(createVoteDto.CommentId);
+            }
             return Ok(result);
         }
         [HttpPut]
@@ -51,6 +63,16 @@ namespace RovinoxDotnet.Controllers
             }
 
             var result = await _voteRepository.UpdateAsync(updateVoteDto);
+            if (updateVoteDto.VoteType == "upvoted")
+            {
+                await _commentRepository.AddScoreByOne(updateVoteDto.CommentId);
+            }
+            else
+            {
+
+                await _commentRepository.RemoveScoreByOne(updateVoteDto.CommentId);
+            }
+
 
             return Ok(result);
         }

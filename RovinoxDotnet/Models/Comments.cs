@@ -13,6 +13,7 @@ namespace RovinoxDotnet.Models
         public string Content { get; set; } = string.Empty;
         public int Score { get; set; }
         public DateTime CreatedOn { get; set; } = DateTime.Now;
+        public DateTime UpdatedOn { get; set; } = DateTime.Now;
         [ForeignKey("Curriculums")]
         public int CurriculumId { get; set; }
         public Curriculum Curriculum { get; set; }

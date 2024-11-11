@@ -1,13 +1,12 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import { apiService } from "../api/axios";
 const initialState = {
-  posts: [],
-  postVote:{},
-  replierVote:{},
-
+  comments: [],
+  vote:{upvoted:[],
+    downvoted:[]},
 };
 
-export const getPost = createAsyncThunk("getPost", async (curriculumId) => {
+export const getComments = createAsyncThunk("getComments", async (curriculumId) => {
   
   const result = await apiService.get(`http://localhost:5122/api/comment/curriculumId/${curriculumId}`);
 
@@ -27,21 +26,26 @@ export const discussionSlice = createSlice({
   name: "discussion",
   initialState,
   reducers: {
+    updateVote: (state, {payload})=>{
+      state.vote = payload;
+    }
   },
   extraReducers: {
-    // updatepostId: (state, action) => {
-    //   const { postId } = action.payload;
-    //   state.postId = postId;
+    // updatecommentId: (state, action) => {
+    //   const { commentId } = action.payload;
+    //   state.commentId = commentId;
     // },
-    [getPost.fulfilled]: (state, action) => {
-      state.posts = action.payload;
+    [getComments.fulfilled]: (state, action) => {
+      state.comments = action.payload;
     },
     [getVotes.fulfilled]: (state, action) => {
-      //state.posts = action.payload;
-      console.log(action.payload);
+      if(action.payload.id ){
+        state.vote =  action.payload;
+      }
+      console.log('action', action.payload);
     },
   },
 });
 
-//export const { } = discussionSlice.actions;
+export const { updateVote} = discussionSlice.actions;
 export default discussionSlice.reducer;
