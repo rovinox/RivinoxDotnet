@@ -12,7 +12,10 @@ namespace RovinoxDotnet.Mappers
         public static Comment FormatCommentCreateData(this CerateCommentDto cerateCommentDto){
             return new Comment{
                 Content = cerateCommentDto.Content,
-                HomeWorkId = cerateCommentDto.HomeWorkId,
+                CurriculumId=cerateCommentDto.CurriculumId,
+                CreatedById=cerateCommentDto.CreatedById,
+                ReplyingToId=cerateCommentDto.ReplyingToId,
+                ParentId = cerateCommentDto.ParentId
             };
         }
     }

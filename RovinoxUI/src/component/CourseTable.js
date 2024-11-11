@@ -56,7 +56,7 @@ const style = {
   p: 4,
 };
 
-export default function CourseTable({ tableAction }) {
+export default function CourseTable({ tableAction, handleEnrollment }) {
   let navigate = useNavigate();
   const [batch, setBatch] = useState([]);
   const [batchId, setBatchId] = useState("");
@@ -122,9 +122,14 @@ export default function CourseTable({ tableAction }) {
 
   const handleTableAction = (row) => {
     const { id } = row;
+    if(tableAction === "enrollment" && typeof handleEnrollment === "function") {
+      handleEnrollment(row);
+      return
+    }
     if (tableAction === "remove") {
       handleOpen();
       setBatchId(id);
+      return
     }
     if (tableAction === "apply") {
       if (!row.isExpired) {
@@ -134,6 +139,7 @@ export default function CourseTable({ tableAction }) {
           },
         });
       }
+      return
     }
   };
 
@@ -271,6 +277,18 @@ export default function CourseTable({ tableAction }) {
                             onClick={() => handleTableAction(row)}
                           >
                             Apply
+                          </ApplyButton2>
+                        )}
+                        {tableAction === "enrollment" &&  (
+                          <ApplyButton2
+                            sx={{
+                              background:
+                                "linear-gradient(90.21deg, #AA367C -5.91%, #4A2FBD 111.58%)",
+                              color: "white",
+                            }}
+                            onClick={() => handleTableAction(row)}
+                          >
+                            enroll
                           </ApplyButton2>
                         )}
                       </StyledTableCell>

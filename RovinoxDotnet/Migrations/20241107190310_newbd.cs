@@ -9,7 +9,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace RovinoxDotnet.Migrations
 {
     /// <inheritdoc />
-    public partial class AdingNewGb : Migration
+    public partial class newbd : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -35,7 +35,9 @@ namespace RovinoxDotnet.Migrations
                     Id = table.Column<string>(type: "text", nullable: false),
                     FirstName = table.Column<string>(type: "text", nullable: false),
                     LastName = table.Column<string>(type: "text", nullable: false),
+                    Image = table.Column<string>(type: "text", nullable: true),
                     Balance = table.Column<decimal>(type: "numeric", nullable: false),
+                    Enabled = table.Column<bool>(type: "boolean", nullable: false),
                     UserName = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: true),
                     NormalizedUserName = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: true),
                     Email = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: true),
@@ -66,8 +68,11 @@ namespace RovinoxDotnet.Migrations
                     Cost = table.Column<decimal>(type: "numeric", nullable: false),
                     StartDate = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
                     EndDate = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
+                    StartTime = table.Column<string>(type: "text", nullable: false),
+                    EndTime = table.Column<string>(type: "text", nullable: false),
                     CreatedOn = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
-                    Enabled = table.Column<bool>(type: "boolean", nullable: false)
+                    Enabled = table.Column<bool>(type: "boolean", nullable: false),
+                    DaysOfTheWeek = table.Column<string[]>(type: "text[]", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -181,6 +186,78 @@ namespace RovinoxDotnet.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Notifications",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    Type = table.Column<string>(type: "text", nullable: true),
+                    Name = table.Column<string>(type: "text", nullable: true),
+                    Description = table.Column<string>(type: "text", nullable: true),
+                    SenderId = table.Column<string>(type: "text", nullable: true),
+                    ReceiverId = table.Column<string>(type: "text", nullable: true),
+                    Seen = table.Column<bool>(type: "boolean", nullable: false),
+                    Enabled = table.Column<bool>(type: "boolean", nullable: false),
+                    Completed = table.Column<bool>(type: "boolean", nullable: false),
+                    CreatedOn = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
+                    CompletedOn = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
+                    PaymentId = table.Column<int>(type: "integer", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Notifications", x => x.Id);
+                    table.ForeignKey(
+                        name: "ReceiverId",
+                        column: x => x.ReceiverId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.SetNull);
+                    table.ForeignKey(
+                        name: "SenderId",
+                        column: x => x.SenderId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.SetNull);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Payments",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    TransactionId = table.Column<string>(type: "text", nullable: true),
+                    PaymentType = table.Column<string>(type: "text", nullable: true),
+                    UserId = table.Column<string>(type: "text", nullable: true),
+                    ApproverId = table.Column<string>(type: "text", nullable: true),
+                    CashReceiverId = table.Column<string>(type: "text", nullable: true),
+                    ProcessDate = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
+                    Amount = table.Column<decimal>(type: "numeric", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Payments", x => x.Id);
+                    table.ForeignKey(
+                        name: "ApproverId",
+                        column: x => x.ApproverId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.SetNull);
+                    table.ForeignKey(
+                        name: "CashReceiverId",
+                        column: x => x.CashReceiverId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.SetNull);
+                    table.ForeignKey(
+                        name: "UserId",
+                        column: x => x.UserId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.SetNull);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Curriculums",
                 columns: table => new
                 {
@@ -229,6 +306,30 @@ namespace RovinoxDotnet.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "NotificationPayment",
+                columns: table => new
+                {
+                    PaymentId = table.Column<int>(type: "integer", nullable: false),
+                    PaymentsId = table.Column<int>(type: "integer", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_NotificationPayment", x => new { x.PaymentId, x.PaymentsId });
+                    table.ForeignKey(
+                        name: "FK_NotificationPayment_Notifications_PaymentId",
+                        column: x => x.PaymentId,
+                        principalTable: "Notifications",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_NotificationPayment_Payments_PaymentsId",
+                        column: x => x.PaymentsId,
+                        principalTable: "Payments",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "HomeWorks",
                 columns: table => new
                 {
@@ -250,6 +351,66 @@ namespace RovinoxDotnet.Migrations
                         principalColumn: "Id");
                     table.ForeignKey(
                         name: "FK_HomeWorks_Curriculums_CurriculumId",
+                        column: x => x.CurriculumId,
+                        principalTable: "Curriculums",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Posts",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    Score = table.Column<int>(type: "integer", nullable: false),
+                    Content = table.Column<string>(type: "text", nullable: false),
+                    CreatedOn = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
+                    CurriculumId = table.Column<int>(type: "integer", nullable: false),
+                    PostedById = table.Column<string>(type: "text", nullable: false),
+                    Enabled = table.Column<bool>(type: "boolean", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Posts", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Posts_AspNetUsers_PostedById",
+                        column: x => x.PostedById,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Posts_Curriculums_CurriculumId",
+                        column: x => x.CurriculumId,
+                        principalTable: "Curriculums",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Votes",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    PostUpvoted = table.Column<int[]>(type: "integer[]", nullable: false),
+                    PostDownvoted = table.Column<int[]>(type: "integer[]", nullable: false),
+                    ReplayUpvoted = table.Column<int[]>(type: "integer[]", nullable: false),
+                    ReplayDownvoted = table.Column<int[]>(type: "integer[]", nullable: false),
+                    CurriculumId = table.Column<int>(type: "integer", nullable: false),
+                    VotedById = table.Column<string>(type: "text", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Votes", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Votes_AspNetUsers_VotedById",
+                        column: x => x.VotedById,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Votes_Curriculums_CurriculumId",
                         column: x => x.CurriculumId,
                         principalTable: "Curriculums",
                         principalColumn: "Id",
@@ -285,13 +446,50 @@ namespace RovinoxDotnet.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
+            migrationBuilder.CreateTable(
+                name: "Repliers",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    Score = table.Column<int>(type: "integer", nullable: false),
+                    Content = table.Column<string>(type: "text", nullable: false),
+                    CreatedOn = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
+                    PostId = table.Column<int>(type: "integer", nullable: false),
+                    CreatedById = table.Column<string>(type: "text", nullable: false),
+                    ReplyingToId = table.Column<string>(type: "text", nullable: false),
+                    Enabled = table.Column<bool>(type: "boolean", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Repliers", x => x.Id);
+                    table.ForeignKey(
+                        name: "CreatedById",
+                        column: x => x.CreatedById,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.SetNull);
+                    table.ForeignKey(
+                        name: "FK_Repliers_Posts_PostId",
+                        column: x => x.PostId,
+                        principalTable: "Posts",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "ReplyingToId",
+                        column: x => x.ReplyingToId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.SetNull);
+                });
+
             migrationBuilder.InsertData(
                 table: "AspNetRoles",
                 columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
                 values: new object[,]
                 {
-                    { "a9fc6af3-d8e8-41ef-a95d-900d80b95ed6", null, "Admin", "ADMIN" },
-                    { "f37c8a29-9e07-4471-ab3a-f1761ea10710", null, "User", "USER" }
+                    { "59b8fbce-aae5-4a77-8a63-4bfacb279164", null, "User", "USER" },
+                    { "a11b0f80-bff6-4b14-8130-32fb3f739af3", null, "Admin", "ADMIN" }
                 });
 
             migrationBuilder.CreateIndex(
@@ -366,6 +564,71 @@ namespace RovinoxDotnet.Migrations
                 name: "IX_HomeWorks_UserId",
                 table: "HomeWorks",
                 column: "UserId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_NotificationPayment_PaymentsId",
+                table: "NotificationPayment",
+                column: "PaymentsId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Notifications_ReceiverId",
+                table: "Notifications",
+                column: "ReceiverId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Notifications_SenderId",
+                table: "Notifications",
+                column: "SenderId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Payments_ApproverId",
+                table: "Payments",
+                column: "ApproverId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Payments_CashReceiverId",
+                table: "Payments",
+                column: "CashReceiverId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Payments_UserId",
+                table: "Payments",
+                column: "UserId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Posts_CurriculumId",
+                table: "Posts",
+                column: "CurriculumId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Posts_PostedById",
+                table: "Posts",
+                column: "PostedById");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Repliers_CreatedById",
+                table: "Repliers",
+                column: "CreatedById");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Repliers_PostId",
+                table: "Repliers",
+                column: "PostId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Repliers_ReplyingToId",
+                table: "Repliers",
+                column: "ReplyingToId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Votes_CurriculumId",
+                table: "Votes",
+                column: "CurriculumId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Votes_VotedById",
+                table: "Votes",
+                column: "VotedById");
         }
 
         /// <inheritdoc />
@@ -393,10 +656,28 @@ namespace RovinoxDotnet.Migrations
                 name: "Enrollments");
 
             migrationBuilder.DropTable(
+                name: "NotificationPayment");
+
+            migrationBuilder.DropTable(
+                name: "Repliers");
+
+            migrationBuilder.DropTable(
+                name: "Votes");
+
+            migrationBuilder.DropTable(
                 name: "AspNetRoles");
 
             migrationBuilder.DropTable(
                 name: "HomeWorks");
+
+            migrationBuilder.DropTable(
+                name: "Notifications");
+
+            migrationBuilder.DropTable(
+                name: "Payments");
+
+            migrationBuilder.DropTable(
+                name: "Posts");
 
             migrationBuilder.DropTable(
                 name: "AspNetUsers");

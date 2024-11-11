@@ -52,7 +52,7 @@ namespace RovinoxDotnet.Controllers
 
             if (!result.Succeeded) return Unauthorized("Email not found and/or password incorrect");
             return Ok(
-                new NewUserDto
+                new 
                 {
                     // Roles = Convert.ToString(roles[0]),
                     Roles = defaultRole,
@@ -60,7 +60,9 @@ namespace RovinoxDotnet.Controllers
                     Token = _tokenService.CreateToken(user),
                     FirstName = user.FirstName,
                     LastName = user.LastName,
-                    Enabled = user.Enabled
+                    Enabled = user.Enabled,
+                    Id = user.Id,
+                     FullName = user.FirstName + " " + user.LastName,
                 }
             );
         }
@@ -75,6 +77,10 @@ namespace RovinoxDotnet.Controllers
 
                     return BadRequest(ModelState);
                 }
+                  var user = await _userManager.Users.FirstOrDefaultAsync(x => x.Email == registerDto.Email);
+                  if (user != null){
+                    return BadRequest("User already registered");
+                  }
 
                 var appUser = new AppUser
                 {
@@ -86,9 +92,18 @@ namespace RovinoxDotnet.Controllers
                     Balance = 0,
                     Enabled = true
                 };
-                if (registerDto.BatchId != null)
+                
+                var createdUser = await _userManager.CreateAsync(appUser, registerDto.Password);
+
+                if (createdUser.Succeeded)
                 {
-                    Batch batch = await _batchRepository.GetByIdAsync(registerDto.BatchId);
+                    var roleResult = await _userManager.AddToRoleAsync(appUser, defaultRole);
+                    if (roleResult.Succeeded)
+                    {
+                        if (registerDto.BatchId != null)
+                {
+                    int batchId = (int)registerDto.BatchId;
+                    Batch batch = await _batchRepository.GetByIdAsync(batchId);
                     appUser.Balance = batch.Cost;
                     var enrollmentDto = new CreateEnrollmentDto
                     {
@@ -100,15 +115,8 @@ namespace RovinoxDotnet.Controllers
                     };
                     var enrollment = await _enrollmentRepository.CreateAsync(enrollmentDto);
                 }
-                var createdUser = await _userManager.CreateAsync(appUser, registerDto.Password);
-
-                if (createdUser.Succeeded)
-                {
-                    var roleResult = await _userManager.AddToRoleAsync(appUser, defaultRole);
-                    if (roleResult.Succeeded)
-                    {
                         return Ok(
-                            new NewUserDto
+                            new
                             {
                                 FirstName = appUser.FirstName,
                                 LastName = appUser.LastName,
@@ -116,7 +124,9 @@ namespace RovinoxDotnet.Controllers
                                 Email = appUser.Email,
                                 Token = _tokenService.CreateToken(appUser),
                                 Enabled = true,
-                                Image = appUser.Image
+                                Image = appUser.Image,  
+                                Id= appUser.Id,
+                                 FullName = appUser.FirstName + " " + appUser.LastName,                          
                             }
                         );
                     }
@@ -318,17 +328,44 @@ namespace RovinoxDotnet.Controllers
 
 
         }
+       [HttpGet("user/userId/{UserId}")]
+        // [Authorize(Roles =Roles.Admin )]
+        public IActionResult GetUserById([FromRoute] string userId)
+        {
+            var AllUsers = from cols in _userManager.Users
+                           from ur in _dbContext.UserRoles
+                           from r in _dbContext.Roles
+                           where cols.Id == ur.UserId && r.Id == ur.RoleId && cols.Id == userId
+                           select new
+                           {
+                               FirstName = cols.FirstName,
+                               LastName = cols.LastName,
+                               Balance = cols.Balance,
+                               Enabled = cols.Enabled,
+                               Id = cols.Id,
+                               Email = cols.Email,
+                               PhoneNumber = cols.PhoneNumber,
+                               Role = r.Name,
+                               RoleId = r.Id
+                           };
+
+            return Ok(AllUsers);
+        }
+
         [HttpGet("users/batchId/{BatchId:int}")]
         // [Authorize(Roles =Roles.Admin )]
-        public IActionResult GetAllUsersByBatchId([FromRoute] int BatchId)
+        public IActionResult GetAllUsersByBatchId([FromRoute] int batchId)
         {
+
+
+
 
             var AllUsers = from cols in _userManager.Users
                            from e in _dbContext.Enrollments
                            from b in _dbContext.Batches
                            from ur in _dbContext.UserRoles
                            from r in _dbContext.Roles
-                           where cols.Id == e.UserId && b.Id == e.BatchId && e.BatchId == BatchId && cols.Id == ur.UserId && r.Id == ur.RoleId
+                           where cols.Id == e.UserId && b.Id == e.BatchId && e.BatchId == batchId && cols.Id == ur.UserId && r.Id == ur.RoleId
                            select new
                            {
                                FirstName = cols.FirstName,
@@ -346,6 +383,7 @@ namespace RovinoxDotnet.Controllers
                            };
 
             return Ok(AllUsers);
+
 
 
         }

@@ -9,10 +9,13 @@ namespace RovinoxDotnet.DTOs.Vote
     public class UpdateVoteDto
     {
         [Required]
-        public int  Id { get; set; }
-        public int[]? PostUpvoted { get; set; }
-        public int[]? PostDownvoted { get; set; }
-        public int[]? ReplayUpvoted { get; set; }
-        public int[]? ReplayDownvoted { get; set; }
+        public int Id { get; set; }
+        [Required] 
+         public int CommentId { get; set; }
+        [Required]
+        public string VoteType { get; set; }
+        public int[]? Upvoted { get; set; }
+        public int[]? Downvoted { get; set; }
+
     }
 }

@@ -28,7 +28,7 @@ namespace RovinoxDotnet.Controllers
                 //  var enrollment = await _enrollmentRepository.CreateAsync(enrollmentDto);
                 // await _enrollmentRepository.UpdateBalance(userId, batchId);
                 // return Ok(enrollment);
-           var existingEnrollment = _enrollmentRepository.CheckIfAlreadyEnrolled(userId, batchId);
+           var existingEnrollment = await _enrollmentRepository.CheckIfAlreadyEnrolled(userId, batchId);
             if (existingEnrollment == null)
             {
                 var enrollment = await _enrollmentRepository.CreateAsync(enrollmentDto);
@@ -37,7 +37,7 @@ namespace RovinoxDotnet.Controllers
             }
             else
             {
-                return BadRequest("Enrollment already exists for this user to this Batch");
+                return Ok( new{ Massage = "Enrollment already exists for this user to this Batch"});
             }
         }
         [HttpGet]

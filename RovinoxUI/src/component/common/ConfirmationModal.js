@@ -34,16 +34,16 @@ export default function ConfirmationModal({onConfirm, message, openModal, setOpe
           <Typography id="modal-modal-title" variant="h6" component="h2">
            {message}
           </Typography>
-          <div style={{ display: "flex", justifyContent: "space-between" }}>
+          <div style={{ display: "flex", justifyContent: "space-between", marginTop:20 }}>
             <Button onClick={onConfirm} color="primary" variant="contained">
-              Yes
+            YES, DELETE
             </Button>
             <Button
               onClick={handleClose}
               variant="contained"
               color="error"
             >
-              No
+                NO, CANCEL
             </Button>
           </div>
         </Box>

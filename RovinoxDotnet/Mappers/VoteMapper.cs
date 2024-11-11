@@ -9,10 +9,8 @@ namespace RovinoxDotnet.Mappers
     {
          public static Vote FormatVoteData(this CreateVoteDto voteDto){
             return new Vote {
-                PostDownvoted = voteDto.PostDownvoted,
-                PostUpvoted = voteDto.PostUpvoted,
-                ReplayDownvoted = voteDto.ReplayDownvoted,
-                ReplayUpvoted = voteDto.ReplayUpvoted,
+                Downvoted = voteDto.Downvoted,
+                Upvoted = voteDto.Upvoted,
                 CurriculumId = voteDto.CurriculumId,
                 VotedById = voteDto.VotedById
             };

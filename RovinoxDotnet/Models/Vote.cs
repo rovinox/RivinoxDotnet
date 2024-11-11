@@ -11,12 +11,10 @@ namespace RovinoxDotnet.Models
     {
 
         public int Id { get; set; }
-        public int[] PostUpvoted { get; set; }
-        public int[] PostDownvoted { get; set; }
-        public int[] ReplayUpvoted { get; set; }
-        public int[] ReplayDownvoted { get; set; }
+        public int[] Upvoted { get; set; } = [];
+        public int[] Downvoted { get; set; } = [];
         [ForeignKey("Curriculums")]
-         public int CurriculumId { get; set; }
+        public int CurriculumId { get; set; }
         public Curriculum Curriculum { get; set; }
          public string VotedById { get; set; }
         public AppUser VotedBy { get; set; }

@@ -1,17 +1,22 @@
-import { Avatar, Box, Button, Typography, Divider, Paper } from "@mui/material";
-import React, { useEffect, useState } from "react";
-import { dummyState } from "./dummyState";
+import { Box, Typography, Divider } from "@mui/material";
+import React, { useState } from "react";
 import CommentHeader from "./CommentHeader";
 import CommentHeaderActions from "./CommentHeaderActions";
 import CommentInputBox from "./CommentInputBox";
-import DeleteDialog from "./DeleteDialog";
 import EditField from "./EditField";
-import InputField from "./InputField";
 import ScoreButton from "./ScoreButton";
+import { useParams } from "react-router-dom";
+import { apiService } from "../../api/axios";
+import { useSelector, useDispatch } from "react-redux";
+import { updateVote, getComments } from "../../duck/discussionSlice";
+import ConfirmationModal from "../common/ConfirmationModal";
 
 function CommentBox(props) {
-  const [state, setState] = useState(dummyState);
-  const { users, currentUser, comments } = state;
+  const dispatch = useDispatch();
+  const { curriculumId } = useParams();
+  const [loading, setLoading] = useState(false);
+  const vote = useSelector((state) => state.discussion.vote);
+  const { upvoted, downvoted, id: voteId } = vote;
 
   const {
     id,
@@ -21,179 +26,177 @@ function CommentBox(props) {
     user,
     currentUserObj,
     createdBy,
-    repliers,
+    children,
     replyingTo,
     replyingToId,
     selected,
     setSelected,
     windowW,
-    type,
-    selectedType,
-    setSelectedType,
-    postId,
   } = props;
-  console.log("CommentBox: ", props);
+
   const [editText, setEditText] = useState(content);
   const [totalVotes, setTotalVotes] = useState(score);
   const [dialogOpen, setDialogOpen] = useState(false);
   const [currUserVote, setCurrUserVote] = useState(0);
 
-  function handleConfirmDelete() {
-    let updatedComments = state.comments;
+  const handleConfirmDelete = async () => {
+    setLoading(true);
 
-    let indices = findIndex(id);
-    if (indices.c !== -1 && indices.r === -1) {
-      updatedComments[indices.c] = {
-        ...updatedComments[indices.c],
-        content: "\0",
-      };
-    } else if (indices.r !== -1 && indices.c !== -1) {
-      updatedComments[indices.c].repliers[indices.r] = {
-        ...updatedComments[indices.c].repliers[indices.r],
-        content: "\0",
-      };
+    const apiUrl = ` http://localhost:5122/api/comment/delete/commentId/${id}`;
+
+    try {
+      const result = await apiService.delete(apiUrl);
+      console.log(result);
+      if (result?.data) {
+        dispatch(getComments(curriculumId));
+      }
+    } catch (err) {
+      console.log(err);
     }
-
-    setState((prev) => {
-      return {
-        ...prev,
-        comments: updatedComments,
-      };
-    });
+    setLoading(false);
     setDialogOpen(false);
-  }
+  };
 
-  function handleUpvote() {
-    let i = users.findIndex((user) => user.username === currentUser);
-    let updatedUserList = users;
-    if (updatedUserList[i].upvoted.includes(id)) return;
-    else if (updatedUserList[i].downvoted.includes(id)) {
-      updatedUserList[i].downvoted = updatedUserList[i].downvoted.filter(
-        (foundId) => foundId !== id
-      );
+  const handleUpvote = async () => {
+    const tempUpArray = [...upvoted];
+    let tempDownArray = [...downvoted];
+    if (upvoted.includes(id)) return;
+    else if (downvoted.includes(id)) {
+      tempDownArray = downvoted.filter((foundId) => foundId !== id);
     } else {
-      updatedUserList[i].upvoted.push(id);
+      tempUpArray.push(id);
     }
+    setLoading(true);
 
-    setState((prev) => {
-      return {
-        ...prev,
-        users: updatedUserList,
-      };
-    });
-    updateVotes(updatedUserList);
-    console.log("upvoting");
-  }
-  function handleDownvote() {
-    let i = users.findIndex((user) => user.username === currentUser);
-    let updatedUserList = users;
-    if (updatedUserList[i].downvoted.includes(id)) return;
-    else if (updatedUserList[i].upvoted.includes(id)) {
-      updatedUserList[i].upvoted = updatedUserList[i].upvoted.filter(
-        (foundId) => foundId !== id
-      );
+    const apiUrl = "http://localhost:5122/api/vote";
+    const voteType = "upvoted";
+    const postPayload = {
+      upvoted: tempUpArray,
+      downvoted: tempDownArray,
+      curriculumId,
+      voteType,
+      commentId: id,
+    };
+    const putPayload = {
+      upvoted: tempUpArray,
+      downvoted: tempDownArray,
+      id: voteId,
+      voteType,
+      commentId: id,
+    };
+
+    try {
+      if (!voteId) {
+        const result = await apiService.post(apiUrl, postPayload);
+        console.log(result);
+        if (result?.data) {
+          dispatch(updateVote(result?.data));
+          dispatch(getComments(curriculumId));
+        }
+      } else {
+        const result = await apiService.put(apiUrl, putPayload);
+        console.log(result);
+        if (result?.data) {
+          dispatch(updateVote(result?.data));
+          dispatch(getComments(curriculumId));
+        }
+      }
+    } catch (err) {
+      console.log(err);
+    }
+    setLoading(false);
+  };
+  const handleDownvote = async () => {
+    const tempUpArray = [...upvoted];
+    let tempDownArray = [...downvoted];
+    if (downvoted.includes(id)) return;
+    else if (upvoted.includes(id)) {
+      upvoted = upvoted.filter((foundId) => foundId !== id);
     } else {
-      updatedUserList[i].downvoted.push(id);
+      tempDownArray.push(id);
     }
+    setLoading(true);
 
-    setState((prev) => {
-      return {
-        ...prev,
-        users: updatedUserList,
-      };
-    });
-    updateVotes(updatedUserList);
-    console.log("downvoting");
-  }
+    const apiUrl = "http://localhost:5122/api/vote";
+    const voteType = "downvoted";
+    const postPayload = {
+      upvoted: tempUpArray,
+      downvoted: tempDownArray,
+      curriculumId,
+      voteType,
+      commentId: id,
+    };
+    const putPayload = {
+      upvoted: tempUpArray,
+      downvoted: tempDownArray,
+      id: voteId,
+      voteType,
+      commentId: id,
+    };
+
+    try {
+      if (!voteId) {
+        const result = await apiService.post(apiUrl, postPayload);
+        console.log(result);
+        if (result?.data) {
+          dispatch(updateVote(result?.data));
+          dispatch(getComments(curriculumId));
+        }
+      } else {
+        const result = await apiService.put(apiUrl, putPayload);
+        console.log(result);
+        if (result?.data) {
+          dispatch(updateVote(result?.data));
+          dispatch(getComments(curriculumId));
+        }
+      }
+    } catch (err) {
+      console.log(err);
+    }
+    setLoading(false);
+  };
   function handleEdit() {
     setSelected(-id);
   }
   function handleReply() {
+    // console.log(id);
+    // return
     setSelected(id);
-    setSelectedType(type);
   }
 
   function handleEditTextChange(e) {
     setEditText(e.target.value);
   }
-  function findIndex(id) {
-    let indices = {
-      c: -1,
-      r: -1,
-    };
-    state.comments.forEach((comment, index) => {
-      if (comment.id === id) {
-        indices.c = index;
-        return;
-      }
 
-      indices.r = comment.repliers.findIndex((r) => r.id === id);
-      if (indices.r !== -1) {
-        indices.c = index;
-        return;
-      }
-    });
-    return indices;
-  }
-  function handleEditSubmit() {
+  const handleEditSubmit = async () => {
     //on submitting edit text change
-    let updatedComments = state.comments;
+    if (editText === content) return;
+    setLoading(true);
 
-    let indices = findIndex(id);
-    if (indices.c !== -1 && indices.r === -1) {
-      updatedComments[indices.c] = {
-        ...updatedComments[indices.c],
-        content: editText,
-      };
-    } else if (indices.r !== -1 && indices.c !== -1) {
-      updatedComments[indices.c].repliers[indices.r] = {
-        ...updatedComments[indices.c].repliers[indices.r],
-        content: editText,
-      };
+    const apiUrl = "http://localhost:5122/api/comment";
+
+    const putPayload = {
+      id,
+      content: editText,
+    };
+
+    try {
+      const result = await apiService.put(apiUrl, putPayload);
+      console.log(result);
+      if (result?.data) {
+        dispatch(getComments(curriculumId));
+      }
+    } catch (err) {
+      console.log(err);
     }
-
-    setState((prev) => {
-      return {
-        ...prev,
-        comments: updatedComments,
-      };
-    });
+    setLoading(false);
     setSelected(0);
-  }
+  };
   function handleDelete() {
     //on pressing delete button
     setDialogOpen(true);
   }
 
-  useEffect(() => {
-    updateVotes(users);
-  }, []);
-
-  useEffect(() => {
-    updateCurrUserVote();
-  }, [currentUser]);
-
-  function updateVotes(userList) {
-    let votes = 0;
-    userList.forEach((user) => {
-      if (user.upvoted.includes(id)) {
-        votes++;
-      } else if (user.downvoted.includes(id)) {
-        votes--;
-      }
-    });
-    setTotalVotes(votes + score);
-
-    //check if current user has upvoted/downvoted this comment
-    updateCurrUserVote();
-  }
-  function updateCurrUserVote() {
-    let i = users.findIndex((user) => user.username === currentUser);
-    if (users[i].upvoted.includes(id)) setCurrUserVote(1);
-    else if (users[i].downvoted.includes(id)) setCurrUserVote(-1);
-    else setCurrUserVote(0);
-  }
-  console.log({ selected, id, selectedType, type });
   return (
     <>
       <Box
@@ -208,11 +211,12 @@ function CommentBox(props) {
       >
         {content !== "\0" && windowW > 1024 && (
           <ScoreButton
-            score={totalVotes}
+            score={score}
             onPlus={handleUpvote}
             onMinus={handleDownvote}
             upvoted={currUserVote === 1}
             downvoted={currUserVote === -1}
+            loading={loading}
           />
         )}
         <Box sx={{ flexGrow: 1, ml: 3 }}>
@@ -271,14 +275,11 @@ function CommentBox(props) {
                 score={totalVotes}
                 onPlus={handleUpvote}
                 onMinus={handleDownvote}
-                upvoted={currUserVote === 1}
-                downvoted={currUserVote === -1}
                 direction="row"
               />
               <CommentHeaderActions
                 currentUserObj={currentUserObj}
                 createdBy={createdBy}
-                user={user}
                 onDelete={handleDelete}
                 onEdit={handleEdit}
                 onReply={handleReply}
@@ -289,19 +290,17 @@ function CommentBox(props) {
           )}
         </Box>
       </Box>
-      {selected === id && selectedType === type && (
+      {selected === id && (
         <CommentInputBox
-          postId={postId}
-          type={type}
+          id={id}
           createdBy={createdBy}
           replyingTo={replyingTo}
-          insertAt={findIndex(id).c}
           setSelected={setSelected}
           selected={selected}
           windowW={windowW}
         />
       )}
-      {repliers && repliers.length > 0 && (
+      {children && children.length > 0 && (
         <Box sx={{ display: "flex", width: "100%" }}>
           <Divider
             orientation="vertical"
@@ -314,43 +313,25 @@ function CommentBox(props) {
             flexItem
           />
           <Box sx={{ "& > * + *": { mt: 2 }, width: "100%" }}>
-            {repliers.map((reply) => {
+            {children.map((reply) => {
               return (
-                // <div
-                //   style={{
-                //     display: "flex",
-                //     alignItems: "center",
-                //     justifyContent: "center",
-                //   }}
-                // >
-                //   <Divider
-                //     sx={{
-                //       width: 30,
-                //       // borderRightWidth: '2px',
-                //       borderColor: "white",
-                //     }}
-                //   />
-
-                  <CommentBox
-                    key={reply.id}
-                    {...reply}
-                    selected={selected}
-                    setSelected={setSelected}
-                    windowW={windowW}
-                    selectedType={selectedType}
-                    setSelectedType={setSelectedType}
-                  />
-               // </div>
+                <CommentBox
+                  key={reply.id}
+                  {...reply}
+                  selected={selected}
+                  setSelected={setSelected}
+                  windowW={windowW}
+                />
               );
             })}
           </Box>
         </Box>
       )}
-      <DeleteDialog
-        dialogOpen={dialogOpen}
-        setDialogOpen={setDialogOpen}
-        handleConfirmDelete={handleConfirmDelete}
-        windowW={windowW}
+      <ConfirmationModal
+        openModal={dialogOpen}
+        setOpenModal={setDialogOpen}
+        onConfirm={handleConfirmDelete}
+        message=" Are you sure you want to delete this comment? This will remove the comment and can't be undone."
       />
     </>
   );
