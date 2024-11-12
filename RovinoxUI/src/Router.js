@@ -72,8 +72,8 @@ export default function Router() {
         <Routes>
           <Route path="/" element={<RovinoxLanding />} />
           <Route path="/student" element={<StudentLanding />} />
-          <Route path="/student/curriculumId/:curriculumId/batchId/:batchId" element={<CurriculumContent />} />
-          <Route path="/student/curriculumId/:curriculumId/batchId/:batchId/discussions" element={<CommentLanding />} />
+          <Route path="/student/curriculumId/:curriculumId" element={<CurriculumContent />} />
+          <Route path="/student/curriculumId/:curriculumId/discussions" element={<CommentLanding />} />
           <Route path="/login" element={<Login />} />
           <Route path="/apply" element={<Apply />} />
           <Route path="/admin" element={<AdminLanding />} />

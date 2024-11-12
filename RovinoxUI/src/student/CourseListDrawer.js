@@ -40,7 +40,7 @@ export default function CourseListDrawer() {
   }, [batchId]);
 
   const navigateToEnrollments = (curriculumId) => {
-     navigate(`/student/curriculumId/${curriculumId}/batchId/${batchId}`)
+     navigate(`/student/curriculumId/${curriculumId}`)
   }
 
 

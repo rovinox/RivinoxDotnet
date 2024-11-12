@@ -28,6 +28,7 @@ namespace RovinoxDotnet.Models
         public Comment Parent { get; set; }
 
         public List<Comment> Children { get; set; } 
+        public Notification? Notification { get; set; }
 
     }
 }

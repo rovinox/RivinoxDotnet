@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using RovinoxDotnet.common;
 using RovinoxDotnet.DTOs.Account;
+using RovinoxDotnet.DTOs.Comment;
 using RovinoxDotnet.DTOs.NotificationDto;
 using RovinoxDotnet.DTOs.Payment;
 using RovinoxDotnet.Interfaces;
@@ -129,7 +130,7 @@ namespace RovinoxDotnet.Controllers
 
             try
             {
-                if (updateNotificationByPaymentIdDto.Type.Equals(NotificationType.ApprovedPayment))
+                if (updateNotificationByPaymentIdDto.Type.Equals(PaymentNotificationType.ApprovedPayment))
                 {
 
 
@@ -147,11 +148,11 @@ namespace RovinoxDotnet.Controllers
 
                             var notificationDto = new CreateNotificationDto
                             {
-                                Type = NotificationType.ApprovedPayment,
+                                Type = PaymentNotificationType.ApprovedPayment,
                                 SenderId = updatedNT.ReceiverId,
                                 ReceiverId = updatedNT.SenderId,
-                                Name = NotificationType.ApprovedPaymentName,
-                                Description = NotificationType.ApprovedPaymentDescription,
+                                Name = PaymentNotificationType.ApprovedPaymentName,
+                                Description = PaymentNotificationType.ApprovedPaymentDescription,
                                 PaymentId = payment.Id,
                             };
 
@@ -210,6 +211,7 @@ namespace RovinoxDotnet.Controllers
                     Description = notification.Description,
                     Seen = notification.Seen,
                     PaymentId = notification.PaymentId,
+                    CurriculumId = notification.Comment.CurriculumId,
                     Sender = new AppUserDTO {
                     FirstName =  notification.Sender.FirstName,
                     LastName = notification.Sender.LastName,
@@ -222,10 +224,10 @@ namespace RovinoxDotnet.Controllers
                 }
             }
 
-            return Ok(new ResponseNotificationDto
+            return Ok(new 
             {
                 Notifications = notifications,
-                NotSeenCount = notificationsWithNotSeenCount
+                NotSeenCount = notificationsWithNotSeenCount,
             });
         }
     }

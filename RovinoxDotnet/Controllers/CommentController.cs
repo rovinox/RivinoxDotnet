@@ -5,8 +5,10 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using RovinoxDotnet.common;
 using RovinoxDotnet.DTOs.Account;
 using RovinoxDotnet.DTOs.Comment;
+using RovinoxDotnet.DTOs.NotificationDto;
 using RovinoxDotnet.Extensions;
 using RovinoxDotnet.Interfaces;
 using RovinoxDotnet.Models;
@@ -16,7 +18,7 @@ namespace RovinoxDotnet.Controllers
     [Route("api/comment")]
     [ApiController]
     [Authorize]
-    public class CommentController(ICommentRepository commentRepository, UserManager<AppUser> userManager, IAuthenticatedUserService authenticatedUserService) : ControllerBase
+    public class CommentController(INotificationRepository _notificationRepository, ICommentRepository commentRepository, UserManager<AppUser> userManager, IAuthenticatedUserService authenticatedUserService) : ControllerBase
 
     {
         private readonly IAuthenticatedUserService _authenticatedUserService = authenticatedUserService;
@@ -33,59 +35,76 @@ namespace RovinoxDotnet.Controllers
             var userId = _authenticatedUserService.UserId;
             CommentDto.CreatedById = userId;
 
+
+
             var comment = await _commentRepository.CreateAsync(CommentDto);
+            if (CommentDto.ReplyingToId != null)
+            {
+                CreateNotificationDto notificationDto = new()
+                {
+                    SenderId = userId,
+                    ReceiverId = CommentDto.ReplyingToId,
+                    Type = CommentNotificationType.Comment,
+                    Name = CommentNotificationType.CommentName,
+                    Description = comment.Content,
+                    CommentId = comment.Id
+                };
+
+
+                var newNT = await _notificationRepository.CreateAsync(notificationDto);
+            }
             return Ok(comment);
             //return CreatedAtAction(nameof(GetById), new { id = commentModel.Id }, commentModel.ToCommentDto());
         }
         private static CommentDto MapCommentToDto(Comment comment)
-{
-    return new CommentDto
-    {
-        Id = comment.Id,
-        Content = comment.Content,
-        Score = comment.Score,
-        CreatedOn = comment.CreatedOn,
-        CurriculumId = comment.CurriculumId,
-        CreatedById = comment.CreatedById,
-        Enabled = comment.Enabled,
-        ParentId = comment.ParentId,
-        ReplyingToId = comment.ReplyingToId,
-        ReplyingTo = comment.ReplyingTo == null ? null : new AppUserDTO
         {
-            FirstName = comment.ReplyingTo.FirstName,
-            LastName = comment.ReplyingTo.LastName,
-            Image = comment.ReplyingTo.Image,
-            Enabled = comment.ReplyingTo.Enabled,
-            Id = comment.ReplyingTo.Id,
-            FullName = $"{comment.ReplyingTo.FirstName} {comment.ReplyingTo.LastName}",
-        },
-        CreatedBy = comment.CreatedBy == null ? null : new AppUserDTO
-        {
-            FirstName = comment.CreatedBy.FirstName,
-            LastName = comment.CreatedBy.LastName,
-            Image = comment.CreatedBy.Image,
-            Enabled = comment.CreatedBy.Enabled,
-            Id = comment.CreatedBy.Id,
-            FullName = $"{comment.CreatedBy.FirstName} {comment.CreatedBy.LastName}",
-        },
-        // Recursively map child comments
-        Children = comment.Children?.Select(child => MapCommentToDto(child)).ToList()
-    };
-}
+            return new CommentDto
+            {
+                Id = comment.Id,
+                Content = comment.Content,
+                Score = comment.Score,
+                CreatedOn = comment.CreatedOn,
+                CurriculumId = comment.CurriculumId,
+                CreatedById = comment.CreatedById,
+                Enabled = comment.Enabled,
+                ParentId = comment.ParentId,
+                ReplyingToId = comment.ReplyingToId,
+                ReplyingTo = comment.ReplyingTo == null ? null : new AppUserDTO
+                {
+                    FirstName = comment.ReplyingTo.FirstName,
+                    LastName = comment.ReplyingTo.LastName,
+                    Image = comment.ReplyingTo.Image,
+                    Enabled = comment.ReplyingTo.Enabled,
+                    Id = comment.ReplyingTo.Id,
+                    FullName = $"{comment.ReplyingTo.FirstName} {comment.ReplyingTo.LastName}",
+                },
+                CreatedBy = comment.CreatedBy == null ? null : new AppUserDTO
+                {
+                    FirstName = comment.CreatedBy.FirstName,
+                    LastName = comment.CreatedBy.LastName,
+                    Image = comment.CreatedBy.Image,
+                    Enabled = comment.CreatedBy.Enabled,
+                    Id = comment.CreatedBy.Id,
+                    FullName = $"{comment.CreatedBy.FirstName} {comment.CreatedBy.LastName}",
+                },
+                // Recursively map child comments
+                Children = comment.Children?.Select(child => MapCommentToDto(child)).ToList()
+            };
+        }
         [HttpPut]
         public async Task<IActionResult> UpdateContent([FromBody] UpdateDto updateDto)
         {
 
-                 var comments = await _commentRepository.UpdateContent(updateDto);
-                  return Ok(comments);
+            var comments = await _commentRepository.UpdateContent(updateDto);
+            return Ok(comments);
 
         }
         [HttpDelete("delete/commentId/{commentId:int}")]
-        public async Task<IActionResult> DisableComment([FromRoute] int commentId )
+        public async Task<IActionResult> DisableComment([FromRoute] int commentId)
         {
 
-                 var comments = await _commentRepository.DisableComment(commentId);
-                  return Ok(comments);
+            var comments = await _commentRepository.DisableComment(commentId);
+            return Ok(comments);
 
         }
         [HttpGet("curriculumId/{curriculumId:int}")]
@@ -96,13 +115,13 @@ namespace RovinoxDotnet.Controllers
 
             var comments = await _commentRepository.GetComments(curriculumId);
 
-    // Filter to only top-level comments and map each comment recursively
-    var dtoList = comments
-        .Where(comment => comment.ParentId == null)
-        .Select(comment => MapCommentToDto(comment))
-        .ToList();
+            // Filter to only top-level comments and map each comment recursively
+            var dtoList = comments
+                .Where(comment => comment.ParentId == null)
+                .Select(comment => MapCommentToDto(comment))
+                .ToList();
 
-    return Ok(dtoList);
+            return Ok(dtoList);
 
         }
 

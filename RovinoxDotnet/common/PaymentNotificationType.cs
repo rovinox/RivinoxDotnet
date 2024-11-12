@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace RovinoxDotnet.common
 {
-    public static class NotificationType
+    public static class PaymentNotificationType
     {
         
         public const string CashPayment = "CASH_PAYMENT";
