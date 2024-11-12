@@ -30,11 +30,11 @@ namespace RovinoxDotnet.Controllers
                 {
                     var payment = await _paymentRepository.ProcessCashPaymentAsync(paymentDto);
                     var notificationDto = new CreateNotificationDto
-                    {   Type = NotificationType.CashPayment,
+                    {   Type = PaymentNotificationType.CashPayment,
                         SenderId = payment.UserId,
                         ReceiverId = payment.CashReceiverId,
-                        Name = NotificationType.CashPayment,
-                        Description = NotificationType.CashPaymentDescription,
+                        Name = PaymentNotificationType.CashPayment,
+                        Description = PaymentNotificationType.CashPaymentDescription,
                         PaymentId = payment.Id
                     };
                     var notification = await _notificationRepository.CreateAsync(notificationDto);

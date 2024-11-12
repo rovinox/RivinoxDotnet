@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using RovinoxDotnet.Data;
@@ -11,9 +12,11 @@ using RovinoxDotnet.Data;
 namespace RovinoxDotnet.Migrations
 {
     [DbContext(typeof(ApplicationDBContext))]
-    partial class ApplicationDBContextModelSnapshot : ModelSnapshot
+    [Migration("20241111211210_commentId")]
+    partial class commentId
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -50,13 +53,13 @@ namespace RovinoxDotnet.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "adf963c1-9ef9-4dd9-bc25-76f82bb7f65e",
+                            Id = "515a8e87-fa23-43a7-a3a1-a63ce71c338d",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         },
                         new
                         {
-                            Id = "012d5053-7259-490d-b82e-5f1e580f231c",
+                            Id = "794f33a1-ac1e-43b1-a616-f6d03a73dc65",
                             Name = "User",
                             NormalizedName = "USER"
                         });
@@ -315,6 +318,9 @@ namespace RovinoxDotnet.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
+                    b.Property<int?>("CommentId")
+                        .HasColumnType("integer");
+
                     b.Property<string>("Content")
                         .IsRequired()
                         .HasColumnType("text");
@@ -348,6 +354,8 @@ namespace RovinoxDotnet.Migrations
                         .HasColumnType("timestamp without time zone");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("CommentId");
 
                     b.HasIndex("CreatedById");
 
@@ -498,9 +506,6 @@ namespace RovinoxDotnet.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("CommentId")
-                        .IsUnique();
-
                     b.HasIndex("ReceiverId");
 
                     b.HasIndex("SenderId");
@@ -648,6 +653,10 @@ namespace RovinoxDotnet.Migrations
 
             modelBuilder.Entity("RovinoxDotnet.Models.Comment", b =>
                 {
+                    b.HasOne("RovinoxDotnet.Models.Notification", "Notification")
+                        .WithMany("Comments")
+                        .HasForeignKey("CommentId");
+
                     b.HasOne("RovinoxDotnet.Models.AppUser", "CreatedBy")
                         .WithMany("CreatedBy")
                         .HasForeignKey("CreatedById")
@@ -678,6 +687,8 @@ namespace RovinoxDotnet.Migrations
                     b.Navigation("CreatedBy");
 
                     b.Navigation("Curriculum");
+
+                    b.Navigation("Notification");
 
                     b.Navigation("Parent");
 
@@ -729,10 +740,6 @@ namespace RovinoxDotnet.Migrations
 
             modelBuilder.Entity("RovinoxDotnet.Models.Notification", b =>
                 {
-                    b.HasOne("RovinoxDotnet.Models.Comment", "Comment")
-                        .WithOne("Notification")
-                        .HasForeignKey("RovinoxDotnet.Models.Notification", "CommentId");
-
                     b.HasOne("RovinoxDotnet.Models.AppUser", "Receiver")
                         .WithMany("Receivers")
                         .HasForeignKey("ReceiverId")
@@ -744,8 +751,6 @@ namespace RovinoxDotnet.Migrations
                         .HasForeignKey("SenderId")
                         .OnDelete(DeleteBehavior.SetNull)
                         .HasConstraintName("SenderId");
-
-                    b.Navigation("Comment");
 
                     b.Navigation("Receiver");
 
@@ -829,8 +834,6 @@ namespace RovinoxDotnet.Migrations
             modelBuilder.Entity("RovinoxDotnet.Models.Comment", b =>
                 {
                     b.Navigation("Children");
-
-                    b.Navigation("Notification");
                 });
 
             modelBuilder.Entity("RovinoxDotnet.Models.Curriculum", b =>
@@ -843,6 +846,11 @@ namespace RovinoxDotnet.Migrations
                 });
 
             modelBuilder.Entity("RovinoxDotnet.Models.HomeWork", b =>
+                {
+                    b.Navigation("Comments");
+                });
+
+            modelBuilder.Entity("RovinoxDotnet.Models.Notification", b =>
                 {
                     b.Navigation("Comments");
                 });

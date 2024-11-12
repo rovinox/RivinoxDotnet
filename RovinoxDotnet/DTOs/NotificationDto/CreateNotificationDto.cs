@@ -9,6 +9,7 @@ namespace RovinoxDotnet.DTOs.NotificationDto
     {
 
         public int? PaymentId { get; set; }
+        public int? CommentId { get; set; }
         public string? SenderId { get; set; }
         public string? ReceiverId { get; set; }
         public string? Type { get; set; }

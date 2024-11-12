@@ -17,6 +17,7 @@ namespace RovinoxDotnet.Mappers
                 Name = notificationDto.Name,
                 Description = notificationDto.Description,
                 PaymentId = notificationDto.PaymentId,
+                CommentId = notificationDto.CommentId,
                 Seen = false,
                 Completed = false,
                 CreatedOn = DateTime.Now
