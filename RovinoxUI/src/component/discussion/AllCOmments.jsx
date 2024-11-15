@@ -6,6 +6,7 @@ import { useParams } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { getComments, getVotes } from "../../duck/discussionSlice";
 import Header from "../header/Header";
+import DiscussionIntroMessage from "./DiscussionIntroMessage";
 
 function Main() {
   const dispatch = useDispatch();
@@ -63,6 +64,7 @@ function Main() {
             currentUserObj={currentUserObj}
           />
         ))}
+       {comments?.length === 0 && <DiscussionIntroMessage/>}
         <CommentInputBox windowW={windowW} />
       </Stack>
     </>

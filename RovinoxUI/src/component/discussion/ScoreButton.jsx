@@ -13,6 +13,7 @@ function ScoreButton(props) {
           width: (direction === 'row') ? '100px': '40px',
           borderRadius: '4px',
           alignItems: 'center',
+          bgcolor:"#191A3A",
           justifyContent: 'space-between',
         }}
         direction={direction}
@@ -35,7 +36,7 @@ function ScoreButton(props) {
         >
           <PlusIcon/>
         </IconButton>
-        <Typography variant="scoreText">{score}</Typography>
+        <Typography color="primary" variant="scoreText">{score}</Typography>
         <IconButton 
           sx={{
             m:0, p:1.5, 

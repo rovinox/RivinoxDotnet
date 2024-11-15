@@ -1,50 +1,53 @@
 import React from 'react'
-import {Box,Typography} from '@mui/material';
+import {Box,Typography, Button} from '@mui/material';
 import {ReactComponent as ReplyIcon} from "./images/icon-reply.svg"
 import {ReactComponent as DeleteIcon} from "./images/icon-delete.svg"
 import {ReactComponent as EditIcon} from "./images/icon-edit.svg"
 
 
 function CommentAction(props) {
-  const {type,sx,onClick,reply,edit} = props;
+  const {type,onClick} = props;
 
   return (
     <>
       {(type === "reply") && 
-        <Box 
+        <Button 
           sx={{
             userSelect: 'none',
             
           }}
           onClick={onClick}
+            startIcon={  <ReplyIcon/>}
         >
-          <ReplyIcon/>
-          <Typography variant='primaryAction' sx={{ml: 1}}>Reply</Typography>
-        </Box>
+        
+          <Typography variant='primaryAction' >Reply</Typography>
+        </Button>
       }
       {(type === "edit") && 
-        <Box 
+        <Button
           sx={{
             userSelect: 'none',
+            ml:2
             
           }}
+          startIcon={ <EditIcon/>}
           onClick={onClick}
         >
-          <EditIcon/>
-          <Typography variant='primaryAction' sx={{ml: 1}}>Edit</Typography>
-        </Box>
+          <Typography variant='primaryAction' >Edit</Typography>
+        </Button>
       }
       {(type === "delete") && 
-        <Box 
+        <Button 
           sx={{
             userSelect: 'none',
             
           }}
           onClick={onClick}
+          startIcon={ <DeleteIcon/>}
         >
-          <DeleteIcon/>
-          <Typography variant='secondaryAction' sx={{ml: 1}}>Delete</Typography>
-        </Box>
+         
+          <Typography variant='secondaryAction' >Delete</Typography>
+        </Button>
       }
     </>
   )
