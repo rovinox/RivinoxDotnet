@@ -39,6 +39,7 @@
     "moment-jalaali": "^0.9.6",
     "mongodb": "^4.10.0",
     "mongoose": "^6.6.1",
+    "mui-chat-box": "^0.0.3",
     "mui-file-dropzone": "^4.0.2",
     "mui-rff": "^6.1.2",
     "node-sass": "^8.0.0",

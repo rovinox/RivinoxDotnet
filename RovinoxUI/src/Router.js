@@ -19,6 +19,7 @@ import Profile from "./component/profile/Profile.js";
 import CurriculumContent from "./component/curriculum/CurriculumContent.js";
 import MyAction from "./component/myAction/MyAction.js";
 import CommentLanding from "./component/discussion/CommentLanding.js";
+import ChatMain from "./component/chat/ChatMain.js";
 
 const getDesignTokens = (mode) => ({
   palette: {
@@ -74,6 +75,7 @@ export default function Router() {
           <Route path="/student" element={<StudentLanding />} />
           <Route path="/student/curriculumId/:curriculumId" element={<CurriculumContent />} />
           <Route path="/student/curriculumId/:curriculumId/discussions" element={<CommentLanding />} />
+          <Route path="/chat" element={<ChatMain/>} />
           <Route path="/login" element={<Login />} />
           <Route path="/apply" element={<Apply />} />
           <Route path="/admin" element={<AdminLanding />} />

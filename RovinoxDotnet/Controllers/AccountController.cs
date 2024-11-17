@@ -17,8 +17,16 @@ namespace RovinoxDotnet.Controllers
 {
     [Route("api/account")]
     [ApiController]
-    public class AccountController(UserManager<AppUser> userManager, RoleManager<IdentityRole> roleManager, ITokenService tokenService, SignInManager<AppUser> signInManager, IBatchRepository batchRepository, IEnrollmentRepository enrollmentRepository, ApplicationDBContext dbContext, IAuthenticatedUserService authenticatedUserService,
-    IImageRepository imageRepository
+    public class AccountController(
+        UserManager<AppUser> userManager,
+        RoleManager<IdentityRole> roleManager,
+        ITokenService tokenService,
+        SignInManager<AppUser> signInManager,
+        IBatchRepository batchRepository,
+        IEnrollmentRepository enrollmentRepository,
+        ApplicationDBContext dbContext,
+        IAuthenticatedUserService authenticatedUserService,
+        IImageRepository imageRepository
     ) : ControllerBase
     {
         private readonly IAuthenticatedUserService _authenticatedUserService = authenticatedUserService;
@@ -37,7 +45,6 @@ namespace RovinoxDotnet.Controllers
         {
             if (!ModelState.IsValid)
             {
-
                 return BadRequest(ModelState);
             }
 
@@ -52,7 +59,7 @@ namespace RovinoxDotnet.Controllers
 
             if (!result.Succeeded) return Unauthorized("Email not found and/or password incorrect");
             return Ok(
-                new 
+                new
                 {
                     // Roles = Convert.ToString(roles[0]),
                     Roles = defaultRole,
@@ -62,7 +69,7 @@ namespace RovinoxDotnet.Controllers
                     LastName = user.LastName,
                     Enabled = user.Enabled,
                     Id = user.Id,
-                     FullName = user.FirstName + " " + user.LastName,
+                    FullName = user.FirstName + " " + user.LastName,
                 }
             );
         }
@@ -74,13 +81,14 @@ namespace RovinoxDotnet.Controllers
             {
                 if (!ModelState.IsValid)
                 {
-
                     return BadRequest(ModelState);
                 }
-                  var user = await _userManager.Users.FirstOrDefaultAsync(x => x.Email == registerDto.Email);
-                  if (user != null){
+
+                var user = await _userManager.Users.FirstOrDefaultAsync(x => x.Email == registerDto.Email);
+                if (user != null)
+                {
                     return BadRequest("User already registered");
-                  }
+                }
 
                 var appUser = new AppUser
                 {
@@ -92,7 +100,7 @@ namespace RovinoxDotnet.Controllers
                     Balance = 0,
                     Enabled = true
                 };
-                
+
                 var createdUser = await _userManager.CreateAsync(appUser, registerDto.Password);
 
                 if (createdUser.Succeeded)
@@ -101,20 +109,21 @@ namespace RovinoxDotnet.Controllers
                     if (roleResult.Succeeded)
                     {
                         if (registerDto.BatchId != null)
-                {
-                    int batchId = (int)registerDto.BatchId;
-                    Batch batch = await _batchRepository.GetByIdAsync(batchId);
-                    appUser.Balance = batch.Cost;
-                    var enrollmentDto = new CreateEnrollmentDto
-                    {
-                        FirstName = appUser.FirstName,
-                        LastName = appUser.LastName,
-                        Course = batch.Course,
-                        UserId = appUser.Id,
-                        BatchId = batch.Id
-                    };
-                    var enrollment = await _enrollmentRepository.CreateAsync(enrollmentDto);
-                }
+                        {
+                            int batchId = (int)registerDto.BatchId;
+                            Batch batch = await _batchRepository.GetByIdAsync(batchId);
+                            appUser.Balance = batch.Cost;
+                            var enrollmentDto = new CreateEnrollmentDto
+                            {
+                                FirstName = appUser.FirstName,
+                                LastName = appUser.LastName,
+                                Course = batch.Course,
+                                UserId = appUser.Id,
+                                BatchId = batch.Id
+                            };
+                            var enrollment = await _enrollmentRepository.CreateAsync(enrollmentDto);
+                        }
+
                         return Ok(
                             new
                             {
@@ -124,9 +133,9 @@ namespace RovinoxDotnet.Controllers
                                 Email = appUser.Email,
                                 Token = _tokenService.CreateToken(appUser),
                                 Enabled = true,
-                                Image = appUser.Image,  
-                                Id= appUser.Id,
-                                 FullName = appUser.FirstName + " " + appUser.LastName,                          
+                                Image = appUser.Image,
+                                Id = appUser.Id,
+                                FullName = appUser.FirstName + " " + appUser.LastName,
                             }
                         );
                     }
@@ -145,14 +154,13 @@ namespace RovinoxDotnet.Controllers
                 return StatusCode(500, e);
             }
         }
+
         [HttpPost("upload/picture")]
         // [Authorize]
         public async Task<IActionResult> UploadProfilePictureAsync([FromForm] IFormFile imageFile)
         {
-
             try
             {
-
                 var url = await _imageRepository.UploadAndGetImageUrlAsync(imageFile);
                 if (!String.IsNullOrEmpty(url))
                 {
@@ -169,19 +177,18 @@ namespace RovinoxDotnet.Controllers
                     {
                         return NotFound();
                     }
-
                 }
                 else
                 {
                     return StatusCode(500, new { Message = "Could not upload profile" });
                 }
-
             }
             catch (Exception e)
             {
                 return StatusCode(500, e);
             }
         }
+
         [HttpGet("signed/user")]
         // [Authorize]
         public async Task<IActionResult> GetUserAsync()
@@ -200,33 +207,32 @@ namespace RovinoxDotnet.Controllers
                 FullName = user.FirstName + " " + user.LastName,
             };
             return Ok(
-                      appData
-                  );
+                appData
+            );
         }
+
         [HttpGet("search/users")]
         // [Authorize]
         public IActionResult GetSearchedUserAsync([FromQuery] string searchTerm)
         {
-
             var users = _userManager.Users
-     .Where(x =>
-         (x.FirstName.ToLower().Contains(searchTerm.ToLower()) ||
-         x.LastName.ToLower().Contains(searchTerm.ToLower()) ||
-         x.Email.ToLower().Contains(searchTerm.ToLower())) &&
-         x.Enabled)
-     .Select(user => new AppUserDTO
-     {
-         FirstName = user.FirstName,
-         LastName = user.LastName,
-         Email = user.Email,
-         Id = user.Id
-     })
-     .ToList();
+                .Where(x =>
+                    (x.FirstName.ToLower().Contains(searchTerm.ToLower()) ||
+                     x.LastName.ToLower().Contains(searchTerm.ToLower()) ||
+                     x.Email.ToLower().Contains(searchTerm.ToLower())) &&
+                    x.Enabled)
+                .Select(user => new AppUserDTO
+                {
+                    FirstName = user.FirstName,
+                    LastName = user.LastName,
+                    Email = user.Email,
+                    Id = user.Id
+                })
+                .ToList();
 
             return Ok(
-                     users
-                  );
-
+                users
+            );
         }
 
 
@@ -236,21 +242,19 @@ namespace RovinoxDotnet.Controllers
         {
             var roles = _roleManager.Roles.ToArray();
             return Ok(roles);
-
         }
+
         [HttpPost("update/user")]
         // [Authorize(Roles =Roles.Admin )]
         public async Task<IActionResult> UpdateUserAsync([FromBody] UpdateUserDto updateUserDto)
         {
             if (!ModelState.IsValid)
             {
-
                 return BadRequest(ModelState);
-
             }
+
             try
             {
-
                 var userId = updateUserDto.UserId;
                 var role = updateUserDto.Role;
                 var roleId = updateUserDto.RoleId;
@@ -278,14 +282,9 @@ namespace RovinoxDotnet.Controllers
                         if (enrollment != null)
                         {
                             await _enrollmentRepository.UpdateBalance(userId, batchId);
-
                         }
-
                     }
-
                 }
-
-
             }
             catch (Exception e)
             {
@@ -293,61 +292,58 @@ namespace RovinoxDotnet.Controllers
             }
 
             return Ok(new { message = "successfully updated" });
-
         }
 
         [HttpGet("users")]
         // [Authorize(Roles =Roles.Admin )]
         public IActionResult GetAllUsers()
         {
-
             var AllUsers = from cols in _userManager.Users
-                           from e in _dbContext.Enrollments
-                           from b in _dbContext.Batches
-                           from ur in _dbContext.UserRoles
-                           from r in _dbContext.Roles
-                           where cols.Id == e.UserId && b.Id == e.BatchId && cols.Id == ur.UserId && r.Id == ur.RoleId
-                           select new
-                           {
-                               FirstName = cols.FirstName,
-                               LastName = cols.LastName,
-                               Balance = cols.Balance,
-                               Enabled = cols.Enabled,
-                               Id = cols.Id,
-                               Email = cols.Email,
-                               PhoneNumber = cols.PhoneNumber,
-                               Course = e.Course,
-                               BatchId = b.Id,
-                               StartDate = b.StartDate,
-                               EndDate = b.EndDate,
-                               Role = r.Name,
-                               RoleId = r.Id
-                           };
+                from e in _dbContext.Enrollments
+                from b in _dbContext.Batches
+                from ur in _dbContext.UserRoles
+                from r in _dbContext.Roles
+                where cols.Id == e.UserId && b.Id == e.BatchId && cols.Id == ur.UserId && r.Id == ur.RoleId
+                select new
+                {
+                    FirstName = cols.FirstName,
+                    LastName = cols.LastName,
+                    Balance = cols.Balance,
+                    Enabled = cols.Enabled,
+                    Id = cols.Id,
+                    Email = cols.Email,
+                    PhoneNumber = cols.PhoneNumber,
+                    Course = e.Course,
+                    BatchId = b.Id,
+                    StartDate = b.StartDate,
+                    EndDate = b.EndDate,
+                    Role = r.Name,
+                    RoleId = r.Id
+                };
 
             return Ok(AllUsers);
-
-
         }
-       [HttpGet("user/userId/{UserId}")]
+
+        [HttpGet("user/userId/{UserId}")]
         // [Authorize(Roles =Roles.Admin )]
         public IActionResult GetUserById([FromRoute] string userId)
         {
             var AllUsers = from cols in _userManager.Users
-                           from ur in _dbContext.UserRoles
-                           from r in _dbContext.Roles
-                           where cols.Id == ur.UserId && r.Id == ur.RoleId && cols.Id == userId
-                           select new
-                           {
-                               FirstName = cols.FirstName,
-                               LastName = cols.LastName,
-                               Balance = cols.Balance,
-                               Enabled = cols.Enabled,
-                               Id = cols.Id,
-                               Email = cols.Email,
-                               PhoneNumber = cols.PhoneNumber,
-                               Role = r.Name,
-                               RoleId = r.Id
-                           };
+                from ur in _dbContext.UserRoles
+                from r in _dbContext.Roles
+                where cols.Id == ur.UserId && r.Id == ur.RoleId && cols.Id == userId
+                select new
+                {
+                    FirstName = cols.FirstName,
+                    LastName = cols.LastName,
+                    Balance = cols.Balance,
+                    Enabled = cols.Enabled,
+                    Id = cols.Id,
+                    Email = cols.Email,
+                    PhoneNumber = cols.PhoneNumber,
+                    Role = r.Name,
+                    RoleId = r.Id
+                };
 
             return Ok(AllUsers);
         }
@@ -356,38 +352,30 @@ namespace RovinoxDotnet.Controllers
         // [Authorize(Roles =Roles.Admin )]
         public IActionResult GetAllUsersByBatchId([FromRoute] int batchId)
         {
-
-
-
-
             var AllUsers = from cols in _userManager.Users
-                           from e in _dbContext.Enrollments
-                           from b in _dbContext.Batches
-                           from ur in _dbContext.UserRoles
-                           from r in _dbContext.Roles
-                           where cols.Id == e.UserId && b.Id == e.BatchId && e.BatchId == batchId && cols.Id == ur.UserId && r.Id == ur.RoleId
-                           select new
-                           {
-                               FirstName = cols.FirstName,
-                               LastName = cols.LastName,
-                               Balance = cols.Balance,
-                               Enabled = cols.Enabled,
-                               Id = cols.Id,
-                               Email = cols.Email,
-                               PhoneNumber = cols.PhoneNumber,
-                               BatchId = b.Id,
-                               StartDate = b.StartDate,
-                               EndDate = b.EndDate,
-                               Role = r.Name,
-                               RoleId = r.Id
-                           };
+                from e in _dbContext.Enrollments
+                from b in _dbContext.Batches
+                from ur in _dbContext.UserRoles
+                from r in _dbContext.Roles
+                where cols.Id == e.UserId && b.Id == e.BatchId && e.BatchId == batchId && cols.Id == ur.UserId &&
+                      r.Id == ur.RoleId
+                select new
+                {
+                    FirstName = cols.FirstName,
+                    LastName = cols.LastName,
+                    Balance = cols.Balance,
+                    Enabled = cols.Enabled,
+                    Id = cols.Id,
+                    Email = cols.Email,
+                    PhoneNumber = cols.PhoneNumber,
+                    BatchId = b.Id,
+                    StartDate = b.StartDate,
+                    EndDate = b.EndDate,
+                    Role = r.Name,
+                    RoleId = r.Id
+                };
 
             return Ok(AllUsers);
-
-
-
         }
-
     }
-
 }
