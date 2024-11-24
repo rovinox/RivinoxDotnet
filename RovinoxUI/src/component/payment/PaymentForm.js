@@ -13,11 +13,11 @@ import ReactToastify from "../../component/ReactToastify.js";
 import AutocompleteInput from "../../component/autocompleteInput/Index.js";
 import { toast } from "react-toastify";
 import { apiService } from "../../api/axios.js";
-
+import { useSelector, useDispatch } from "react-redux";
 
 export default function PaymentForm() {
   const amountInput = useRef();
-  const user = {}
+  const user = {};
 
   const [receiverId, setReceiverId] = useState(null);
   const [cvc, setCvc] = useState("");
@@ -27,6 +27,7 @@ export default function PaymentForm() {
   const [number, setNumber] = useState("");
   const [zipCode, setZipCode] = useState("");
   const [amount, setAmount] = useState(0);
+  const [paymentHistory, setPaymentHistory] = useState([]);
   const [paymentType, setPaymentType] = useState([]);
   const [amex, setAmex] = useState(false);
   const [customAmount, setCustomAmount] = useState(false);
@@ -34,40 +35,46 @@ export default function PaymentForm() {
   const handleInputFocus = ({ target }) => {
     setFocused(target.id);
   };
-  const getUser = useCallback(async () => {
+  const enrollments = useSelector((state) => state.batch.enrollments);
+  const currentUser = useSelector((state) => state.account.user);
+
+  const getPaymentHistory = useCallback(async () => {
     try {
       const result = await apiService.get(
-        "http://localhost:5122/api/account/signed/user"
+        "http://localhost:5122/api/payment/paymentHistory"
       );
-      console.log("result: ", result);
-      console.log("result: ", result);
-      if (result?.data) {
-        setPaymentType([
-          {
-            value: result?.data?.balance,
-            label: "Pay in Full",
-          },
-          {
-            value: "custom",
-            label: "Custom Amount",
-          },
-          {
-            value: "cash",
-            label: "Cash",
-          },
-        ]);
-      }
+      setPaymentHistory(result.data);
     } catch (e) {
       console.log(e);
     }
   }, []);
+
   useEffect(() => {
-    getUser();
-  }, [getUser]);
+    getPaymentHistory();
+  }, [getPaymentHistory]);
+
+  useEffect(() => {
+    if (currentUser) {
+      setPaymentType([
+        {
+          value: currentUser?.balance,
+          label: "Pay in Full",
+        },
+        {
+          value: "custom",
+          label: "Custom Amount",
+        },
+        {
+          value: "cash",
+          label: "Cash",
+        },
+      ]);
+    }
+  }, [currentUser]);
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-    let payLoad = {amount}
+    let payLoad = { amount };
     const cardInfo = {
       cvc,
       expiry,
@@ -76,25 +83,22 @@ export default function PaymentForm() {
       name,
       zipCode,
       email: user.email,
-      paymentType
+      paymentType,
     };
-    if(isCash){
-      payLoad.paymentType = "cash"
-      payLoad.cashReceiverId = receiverId
-
+    if (isCash) {
+      payLoad.paymentType = "cash";
+      payLoad.cashReceiverId = receiverId;
     }
 
-    
-
-    console.log('payLoad: ', {payLoad, cardInfo, receiverId});
-    
-
     try {
-      const result = await apiService.post("http://localhost:5122/api/payment/process", payLoad);
+      const result = await apiService.post(
+        "http://localhost:5122/api/payment/process",
+        payLoad
+      );
       if (result.status === 200) {
         console.log(result);
         toast.success("Your payment has been sent successfully");
-        getUser();
+        // getUser();
         setCvc("");
         setExpiry("");
         setName("");
@@ -107,7 +111,7 @@ export default function PaymentForm() {
       toast.error(`${err?.message}`);
     }
   };
-
+  console.log("payLoad: ", { paymentHistory, enrollments, currentUser });
   return (
     <div style={{ marginTop: 50 }}>
       <Header />

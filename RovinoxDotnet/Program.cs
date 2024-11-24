@@ -7,6 +7,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using RovinoxDotnet.Data;
+using RovinoxDotnet.Hubs;
 using RovinoxDotnet.Interfaces;
 using RovinoxDotnet.Models;
 using RovinoxDotnet.Repository;
@@ -51,6 +52,9 @@ builder.Services.AddControllers().AddNewtonsoftJson(options =>
     options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore;
 });
 builder.Services.AddControllers();
+builder.Services.AddSignalR();
+builder.Services.AddSingleton<IDictionary<string, UserConnection>>(opts => new Dictionary<string, UserConnection>());
+//builder.Services.AddSingleton<IAuthenticatedUserService, AuthenticatedUserService>();
 builder.Services.AddDbContext<ApplicationDBContext>(options => options.UseNpgsql(builder.Configuration.GetConnectionString("WebApiDatabase")));
 AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
 builder.Services.AddScoped< IBatchRepository, BatchRepository>();
@@ -90,6 +94,16 @@ builder.Services.AddAuthentication(options =>
     options.DefaultSignOutScheme = JwtBearerDefaults.AuthenticationScheme;
 }).AddJwtBearer(options =>
 {
+    options.Events = new JwtBearerEvents {
+        OnMessageReceived = context => {
+            var token = context.Request.Query["token"];
+            if(string.IsNullOrEmpty(token) == false){
+                context.Token = token;
+            }
+            return Task.CompletedTask;
+        }
+    };
+
     options.TokenValidationParameters = new TokenValidationParameters
     {
         ValidateIssuer = true,
@@ -108,6 +122,7 @@ app.UseCors(corsPolicyBuilder =>
    corsPolicyBuilder.WithOrigins("http://localhost:3000")
   .AllowAnyMethod()
   .AllowAnyHeader()
+  .AllowCredentials()
 );
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
@@ -118,6 +133,7 @@ if (app.Environment.IsDevelopment())
 
 
 app.MapControllers();
+app.MapHub<ChatHub>("/chathub");
 app.UseHttpsRedirection();
 app.UseAuthentication();
 app.UseAuthorization();

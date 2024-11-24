@@ -4,7 +4,6 @@ import TableBody from "@mui/material/TableBody";
 import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
-import "./courseTable.css";
 import Typography from "@mui/material/Typography";
 import axios from "axios";
 import moment from "moment";
@@ -56,7 +55,7 @@ const style = {
   p: 4,
 };
 
-export default function CourseTable({ tableAction, handleEnrollment }) {
+export default function CourseTable({ tableAction, handleEnrollment, readeOnly = false }) {
   let navigate = useNavigate();
   const [batch, setBatch] = useState([]);
   const [batchId, setBatchId] = useState("");
@@ -212,12 +211,13 @@ export default function CourseTable({ tableAction, handleEnrollment }) {
                     Schedule and time
                   </StyledTableCell>
                   <StyledTableCell align="right">Tuition</StyledTableCell>
+                 {readeOnly && <>
                   <StyledTableCell align="right">
                     Deadline to Enroll
                   </StyledTableCell>
                   <StyledTableCell align="right">
                     Select a Batch to Apply
-                  </StyledTableCell>
+                  </StyledTableCell> </>}
                 </StyledTableRow>
               </TableHead>
               <TableBody>
@@ -235,18 +235,13 @@ export default function CourseTable({ tableAction, handleEnrollment }) {
                         {moment(row.endDate).format("MMM Do")}
                       </StyledTableCell>
                       <StyledTableCell align="right">
-                        {/* {row.daysOfTheWeek.map((item, index) => (<> 
-                        { item}
-                        
-                        </>))} */}
-                        {/* console.log(moment(myDate).format("hh:mm a")) */}
                         {row.days} / {moment(row.startTime).format("hh:mm a")} -{" "}
                         {moment(row.endTime).format("hh:mm a")}
                       </StyledTableCell>
                       <StyledTableCell align="right">
                         ${row.cost}
                       </StyledTableCell>
-                      <StyledTableCell align="right">
+                     {readeOnly && <StyledTableCell align="right">
                         {row.isExpired ? (
                           <Typography color="error">Expired</Typography>
                         ) : (
@@ -254,8 +249,8 @@ export default function CourseTable({ tableAction, handleEnrollment }) {
                             moment(row.startDate) - 7 * 24 * 3600 * 1000
                           ).format("MMM Do")
                         )}
-                      </StyledTableCell>
-                      <StyledTableCell align="right">
+                      </StyledTableCell>}
+                     {readeOnly && <StyledTableCell align="right">
                         {tableAction === "remove" && (
                           <Button
                             onClick={() => {
@@ -291,7 +286,7 @@ export default function CourseTable({ tableAction, handleEnrollment }) {
                             enroll
                           </ApplyButton2>
                         )}
-                      </StyledTableCell>
+                      </StyledTableCell>}
                     </StyledTableRow>
                   ))}
               </TableBody>

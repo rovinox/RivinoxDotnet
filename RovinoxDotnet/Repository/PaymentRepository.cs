@@ -22,6 +22,28 @@ namespace RovinoxDotnet.Repository
             return _dbContext.Payments.FirstOrDefaultAsync(x => x.Id == PaymentId);
         }
 
+        public async Task<List<Payment>> GetPaymentHistoryByIdAsync(string userId)
+        {
+            var data = await _dbContext.Payments.Include(x => x.Notifications).Where(c => c.UserId == userId).ToListAsync();
+            return data;
+        }
+
+        public async Task<Payment> MarkAsCompleted(int PaymentId)
+        {
+            if (await _dbContext.Payments.FindAsync(PaymentId) is Payment found)
+            {
+               found.Completed = true;
+               found.CompletedDate = DateTime.Now;
+
+                await _dbContext.SaveChangesAsync();
+                return found;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
         public async Task<Payment> ProcessCashPaymentAsync(CreatePaymentDto paymentDto)
 
         {

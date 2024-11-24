@@ -5,34 +5,20 @@ import Menu from "@mui/material/Menu";
 import Button from "@mui/material/Button";
 import Tooltip from "@mui/material/Tooltip";
 import MenuItem from "@mui/material/MenuItem";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { openDrawer } from "../../duck/drawerSlice";
-import { updateBatchId } from "../../duck/batchSlice";
-import { apiService } from "../../api/axios";
+import { updateBatchId, getEnrollment } from "../../duck/batchSlice";
+
 
  function EnrollmentDropdown() {
-  const [enrollments, setEnrollments] = useState([]);
+  const enrollments = useSelector(state => state.batch.enrollments)
+  console.log('enrollments: ', enrollments);
   const dispatch = useDispatch();
   const [anchorElUser, setAnchorElUser] = useState(null);
 
   useEffect(() => {
-    const abortController = new AbortController();
-    const getEnrollments = async () => {
-      try {
-        const response = await apiService.get(
-          "http://localhost:5122/api/enrollment",{signal: abortController.signal}
-        );
-        console.log("response: ", response);
-        if (response.data) {
-          setEnrollments(response.data);
-        }
-      } catch (error) {
-        console.log(error);
-      }
-    };
-    getEnrollments();
-    return () => abortController.abort();
-  }, []);
+    dispatch(getEnrollment());
+  }, [dispatch]);
 
   const handleOpenUserMenu = (event) => {
     setAnchorElUser(event.currentTarget);

@@ -14,7 +14,7 @@ import Pricing from "./component/Pricing.js";
 import OneAndOne from "./component/OneAndOne.js";
 import ContactUS from "./component/ContactUS.js";
 import NotFound from "./component/NotFound.js";
-import PaymentForm from "./component/payment/PaymentForm.js";
+import PaymentMain from "./component/payment/PaymentMain.js";
 import Profile from "./component/profile/Profile.js";
 import CurriculumContent from "./component/curriculum/CurriculumContent.js";
 import MyAction from "./component/myAction/MyAction.js";
@@ -84,7 +84,7 @@ export default function Router() {
           <Route path="/pricing" element={<Pricing />} />
           <Route path="/meeting" element={<OneAndOne />} />
           <Route path="/contactus" element={<ContactUS />} />
-          <Route path="/payment" element={<PaymentForm />} />
+          <Route path="/payment" element={<PaymentMain />} />
           <Route path="/myAction" element={<MyAction/>} />
           <Route path="/profile" element={<Profile />} />
           <Route path="*" element={<NotFound />} />

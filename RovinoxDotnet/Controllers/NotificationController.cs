@@ -135,7 +135,7 @@ namespace RovinoxDotnet.Controllers
 
 
                     var updatedNT = await _notificationRepository.MarkCompleted(notificationId);
-                    var payment = await _paymentRepository.GetByIdAsync(updateNotificationByPaymentIdDto.PaymentId);
+                    var payment = await _paymentRepository.MarkAsCompleted(updateNotificationByPaymentIdDto.PaymentId);
 
 
                     if (updatedNT != null)
@@ -186,49 +186,52 @@ namespace RovinoxDotnet.Controllers
         }
         [HttpGet]
         [Authorize]
-        public async Task<IActionResult> GetAllAsync()
-        {
-            var userId = _authenticatedUserService.UserId;
-            //var userId = "cc0b19a6-90bc-4a39-959b-7826bdaeafc2";
-        //   if (String.IsNullOrEmpty(userId)) {
-        //     return StatusCode(401);
-        //     }
+      public async Task<IActionResult> GetAllAsync()
+{
+    // Retrieve the authenticated user's ID
+    var userId = _authenticatedUserService.UserId;
 
-            var result = await _notificationRepository.GetAllAsync(userId);
-            List<NotificationDto> notifications = [];
-            int notificationsWithNotSeenCount = 0;
+    // Check if the user ID is null or empty
+    if (string.IsNullOrEmpty(userId))
+    {
+        return StatusCode(401, "Unauthorized access. User ID is required.");
+    }
 
-            foreach (var  notification in result)
+    // Fetch notifications from the repository
+    var result = await _notificationRepository.GetAllAsync(userId);
+
+    // Map notifications to DTOs and count unseen notifications
+    var notifications = result.Select(notification => new NotificationDto
+    {
+        Id = notification.Id,
+        SenderId = notification.SenderId,
+        ReceiverId = notification.ReceiverId,
+        Type = notification.Type,
+        Name = notification.Name,
+        Description = notification.Description,
+        Seen = notification.Seen,
+        PaymentId = notification?.PaymentId,
+        CurriculumId = notification?.Comment?.CurriculumId != null 
+            ? notification.Comment.CurriculumId : 0,// Handle nullable Comment
+        Sender = notification.Sender != null 
+            ? new AppUserDTO
             {
-
-                notifications.Add(new NotificationDto
-                {
-                    Id = notification.Id,
-                    SenderId = notification.SenderId,
-                    ReceiverId = notification.ReceiverId,
-                    Type = notification.Type,
-                    Name = notification.Name,
-                    Description = notification.Description,
-                    Seen = notification.Seen,
-                    PaymentId = notification.PaymentId,
-                    CurriculumId = notification.Comment.CurriculumId,
-                    Sender = new AppUserDTO {
-                    FirstName =  notification.Sender.FirstName,
-                    LastName = notification.Sender.LastName,
-                    Image = notification.Sender.Image
-                    },
-                });
-                if (!notification.Seen)
-                {
-                    notificationsWithNotSeenCount++;
-                }
+                FirstName = notification.Sender.FirstName,
+                LastName = notification.Sender.LastName,
+                Image = notification.Sender.Image
             }
+            : null
+    }).ToList();
 
-            return Ok(new 
-            {
-                Notifications = notifications,
-                NotSeenCount = notificationsWithNotSeenCount,
-            });
-        }
+    var notificationsWithNotSeenCount = notifications.Count(n => !n.Seen);
+
+    // Return the result as an object
+    return Ok(new
+    {
+        Notifications = notifications,
+        NotSeenCount = notificationsWithNotSeenCount
+    });
+}
+
     }
 }

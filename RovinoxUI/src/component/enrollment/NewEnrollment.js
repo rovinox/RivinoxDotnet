@@ -15,8 +15,8 @@ export default function NewEnrollment() {
   const saveEnrollment = async (batchId) => {
     setOpenModal(false);
     const payload = {
-      firstName: user?.lastName,
-      lastName: user?.firstName,
+      firstName: user?.firstName,
+      lastName: user?.lastName,
       course: selectBatch?.course,
       userId: user?.value,
       batchId: selectBatch?.id,

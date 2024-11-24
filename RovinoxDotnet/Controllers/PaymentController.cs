@@ -53,6 +53,13 @@ namespace RovinoxDotnet.Controllers
             }
 
         }
+         [HttpGet("paymentHistory")]
+        public async Task<IActionResult> GetPaymentHistory(){
+              var userId = _authenticatedUserService.UserId;
+                var payment = await _paymentRepository.GetPaymentHistoryByIdAsync(userId);
+                return Ok(payment);
+
+        }
 
     }
 }
